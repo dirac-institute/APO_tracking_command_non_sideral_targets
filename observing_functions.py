@@ -138,18 +138,16 @@ def convert_h_m_s_to_deg(h,m,s):
 def convert_h_m_s_to_deg_no_sign(h,m,s):
     return (h) + ((m)/60.) + ((s)/3600.)
 
-def create_frame_for_stacking(fits_file):
+def create_frame_for_stacking(fits_file, x_pos, y_pos):
     #must be square
     buffer = 10
     datfile = pyfits.getdata(fits_file, header=True)
-    dat_raw = datfile[0]
+    dat_raw = datfile[0][::-1,:] #must flip data then flip back
     dat_head = datfile[1]
     frame_size = pyfits.open(fits_file)[0].header['NAXIS1']
     standard_frame_size = int(np.ceil(np.sqrt(frame_size**2 + frame_size**2) + buffer))
     null_frame = np.zeros(standard_frame_size * standard_frame_size).reshape(standard_frame_size,standard_frame_size)
-
-    center_y, center_x = null_frame.shape
-    mega farts
+    center_y, center_x = np.array(null_frame.shape)/2
 
 def css_efficiency(m,epsilon_0, m_lim, m_drop):
     return epsilon_0 / (1 + np.exp((m -m_lim)/m_drop))
