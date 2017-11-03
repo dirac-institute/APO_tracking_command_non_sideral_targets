@@ -82,13 +82,24 @@ for ff,fname in enumerate(files):
 
 image_data_frame.ix[image_data_frame['filter']=='SDSS i']
 
-#stack i frames
 fname =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS i']['fname'].tolist())
+time_s = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS i']['exptime_s'].tolist())
+
+#stack i frames for asteroids
 for i in range(0, len(fname)):
     fits_file_name = center_directory+fname[i]
     centered_name_asteroid = fits_file_name.replace('.fits','_centered_asteroid.fits')
-    centered_name_star = fits_file_name.replace('.fits','_centered_star.fits')
+    datfile = pyfits.getdata(centered_name_asteroid, header=True)
+    dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
+    dat_head = datfile[1]
 
+#stack i frames for stars
+for i in range(0, len(fname)):
+    fits_file_name = center_directory+fname[i]
+    centered_name_star = fits_file_name.replace('.fits','_centered_star.fits')
+    datfile = pyfits.getdata(centered_name_asteroid, header=True)
+    dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
+    dat_head = datfile[1]
 
 
 '''
