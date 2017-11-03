@@ -63,9 +63,13 @@ for ff,fname in enumerate(files):
     #create centered_star_frames
     x_pos, y_pos = image_data_frame.ix[ff,['star_x', 'star_y']]
     centered_frame, dat_head = create_frame_for_stacking(fits_file_name, int(x_pos), int(y_pos))
-    centered_name = fits_file_name.replace('.fits','_centered.fits')
+    centered_name = fits_file_name.replace('.fits','_centered_stars.fits')
     pyfits.writeto(centered_name,centered_frame.astype(np.float32),overwrite=True,header=dat_head)
     #create centered asteroid frames
+    x_pos, y_pos = image_data_frame.ix[ff,['ast_x', 'ast_y']]
+    centered_frame, dat_head = create_frame_for_stacking(fits_file_name, int(x_pos), int(y_pos))
+    centered_name = fits_file_name.replace('.fits','_centered_asteroid.fits')
+    pyfits.writeto(centered_name,centered_frame.astype(np.float32),overwrite=True,header=dat_head)
 
 #image_data_frame[image_data_frame['filter']=='SDSS i']
 
