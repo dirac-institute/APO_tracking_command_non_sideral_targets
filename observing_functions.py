@@ -149,7 +149,7 @@ def create_frame_for_stacking(fits_file):
     null_frame = np.zeros(standard_frame_size * standard_frame_size).reshape(standard_frame_size,standard_frame_size)
 
     center_y, center_x = null_frame.shape
-    afadsfadsfadsadfadsfadsfadsfdsfadsfadsfdsafdsfdsf
+    mega farts
 
 def css_efficiency(m,epsilon_0, m_lim, m_drop):
     return epsilon_0 / (1 + np.exp((m -m_lim)/m_drop))
