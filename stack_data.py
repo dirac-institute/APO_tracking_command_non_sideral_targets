@@ -12,6 +12,7 @@ import pyslalib.slalib as sla
 import argparse
 sys.path.insert(0, '/Users/bolin/NEO/Follow_up/CFHT_observing/scripts/')
 from observing_functions import *
+import glob
 
 '''
 sample execution: 
@@ -79,6 +80,7 @@ for ff,fname in enumerate(files):
     os.system('mv '+ centered_name + ' ' + center_directory)
     '''
 
+'''
 #i frames
 
 fname =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS i']['fname'].tolist())
@@ -191,6 +193,8 @@ stacked_name_stars = fits_file_name.replace('.fits',frame_interval+'_filter_' + 
 dat_head['EXPTIME'] = time_s.sum()
 pyfits.writeto(stacked_name_stars,stack_array.astype(np.float32),overwrite=True,header=dat_head)
 
+'''
+
 #r frames
 
 fname =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['fname'].tolist())
@@ -205,8 +209,8 @@ dat_head = datfile[1]
 stack_array = np.zeros(dat_raw.shape)
 
 filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.open(centered_name_asteroid)[0].header['FILTER'].find('SDSS ')+5:]
-#start, stop = 0, 15
-start, stop = 44, 50
+start, stop = 0, 15
+#start, stop = 0, 11
 fname = fname[start:stop]
 time_s = time_s[start:stop]
 for i in range(0, len(fname)):
@@ -223,6 +227,7 @@ frame_interval = '_frames_'+fname[0][fname[0].find('00'):].replace('.fits','') +
 fits_file_name = output_directory + fname[i]
 stacked_name_asteroid = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_asteroid.fits')
 dat_head['EXPTIME'] = time_s.sum()
+dat_head['DATE-OBS'] = np.mean(dates_mjd)
 pyfits.writeto(stacked_name_asteroid,stack_array.astype(np.float32),overwrite=True,header=dat_head)
 
 
@@ -248,21 +253,19 @@ dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
 pyfits.writeto(stacked_name_stars,stack_array.astype(np.float32),overwrite=True,header=dat_head)
 
+#fix date obs
 
+files1 = glob.glob(os.path.join(output_directory, "*r_stacked_asteroid*.fits"))
+files2 = glob.glob(os.path.join(output_directory, "*r_stacked_stars*.fits"))
 
-'''
-datfile = pyfits.getdata(f, header=True)
-dat_raw = datfile[0]
-dat_head = datfile[1]
+for i in range (0, len(files1)):
+    print files1[i]
+    datfile1 = pyfits.getdata(files1[i], header=True)
+    dat_raw1 = datfile1[0]#[::-1,:] #must flip data then flip back
+    dat_head1 = datfile1[1]
+    datfile2 = pyfits.getdata(files2[i], header=True)
+    dat_raw2 = datfile2[0]#[::-1,:] #must flip data then flip back
+    dat_head2 = datfile2[1]
+    dat_head1['DATE-OBS'] = dat_head2['DATE-OBS']
+    pyfits.writeto(files1[i],dat_raw1.astype(np.float32),overwrite=True,header=dat_head1)
 
-amp = pyfits.open(f)[0].header['READAMPS']
-
-biases = np.array([trim_image(df['fname'][n])[0] for n in bias_idx])
-
-datfile = trim_image(df['fname'][n])
-dat_raw = datfile[0]
-dat_head = datfile[1]
-time = df['exp'][n]
-
-pyfits.writeto(name,dat.astype(np.float32),overwrite=True,header=dat_head)
-'''
