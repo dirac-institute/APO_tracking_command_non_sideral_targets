@@ -23,6 +23,8 @@ from statsmodels.nonparametric.kernel_density import KDEMultivariate
 #from family_functions import *
 import pyslalib.slalib as sla
 import subprocess
+import astropy.io.fits as pyfits
+
 
 sed_paretheses =  'awk -F "[()]" \'{ for (i=2; i<NF; i+=2) print $i }\''
 
@@ -106,6 +108,18 @@ def append_zeros_end(number_str,required_spaces):
 def cal_date_to_mjd(year,month,date):
     return sla.sla_caldj(year,month,date)[0]
 
+def cal_date_fits_format_to_mjd(date_fits_header_string):
+    #converts fits format of header DATE-OBS, e.g.,  2017-10-29T08:37:21.386925 to MJD
+    calendar_date = date_fits_header_string[:date_fits_header_string.find('T')]
+    year, month, day = calendar_date.split('-')
+    date_mjd = sla.sla_caldj(int(year), int(month), int(day))[0]
+
+    day_split = date_fits_header_string[date_fits_header_string.find('T')+1:].split(':')
+    hour,minute,second = [float(i) for i in day_split]
+    fraction_day = (hour/24.0) + (minute/(60*24.)) + (second / (24*3600.))
+
+    return date_mjd + fraction_day
+
 def convert_deg_to_hms_RA(deg):
     decimal_m, h = np.modf(deg/hours_to_deg )
     decimal_s, m = np.modf(np.abs(decimal_m) * hours_to_minutes)
@@ -123,6 +137,19 @@ def convert_h_m_s_to_deg(h,m,s):
 
 def convert_h_m_s_to_deg_no_sign(h,m,s):
     return (h) + ((m)/60.) + ((s)/3600.)
+
+def create_frame_for_stacking(fits_file):
+    #must be square
+    buffer = 10
+    datfile = pyfits.getdata(fits_file, header=True)
+    dat_raw = datfile[0]
+    dat_head = datfile[1]
+    frame_size = pyfits.open(fits_file)[0].header['NAXIS1']
+    standard_frame_size = int(np.ceil(np.sqrt(frame_size**2 + frame_size**2) + buffer))
+    null_frame = np.zeros(standard_frame_size * standard_frame_size).reshape(standard_frame_size,standard_frame_size)
+
+    center_y, center_x = null_frame.shape
+    afadsfadsfadsadfadsfadsfadsfdsfadsfadsfdsafdsfdsf
 
 def css_efficiency(m,epsilon_0, m_lim, m_drop):
     return epsilon_0 / (1 + np.exp((m -m_lim)/m_drop))
