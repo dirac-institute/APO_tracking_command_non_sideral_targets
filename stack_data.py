@@ -212,8 +212,10 @@ stack_array = np.zeros(dat_raw.shape)
 filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.open(centered_name_asteroid)[0].header['FILTER'].find('SDSS ')+5:]
 #start, stop = 0, 15
 
-start, stop = 47, 51
 
+start_stop = np.array([[51,47],[47,43],[43,40],[40,38],[38,36],[36,34],[34,32],[32,30],[30,28],[28,26],[26,23],[23,19],[19,15],[15,0]])
+for qq in range(0,len(start_stop)):
+    stop, start = start_stop[qq]
     fname = fname[start:stop]
     time_s = time_s[start:stop]
     dates_mjd = dates_mjd[start:stop]
