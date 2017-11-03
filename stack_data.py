@@ -104,7 +104,7 @@ for i in range(0, len(fname)):
     stack_array += dat_raw
 
 frame_interval = '_frames_'+fname[0][fname[0].find('00'):].replace('.fits','') + '_to_' + fname[-1][fname[-1].find('00'):].replace('.fits','')
-
+stack_array -= np.median(stack_array)
 fits_file_name = output_directory + fname[i]
 stacked_name_asteroid = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_asteroid.fits')
 dat_head['EXPTIME'] = time_s.sum()
@@ -129,6 +129,7 @@ for i in range(0, len(fname)):
     stack_array += dat_raw
 
 fits_file_name = output_directory + fname[i]
+stack_array -= np.median(stack_array)
 stacked_name_stars = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_stars.fits')
 dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
@@ -204,7 +205,8 @@ dat_head = datfile[1]
 stack_array = np.zeros(dat_raw.shape)
 
 filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.open(centered_name_asteroid)[0].header['FILTER'].find('SDSS ')+5:]
-start, stop = 0, 15
+#start, stop = 0, 15
+start, stop = 44, 50
 fname = fname[start:stop]
 time_s = time_s[start:stop]
 for i in range(0, len(fname)):
