@@ -148,6 +148,12 @@ def create_frame_for_stacking(fits_file, x_pos, y_pos):
     standard_frame_size = int(np.ceil(np.sqrt(frame_size**2 + frame_size**2) + buffer))
     null_frame = np.zeros(standard_frame_size * standard_frame_size).reshape(standard_frame_size,standard_frame_size)
     center_y, center_x = np.array(null_frame.shape)/2
+    add_array_edge_coord_y, add_array_edge_coord_x = center_y - y_pos, center_x - x_pos
+    #add arrays on top of each others
+    null_frame[add_array_edge_coord_y:add_array_edge_coord_y+frame_size,add_array_edge_coord_x:add_array_edge_coord_x+frame_size] += dat_raw
+    return null_frame[::-1,:]
+
+
 
 def css_efficiency(m,epsilon_0, m_lim, m_drop):
     return epsilon_0 / (1 + np.exp((m -m_lim)/m_drop))

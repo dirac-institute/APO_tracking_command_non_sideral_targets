@@ -62,6 +62,8 @@ for ff,fname in enumerate(files):
 
 #image_data_frame[image_data_frame['filter']=='SDSS i']
 
+fits_file, x_pos, y_pos = 'reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/reduced_2017U1.0072.fits', 990, 1214
+
 
 
 '''
