@@ -62,7 +62,6 @@ for ff,fname in enumerate(files):
 
 #image_data_frame[image_data_frame['filter']=='SDSS i']
 
-afdadsfadsfdsafadsf
 
 
 '''
