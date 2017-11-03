@@ -16,18 +16,21 @@ from observing_functions import *
 '''
 sample execution: 
 
-ipython -i -- stack_data.py -dd reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -od stack_output/AK17U010/2017_10_29/ -sf object_stars_positions
+ipython -i -- stack_data.py -dd reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -od stack_output/AK17U010/2017_10_29/ -sf object_stars_positions -cd reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/centered_frames/
 
 '''
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-dd", "--data_directory", help="directory for the storage of data.", nargs='*')
 parser.add_argument("-od", "--output_directory", help="directory for the storage of stacked data", nargs='*')
+parser.add_argument("-cd", "--center_directory", help="directory for the storage of centered data", nargs='*')
 parser.add_argument("-sf", "--stack_file", help="text file containing file name, object x,y, ref star x,y", nargs='*')
 #parser.add_argument("-af","--argument_file", type=open, action=LoadFromFile)
 args = parser.parse_args()
 
 data_directory = args.data_directory[0]
+center_directory = args.center_directory[0]
+center_directory = args.center_directory[0]
 output_directory = args.output_directory[0]
 stack_file = args.stack_file[0]
 
@@ -54,6 +57,7 @@ image_data_frame['date_obs'] = pd.Series("", index=image_data_frame.index)
 
 
 
+#uncomment to center images
 for ff,fname in enumerate(files):
     #if ff >59 and ff < 70:
     fits_file_name = data_directory+fname
@@ -61,6 +65,7 @@ for ff,fname in enumerate(files):
     image_data_frame['filter'][ff] = pyfits.open(fits_file_name)[0].header['FILTER']
     image_data_frame['date_obs'][ff] = cal_date_fits_format_to_mjd(pyfits.open(fits_file_name)[0].header['DATE-OBS'])
     #create centered_star_frames
+    '''
     x_pos, y_pos = image_data_frame.ix[ff,['star_x', 'star_y']]
     centered_frame, dat_head = create_frame_for_stacking(fits_file_name, int(x_pos), int(y_pos))
     centered_name = fits_file_name.replace('.fits','_centered_stars.fits')
@@ -70,8 +75,20 @@ for ff,fname in enumerate(files):
     centered_frame, dat_head = create_frame_for_stacking(fits_file_name, int(x_pos), int(y_pos))
     centered_name = fits_file_name.replace('.fits','_centered_asteroid.fits')
     pyfits.writeto(centered_name,centered_frame.astype(np.float32),overwrite=True,header=dat_head)
+    '''
 
 #image_data_frame[image_data_frame['filter']=='SDSS i']
+
+
+image_data_frame.ix[image_data_frame['filter']=='SDSS i']
+
+#stack i frames
+fname =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS i']['fname'].tolist())
+for i in range(0, len(fname)):
+    fits_file_name = center_directory+fname[i]
+    centered_name_asteroid = fits_file_name.replace('.fits','_centered_asteroid.fits')
+    centered_name_star = fits_file_name.replace('.fits','_centered_star.fits')
+
 
 
 '''
