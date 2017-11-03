@@ -55,17 +55,17 @@ image_data_frame['date_obs'] = pd.Series("", index=image_data_frame.index)
 
 
 for ff,fname in enumerate(files):
-    if ff >59 and ff < 70:
-        fits_file_name = data_directory+fname
-        image_data_frame['exptime_s'][ff] = pyfits.open(fits_file_name)[0].header['EXPTIME']
-        image_data_frame['filter'][ff] = pyfits.open(fits_file_name)[0].header['FILTER']
-        image_data_frame['date_obs'][ff] = cal_date_fits_format_to_mjd(pyfits.open(fits_file_name)[0].header['DATE-OBS'])
-        #create centered_star_frames
-        x_pos, y_pos = image_data_frame.ix[ff,['star_x', 'star_y']]
-        centered_frame, dat_head = create_frame_for_stacking(fits_file_name, int(x_pos), int(y_pos))
-        centered_name = fits_file_name.replace('.fits','_centered.fits')
-        pyfits.writeto(centered_name,centered_frame.astype(np.float32),overwrite=True,header=dat_head)
-        #create centered asteroid frames
+    #if ff >59 and ff < 70:
+    fits_file_name = data_directory+fname
+    image_data_frame['exptime_s'][ff] = pyfits.open(fits_file_name)[0].header['EXPTIME']
+    image_data_frame['filter'][ff] = pyfits.open(fits_file_name)[0].header['FILTER']
+    image_data_frame['date_obs'][ff] = cal_date_fits_format_to_mjd(pyfits.open(fits_file_name)[0].header['DATE-OBS'])
+    #create centered_star_frames
+    x_pos, y_pos = image_data_frame.ix[ff,['star_x', 'star_y']]
+    centered_frame, dat_head = create_frame_for_stacking(fits_file_name, int(x_pos), int(y_pos))
+    centered_name = fits_file_name.replace('.fits','_centered.fits')
+    pyfits.writeto(centered_name,centered_frame.astype(np.float32),overwrite=True,header=dat_head)
+    #create centered asteroid frames
 
 #image_data_frame[image_data_frame['filter']=='SDSS i']
 
