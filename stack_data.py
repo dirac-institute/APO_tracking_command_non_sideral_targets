@@ -213,7 +213,7 @@ filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.ope
 #start, stop = 0, 15
 
 
-start_stop = np.array([[51,47],[47,43],[43,40],[40,38],[38,36],[36,34],[34,32],[32,30],[30,28],[28,26],[26,23],[23,19],[19,15],[15,0]])
+start_stop = np.array([[51,46],[46,41],[41,39],[39,37],[37,35],[35,34],[34,32],[32,30],[30,28],[28,26],[26,23],[23,19],[19,15],[15,0]])
 for qq in range(0,len(start_stop)):
     stop, start = start_stop[qq]
     fname = fname_temp[start:stop]
