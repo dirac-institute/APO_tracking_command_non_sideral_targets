@@ -149,7 +149,7 @@ def create_frame_for_stacking(fits_file, x_pos, y_pos):
     y_adjust = 50
     second_y_adjust = 600
     datfile = pyfits.getdata(fits_file, header=True)
-    dat_raw = datfile[0][::-1,:] #must flip data then flip back
+    dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
     dat_head = datfile[1]
     frame_size = pyfits.open(fits_file)[0].header['NAXIS1']
     standard_frame_size = int(frame_size*2 + buffer)
