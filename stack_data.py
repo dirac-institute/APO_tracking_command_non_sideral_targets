@@ -64,7 +64,11 @@ for ff,fname in enumerate(files):
 
 fits_file, x_pos, y_pos = 'reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/reduced_2017U1.0072.fits', 990, 1214
 
+centered_frame, dat_head = create_frame_for_stacking(fits_file, x_pos, y_pos)
 
+centered_name = fits_file.replace('.fits','_centered.fits')
+
+pyfits.writeto(centered_name,centered_frame.astype(np.float32),overwrite=True,header=dat_head)
 
 '''
 datfile = pyfits.getdata(f, header=True)
