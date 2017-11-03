@@ -83,7 +83,7 @@ for ff,fname in enumerate(files):
 
 fname =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS i']['fname'].tolist())
 time_s = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS i']['exptime_s'].tolist())
-
+dates_mjd = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS i']['date_obs'].tolist())
 
 
 fits_file_name = center_directory+fname[0]#stack i frames for asteroids
@@ -108,6 +108,7 @@ frame_interval = '_frames_'+fname[0][fname[0].find('00'):].replace('.fits','') +
 fits_file_name = output_directory + fname[i]
 stacked_name_asteroid = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_asteroid.fits')
 dat_head['EXPTIME'] = time_s.sum()
+dat_head['DATE-OBS'] = np.mean(dates_mjd)
 pyfits.writeto(stacked_name_asteroid,stack_array.astype(np.float32),overwrite=True,header=dat_head)
 
 
@@ -130,6 +131,7 @@ for i in range(0, len(fname)):
 fits_file_name = output_directory + fname[i]
 stacked_name_stars = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_stars.fits')
 dat_head['EXPTIME'] = time_s.sum()
+dat_head['DATE-OBS'] = np.mean(dates_mjd)
 pyfits.writeto(stacked_name_stars,stack_array.astype(np.float32),overwrite=True,header=dat_head)
 
 
@@ -137,8 +139,7 @@ pyfits.writeto(stacked_name_stars,stack_array.astype(np.float32),overwrite=True,
 
 fname =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS g']['fname'].tolist())
 time_s = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS g']['exptime_s'].tolist())
-
-
+dates_mjd = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS g']['date_obs'].tolist())
 
 fits_file_name = center_directory+fname[0]#stack i frames for asteroids
 centered_name_asteroid = fits_file_name.replace('.fits','_centered_asteroid.fits')
@@ -163,6 +164,7 @@ frame_interval = '_frames_'+fname[0][fname[0].find('00'):].replace('.fits','') +
 fits_file_name = output_directory + fname[i]
 stacked_name_asteroid = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_asteroid.fits')
 dat_head['EXPTIME'] = time_s.sum()
+dat_head['DATE-OBS'] = np.mean(dates_mjd)
 pyfits.writeto(stacked_name_asteroid,stack_array.astype(np.float32),overwrite=True,header=dat_head)
 
 
@@ -192,6 +194,7 @@ pyfits.writeto(stacked_name_stars,stack_array.astype(np.float32),overwrite=True,
 
 fname =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['fname'].tolist())
 time_s = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['exptime_s'].tolist())
+dates_mjd = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['date_obs'].tolist())
 
 fits_file_name = center_directory+fname[0]#stack i frames for asteroids
 centered_name_asteroid = fits_file_name.replace('.fits','_centered_asteroid.fits')
@@ -240,6 +243,7 @@ for i in range(0, len(fname)):
 fits_file_name = output_directory + fname[i]
 stacked_name_stars = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_stars.fits')
 dat_head['EXPTIME'] = time_s.sum()
+dat_head['DATE-OBS'] = np.mean(dates_mjd)
 pyfits.writeto(stacked_name_stars,stack_array.astype(np.float32),overwrite=True,header=dat_head)
 
 
