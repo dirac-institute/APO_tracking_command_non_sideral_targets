@@ -139,17 +139,24 @@ def convert_h_m_s_to_deg_no_sign(h,m,s):
     return (h) + ((m)/60.) + ((s)/3600.)
 
 def create_frame_for_stacking(fits_file, x_pos, y_pos):
+    '''
+    plt.ion()
+    plt.figure()
+    plt.imshow(np.log10(null_frame))
+    '''
     #must be square
     buffer = 10
     y_adjust = 50
+    second_y_adjust = 600
     datfile = pyfits.getdata(fits_file, header=True)
     dat_raw = datfile[0][::-1,:] #must flip data then flip back
     dat_head = datfile[1]
     frame_size = pyfits.open(fits_file)[0].header['NAXIS1']
-    standard_frame_size = int(np.ceil(np.sqrt(frame_size**2 + frame_size**2) + buffer))
+    standard_frame_size = int(frame_size*2 + buffer)
     null_frame = np.zeros(standard_frame_size * standard_frame_size).reshape(standard_frame_size,standard_frame_size)
     center_y, center_x = np.array(null_frame.shape)/2
-    add_array_edge_coord_y, add_array_edge_coord_x = (center_y - y_pos) + ((standard_frame_size/2) - (frame_size/2)) -y_adjust , center_x - x_pos
+    #add_array_edge_coord_y, add_array_edge_coord_x = (center_y - y_pos) + ((standard_frame_size/2) - (frame_size/2)) -y_adjust -second_y_adjust, center_x - x_pos
+    add_array_edge_coord_y, add_array_edge_coord_x = (center_y - y_pos) , center_x - x_pos
     #add arrays on top of each others
     null_frame[add_array_edge_coord_y:add_array_edge_coord_y+frame_size,add_array_edge_coord_x:add_array_edge_coord_x+frame_size] += dat_raw
     return null_frame[::-1,:], dat_head
