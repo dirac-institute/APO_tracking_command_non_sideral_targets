@@ -198,11 +198,11 @@ pyfits.writeto(stacked_name_stars,stack_array.astype(np.float32),overwrite=True,
 
 #r frames
 
-fname =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['fname'].tolist())
-time_s = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['exptime_s'].tolist())
-dates_mjd = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['date_obs'].tolist())
+fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['fname'].tolist())
+time_s_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['exptime_s'].tolist())
+dates_mjd_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['date_obs'].tolist())
 
-fits_file_name = center_directory+fname[0]#stack i frames for asteroids
+fits_file_name = center_directory+fname_temp[0]#stack i frames for asteroids
 centered_name_asteroid = fits_file_name.replace('.fits','_centered_asteroid.fits')
 datfile = pyfits.getdata(centered_name_asteroid, header=True)
 dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
@@ -216,9 +216,9 @@ filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.ope
 start_stop = np.array([[51,47],[47,43],[43,40],[40,38],[38,36],[36,34],[34,32],[32,30],[30,28],[28,26],[26,23],[23,19],[19,15],[15,0]])
 for qq in range(0,len(start_stop)):
     stop, start = start_stop[qq]
-    fname = fname[start:stop]
-    time_s = time_s[start:stop]
-    dates_mjd = dates_mjd[start:stop]
+    fname = fname_temp[start:stop]
+    time_s = time_s_temp[start:stop]
+    dates_mjd = dates_mjd_temp[start:stop]
     for i in range(0, len(fname)):
         fits_file_name = center_directory+fname[i]
         centered_name_asteroid = fits_file_name.replace('.fits','_centered_asteroid.fits')
