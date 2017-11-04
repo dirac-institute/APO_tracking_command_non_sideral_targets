@@ -107,6 +107,7 @@ for i in range(0, len(fname)):
 
 frame_interval = '_frames_'+fname[0][fname[0].find('00'):].replace('.fits','') + '_to_' + fname[-1][fname[-1].find('00'):].replace('.fits','')
 #stack_array -= np.median(stack_array)
+stack_array /= fname.shape[0]
 fits_file_name = output_directory + fname[i]
 stacked_name_asteroid = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_asteroid.fits')
 dat_head['EXPTIME'] = time_s.sum()
@@ -132,6 +133,7 @@ for i in range(0, len(fname)):
 
 fits_file_name = output_directory + fname[i]
 #stack_array -= np.median(stack_array)
+stack_array /= fname.shape[0]
 stacked_name_stars = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_stars.fits')
 dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
@@ -159,9 +161,10 @@ for i in range(0, len(fname)):
     datfile = pyfits.getdata(centered_name_asteroid, header=True)
     dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
     dat_head = datfile[1]
-    #stack_array += dat_raw
+    stack_array += dat_raw
 
 #stack_array -= np.median(stack_array)
+stack_array /= fname.shape[0]
 frame_interval = '_frames_'+fname[0][fname[0].find('00'):].replace('.fits','') + '_to_' + fname[-1][fname[-1].find('00'):].replace('.fits','')
 
 fits_file_name = output_directory + fname[i]
@@ -185,9 +188,10 @@ for i in range(0, len(fname)):
     datfile = pyfits.getdata(centered_name_asteroid, header=True)
     dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
     dat_head = datfile[1]
-    #stack_array += dat_raw
+    stack_array += dat_raw
 
 #stack_array -= np.median(stack_array)
+stack_array /= fname.shape[0]
 fits_file_name = output_directory + fname[i]
 stacked_name_stars = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_stars.fits')
 dat_head['EXPTIME'] = time_s.sum()
@@ -228,6 +232,7 @@ for qq in range(0,len(start_stop)):
         stack_array += dat_raw
 
     #stack_array -= np.median(stack_array)
+    stack_array /= fname_temp[start:stop].shape[0]
     frame_interval = '_frames_'+fname[0][fname[0].find('00'):].replace('.fits','') + '_to_' + fname[-1][fname[-1].find('00'):].replace('.fits','')
 
     fits_file_name = output_directory + fname[i]
@@ -253,6 +258,8 @@ for qq in range(0,len(start_stop)):
         dat_head = datfile[1]
         stack_array += dat_raw
 
+    #stack_array -= np.median(stack_array)
+    stack_array /= fname_temp[start:stop].shape[0]
     fits_file_name = output_directory + fname[i]
     stacked_name_stars = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_stars.fits')
     dat_head['EXPTIME'] = time_s.sum()
