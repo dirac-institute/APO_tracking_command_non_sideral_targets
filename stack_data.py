@@ -81,7 +81,7 @@ for ff,fname in enumerate(files):
     os.system('mv '+ centered_name + ' ' + center_directory)
     '''
 
-
+'''
 #i frames
 
 fname =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS i']['fname'].tolist())
@@ -200,7 +200,7 @@ dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
 pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array.astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
 
-
+'''
 
 #r frames
 
@@ -219,7 +219,7 @@ filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.ope
 #start, stop = 0, 15
 
 
-start_stop = np.array([[51,46],[46,41],[41,39],[39,37],[37,35],[35,34],[34,32],[32,30],[30,28],[28,26],[26,23],[23,19],[19,15],[15,0]])
+start_stop = np.array([[51,46],[46,41],[41,39],[39,37],[37,35],[35,34],[34,32],[32,30],[30,29],[29,25],[25,21],[21,15],[15,0]])
 for qq in range(0,len(start_stop)):
     stop, start = start_stop[qq]
     fname = fname_temp[start:stop]
@@ -272,12 +272,12 @@ for qq in range(0,len(start_stop)):
 
 
 '''
-g = 24.21
-g_unc = 0.11
-r = 24.08
-r_unc = 0.12
-i = 23.85
-i_unc = 0.20
+g = 23.51
+g_unc = 0.22
+r = 23.1
+r_unc = 0.09
+i = 22.87
+i_unc = 0.23
 a_slope(g, g_unc, r, r_unc, i, i_unc)
 
 
