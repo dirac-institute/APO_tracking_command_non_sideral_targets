@@ -277,12 +277,16 @@ r = 24.22
 r_unc = 0.12
 i = 24.15
 i_unc = 0.20
-
-a_slope = 
-
+a_slope(g, g_unc, r, r_unc, i, i_unc)
 
 
-
+g = 23.45
+g_unc = 0.37
+r = 23.2
+r_unc = 0.12
+i = 23.0
+i_unc = 0.20
+a_slope(g, g_unc, r, r_unc, i, i_unc)
 
 
 '''
