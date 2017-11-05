@@ -20,6 +20,11 @@ sample execution:
 
 ipython -i -- stack_data.py -dd reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -od reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/stacked_frames/ -sf object_stars_positions -cd reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/centered_frames/
 
+file info:
+
+gethead FILTER *fits |grep asteroid | grep "SDSS r" | awk '{print $'1'}' | xargs -n 1 gethead DATE-OBS
+gethead FILTER *fits |grep asteroid | grep "SDSS r" | awk '{print $'1'}' | xargs -n 1 gethead EXPTIME
+
 '''
 
 parser = argparse.ArgumentParser()
@@ -219,7 +224,7 @@ filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.ope
 #start, stop = 0, 15
 
 
-start_stop = np.array([[51,46],[46,41],[41,39],[39,37],[37,35],[35,34],[34,32],[32,30],[30,29],[29,25],[25,21],[21,15],[15,0]])
+start_stop = np.array([[51,46],[46,41],[41,39],[39,37],[37,35],[35,33],[33,31],[31,29],[29,25],[25,21],[21,15],[15,0]])
 for qq in range(0,len(start_stop)):
     stop, start = start_stop[qq]
     fname = fname_temp[start:stop]
