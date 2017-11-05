@@ -86,7 +86,7 @@ for ff,fname in enumerate(files):
     os.system('mv '+ centered_name + ' ' + center_directory)
     '''
 
-'''
+
 #i frames
 
 fname =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS i']['fname'].tolist())
@@ -118,7 +118,7 @@ fits_file_name = output_directory + fname[i]
 stacked_name_asteroid = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_asteroid.fits')
 dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
-pyfits.writeto(stacked_name_asteroid,scipy.stats.trim_mean(stack_array.astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
+pyfits.writeto(stacked_name_asteroid,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
 
 
 fits_file_name = center_directory+fname[0]#stack i frames for asteroids
@@ -144,7 +144,7 @@ fits_file_name = output_directory + fname[i]
 stacked_name_stars = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_stars.fits')
 dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
-pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array.astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
+pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
 
 
 #g frames
@@ -178,7 +178,7 @@ fits_file_name = output_directory + fname[i]
 stacked_name_asteroid = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_asteroid.fits')
 dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
-pyfits.writeto(stacked_name_asteroid,scipy.stats.trim_mean(stack_array.astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
+pyfits.writeto(stacked_name_asteroid,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
 
 
 fits_file_name = center_directory+fname[0]#stack i frames for asteroids
@@ -203,9 +203,8 @@ fits_file_name = output_directory + fname[i]
 stacked_name_stars = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_stars.fits')
 dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
-pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array.astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
+pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
 
-'''
 
 #r frames
 
@@ -225,8 +224,8 @@ filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.ope
 
 
 start_stop = np.array([[51,45],[45,41],[41,39],[39,37],[37,35],[35,33],[33,31],[31,29],[29,25],[25,21],[21,15],[15,0]])
-#for qq in range(0,len(start_stop)):
-for qq in range(0,1):
+for qq in range(0,len(start_stop)):
+#for qq in range(0,1):
     stop, start = start_stop[qq]
     fname = fname_temp[start:stop]
     time_s = time_s_temp[start:stop]
@@ -248,7 +247,7 @@ for qq in range(0,1):
     stacked_name_asteroid = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_asteroid.fits')
     dat_head['EXPTIME'] = time_s.sum()
     dat_head['DATE-OBS'] = np.mean(dates_mjd)
-    pyfits.writeto(stacked_name_asteroid,scipy.stats.trim_mean(stack_array.astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
+    pyfits.writeto(stacked_name_asteroid,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
 
 
     fits_file_name = center_directory+fname[0]#stack i frames for asteroids
@@ -273,7 +272,7 @@ for qq in range(0,1):
     stacked_name_stars = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_stars.fits')
     dat_head['EXPTIME'] = time_s.sum()
     dat_head['DATE-OBS'] = np.mean(dates_mjd)
-    pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array.astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
+    pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
 
 
 
