@@ -180,7 +180,7 @@ def get_rates_no_cos_dec(rate, pa_deg): #rate is in "/min, pa is in degs USE FOR
     DEC = rate  * np.cos(np.radians(pa_deg))
     return RA, DEC #mili arcsec per sec
 
-def magnitude_calc(zero_point_magnitude, flux_circle_counts, aperture_radius_pixels, sky_flux_counts, sky_aperture_pixels, exp_time_s):
+def magnitude_calc(zero_point_magnitude, flux_circle_counts, aperture_radius_pixels, sky_flux_counts, exp_time_s):
     #flux is flux_circle - sky_value* area
     flux_counts = flux_circle_counts - (aperture_radius_pixels**2 * np.pi * sky_flux_counts)
     M = zero_point_magnitude - (2.5*np.log10(flux_counts)) - (2.5 * np.log10(exp_time_s))
