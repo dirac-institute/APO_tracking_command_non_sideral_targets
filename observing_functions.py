@@ -105,6 +105,11 @@ def append_zeros_end(number_str,required_spaces):
             number_str += zero
     return number_str
 
+def a_slope(g, g_unc, r, r_unc, i, i_unc):
+    a = (0.89*(g -r)) + (0.45 * (r -i)) - 0.57
+    a_unc = (np.sqrt(g_unc**2 + r_unc**2) * 0.89) + (np.sqrt(r_unc**2 + i_unc**2) * 0.45)
+    return a, a_unc
+
 def cal_date_to_mjd(year,month,date):
     return sla.sla_caldj(year,month,date)[0]
 

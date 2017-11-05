@@ -271,21 +271,18 @@ for qq in range(0,len(start_stop)):
 
 
 '''
-#fix date obs
+g = 25.51
+g_unc = 0.11
+r = 24.22
+r_unc = 0.12
+i = 24.15
+i_unc = 0.20
 
-files1 = glob.glob(os.path.join(output_directory, "*r_stacked_asteroid*.fits"))
-files2 = glob.glob(os.path.join(output_directory, "*r_stacked_stars*.fits"))
+a_slope = 
 
 
-for i in range (0, len(files1)):
-    print files1[i], files2
-    datfile1 = pyfits.getdata(files1[i], header=True)
-    dat_raw1 = datfile1[0]#[::-1,:] #must flip data then flip back
-    dat_head1 = datfile1[1]
-    datfile2 = pyfits.getdata(files2[i], header=True)
-    dat_raw2 = datfile2[0]#[::-1,:] #must flip data then flip back
-    dat_head2 = datfile2[1]
-    dat_head1['DATE-OBS'] = dat_head2['DATE-OBS']
-    pyfits.writeto(files1[i],dat_raw1.astype(np.float32),overwrite=True,header=dat_head1)
+
+
+
 
 '''
