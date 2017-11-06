@@ -186,6 +186,49 @@ def magnitude_calc(zero_point_magnitude, flux_circle_counts, aperture_radius_pix
     M = zero_point_magnitude - (2.5*np.log10(flux_counts)) - (2.5 * np.log10(exp_time_s))
     return M
 
+def magnitude_loss_filter_mean_S_C_taxonomy_ugrizyw_lsst(filter_string):
+    '''
+    V_minus_u = -1.7705
+    V_minus_g = -0.349
+    V_minus_r = 0.214
+    V_minus_i = 0.373
+    V_minus_z = 0.350
+    V_minus_y = 0.355
+    V-w is 0.16
+    '''
+    #dictonary takes name of filter and gives mean
+    V_minus_filter = {'u':-1.7705,'g':-0.349,'r':0.214,'i':0.373,'z':0.350,'y':0.355, 'w':0.16}
+    return V_minus_filter[filter_string]
+
+def magnitude_loss_filter_mean_solar(filter_string):
+    '''
+    #V-G for sun is 0.212, V-R for sun is 0.363, V-w is 0.16, V-r is 0.23
+    V-G = 0.212
+    V-Rc = 0.363
+    V-Ic = 0.713
+    '''
+    #dictonary takes name of filter and gives mean
+    V_minus_filter = {'G':0.212,'R':0.363,'I':0.713}
+    return V_minus_filter[filter_string]
+
+def magnitude_loss_filter_mean_S_C_taxonomy_ugrizywGRI_lsst(filter_string):
+    '''
+    V_minus_u = -1.7705
+    V_minus_g = -0.349
+    V_minus_r = 0.214
+    V_minus_i = 0.373
+    V_minus_z = 0.350
+    V_minus_y = 0.355
+    V-w is 0.16
+    V-G = 0.212
+    V-Rc = 0.363
+    V-Ic = 0.713
+    '''
+    #dictonary takes name of filter and gives mean
+    V_minus_filter = {'u':-1.7705,'g':-0.349,'r':0.214,'i':0.373,'z':0.350,'y':0.355, 'w':0.16,'G':0.212,'R':0.363,'I':0.713}
+    return V_minus_filter[filter_string]
+
+
 def M_anom_and_mean_motion_to_time_of_peri(M,n,epoch_mjd_ut): #both M and n are in degrees and degrees/day.
     if M > 180:
         time_peri = epoch_mjd_ut - ((M - 360.) / n)
