@@ -259,39 +259,11 @@ ax1 = fig.add_subplot(111)
 ax1.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5)
 ax1.plot(phase_fit, y_fit, color='black')
 ax1.invert_yaxis()
-ax1.set(xlabel='phase', ylabel='magnitude', title='phased data at period={0:.2f} hrs'.format((1/best_frequency)*24.))
+ax1.set(xlabel='phase', ylabel='magnitude', title='phased data at period={0:.2f} hrs'.format((1/best_frequency)*24.*2.0))
 plt.show()
 plt.savefig('APO_DCT_combined_phased_data_2017_10_29_to_30.png')
 
-#double peaked
-minimum_frequency = 1.0
-maximum_frequency=40.
-frequency, power = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).autopower(samples_per_peak=1000, minimum_frequency = minimum_frequency, maximum_frequency=maximum_frequency)
 
-best_frequency = frequency[np.argmax(power)]*0.5 #need half frequency beacuse doubly peaked lightcurve
-t_fit = np.linspace(0, 0.5,len(DCTAPO_date_MJD))
-y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t_fit, best_frequency) #need half frequency beacuse doubly peaked lightcurve
-
-best_frequency = frequency[np.argmax(power)]
-phase_fit = np.linspace(0, 1)
-y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_fit / best_frequency,
-                                    frequency=best_frequency)
-phase = (DCTAPO_date_MJD * best_frequency) % 1
-
-line_width = 2.5
-mult = 1.2
-paperheight = 6.5*1.15
-paperwidth = 9.5*1.15
-margin = 0.5
-#plt.ion()
-fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
-ax1 = fig.add_subplot(111)
-ax1.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5)
-ax1.plot(phase_fit, y_fit, color='black')
-ax1.invert_yaxis()
-ax1.set(xlabel='phase', ylabel='magnitude', title='phased data at period={0:.2f} hrs'.format((1/best_frequency)*24.))
-plt.show()
-plt.savefig('APO_DCT_combined_phased_data_2017_10_29_to_30.png')
 
 #matplotlib.pyplot.close("all")
 
