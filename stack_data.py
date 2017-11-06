@@ -20,6 +20,10 @@ sample execution:
 
 ipython -i -- stack_data.py -dd reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -od reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/stacked_frames/ -sf object_stars_positions -cd reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/centered_frames/
 
+
+ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/reduced/data/ -od /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/reduced/data/stacked_frames/ -sf object_stars_positions2 -cd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/reduced/data/centered_frames/
+
+
 file info:
 
 gethead FILTER *fits |grep asteroid | grep "SDSS r" | awk '{print $'1'}' | xargs -n 1 gethead DATE-OBS
@@ -72,7 +76,7 @@ for ff,fname in enumerate(files):
     image_data_frame['filter'][ff] = pyfits.open(fits_file_name)[0].header['FILTER']
     image_data_frame['date_obs'][ff] = cal_date_fits_format_to_mjd(pyfits.open(fits_file_name)[0].header['DATE-OBS'])
     #create centered_star_frames
-    '''
+
     x_pos, y_pos = image_data_frame.ix[ff,['star_x', 'star_y']]
     centered_frame, dat_head = create_frame_for_stacking(fits_file_name, int(x_pos), int(y_pos))
     centered_name = fits_file_name.replace('.fits','_centered_stars.fits')
@@ -84,8 +88,9 @@ for ff,fname in enumerate(files):
     centered_name = fits_file_name.replace('.fits','_centered_asteroid.fits')
     pyfits.writeto(centered_name,centered_frame.astype(np.float32),overwrite=True,header=dat_head)
     os.system('mv '+ centered_name + ' ' + center_directory)
-    '''
 
+
+'''
 
 #i frames
 
@@ -273,7 +278,7 @@ for qq in range(0,len(start_stop)):
     dat_head['EXPTIME'] = time_s.sum()
     dat_head['DATE-OBS'] = np.mean(dates_mjd)
     pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
-
+'''
 
 
 '''
