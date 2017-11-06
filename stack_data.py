@@ -67,7 +67,6 @@ image_data_frame['filter'] = pd.Series("", index=image_data_frame.index)
 image_data_frame['date_obs'] = pd.Series("", index=image_data_frame.index)
 
 
-
 #uncomment to center images
 for ff,fname in enumerate(files):
     #if ff >59 and ff < 70:
@@ -77,20 +76,7 @@ for ff,fname in enumerate(files):
     image_data_frame['date_obs'][ff] = cal_date_fits_format_to_mjd(pyfits.open(fits_file_name)[0].header['DATE-OBS'])
     #create centered_star_frames
 
-    x_pos, y_pos = image_data_frame.ix[ff,['star_x', 'star_y']]
-    centered_frame, dat_head = create_frame_for_stacking(fits_file_name, int(x_pos), int(y_pos))
-    centered_name = fits_file_name.replace('.fits','_centered_stars.fits')
-    pyfits.writeto(centered_name,centered_frame.astype(np.float32),overwrite=True,header=dat_head)
-    os.system('mv '+ centered_name + ' ' + center_directory)
-    #create centered asteroid frames
-    x_pos, y_pos = image_data_frame.ix[ff,['ast_x', 'ast_y']]
-    centered_frame, dat_head = create_frame_for_stacking(fits_file_name, int(x_pos), int(y_pos))
-    centered_name = fits_file_name.replace('.fits','_centered_asteroid.fits')
-    pyfits.writeto(centered_name,centered_frame.astype(np.float32),overwrite=True,header=dat_head)
-    os.system('mv '+ centered_name + ' ' + center_directory)
 
-
-'''
 
 #i frames
 
@@ -210,7 +196,6 @@ dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
 pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
 
-
 #r frames
 
 fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['fname'].tolist())
@@ -229,6 +214,7 @@ filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.ope
 
 
 start_stop = np.array([[51,45],[45,41],[41,39],[39,37],[37,35],[35,33],[33,31],[31,29],[29,25],[25,21],[21,15],[15,0]])
+#start_stop = np.array([[6,0]])
 for qq in range(0,len(start_stop)):
 #for qq in range(0,1):
     stop, start = start_stop[qq]
@@ -278,7 +264,7 @@ for qq in range(0,len(start_stop)):
     dat_head['EXPTIME'] = time_s.sum()
     dat_head['DATE-OBS'] = np.mean(dates_mjd)
     pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
-'''
+
 
 
 '''
