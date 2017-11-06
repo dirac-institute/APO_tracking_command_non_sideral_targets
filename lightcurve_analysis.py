@@ -199,4 +199,77 @@ combined_date = np.append(np.append(APO_date,DCT_date,axis=0), MPC_date,axis=0)
 combined_string_sort = combined_string[np.argsort(combined_date)]
 for i in range(0,len(combined_string_sort)):
     print(combined_string_sort[i,0], combined_string_sort[i,1], combined_string_sort[i,2], combined_string_sort[i,3])
-afdfds
+
+
+from astropy.stats import LombScargle
+
+#combine DCT + APO
+DCTAPO_date_MJD_mag_mag_unc = np.loadtxt('APO_DCT_A2017U1_2017_10_30_date_mjd_mag_r_mag_unc_obs_code.txt',usecols=(0,1,2))
+DCTAPO_date_MJD = DCTAPO_date_MJD_mag_mag_unc[:,0]
+DCTAPO_mag = DCTAPO_date_MJD_mag_mag_unc[:,1]
+DCTAPO_mag_unc = DCTAPO_date_MJD_mag_mag_unc[:,2]
+
+from astropy.table import Table
+t = Table([DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc], names=('time', 'mag', 'unc'))
+t.write('APO_DCT_A2017U1_2017_10_30_date_mjd_mag_r_mag_unc_obs_code.fits', format='fits')
+
+minimum_frequency = 1.0
+maximum_frequency=40.
+frequency, power = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).autopower(samples_per_peak=1000, minimum_frequency = minimum_frequency, maximum_frequency=maximum_frequency)
+
+line_width = 2.5
+mult = 1.2
+paperheight = 6.5*1.15
+paperwidth = 9.5*1.15
+margin = 0.5
+#plt.ion()
+fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
+#plt.plot(((1.0/frequencies) * 2.0 * np.pi)/3600., periodigram)
+#plt.plot(frequencies, periodigram)
+plt.semilogx((1.0/frequency) *24.,power)
+plt.ylabel(r'$\mathrm{Power}$')
+plt.xlabel(r'$\mathrm{Period \; (h)}$')
+plt.xlim((1/maximum_frequency)*24,(1/minimum_frequency)*24)
+plt.show()
+plt.savefig('APO_DCT_combined_power_spectrum_2017_10_29_to_30.png')
+
+
+best_frequency = frequency[np.argmax(power)]
+t_fit = np.linspace(0, 1)
+y_fit = LombScargle(t, y, dy).model(t_fit, best_frequency)
+
+#combine DCT + APO + MPC LombScargle
+
+DCTAPOMPC_date_MJD_mag_mag_unc = np.loadtxt('DCT_APO_MPC_combined_2017_10_30_date_mjd_mag_r_mag_unc_obs_code.txt',usecols=(0,1,2))
+DCTAPOMPC_date_MJD = DCTAPOMPC_date_MJD_mag_mag_unc[:,0]
+DCTAPOMPC_mag = DCTAPOMPC_date_MJD_mag_mag_unc[:,1]
+DCTAPOMPC_mag_unc = DCTAPOMPC_date_MJD_mag_mag_unc[:,2]
+
+from astropy.table import Table
+t = Table([DCTAPOMPC_date_MJD, DCTAPOMPC_mag, DCTAPOMPC_mag_unc], names=('time', 'mag', 'unc'))
+t.write('DCT_APO_MPC_combined_2017_10_30_date_mjd_mag_r_mag_unc_obs_code.fits', format='fits')
+
+frequency, power = LombScargle(t, y, dy).autopower(minimum_frequency=0.1, maximum_frequency=1.9, samples_per_peak=1000)
+
+best_frequency = frequency[np.argmax(power)]
+t_fit = np.linspace(0, 1)
+y_fit = LombScargle(t, y, dy).model(t_fit, best_frequency)
+
+
+frequency, power = LombScargle(time_seconds, mag).autopower(samples_per_peak=100)
+
+line_width = 2.5
+mult = 1.2
+paperheight = 6.5*1.15
+paperwidth = 9.5*1.15
+margin = 0.5
+#plt.ion()
+fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
+#plt.plot(((1.0/frequencies) * 2.0 * np.pi)/3600., periodigram)
+#plt.plot(frequencies, periodigram)
+plt.plot(((1.0/frequency))/3600.,power)
+plt.ylabel(r'$\mathrm{Power}$')
+plt.xlabel(r'$\mathrm{Period \; (h)}$')
+plt.xlim(3.14202585*.33333,23)
+plt.show()
+plt.savefig('APO_DCT_MPC_combined_power_spectrum_2017_10_14_to_30.png')
