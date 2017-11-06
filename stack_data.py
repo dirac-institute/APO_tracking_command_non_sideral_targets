@@ -286,5 +286,56 @@ i_unc = 0.23
 a_slope(g, g_unc, r, r_unc, i, i_unc)
 
 
+Fix yan's flats:
+
+datfile = pyfits.getdata('/Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171029/skyflat_r.0099.fits', header=True)
+dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
+dat_head1 = datfile[1]
+
+datfile = pyfits.getdata('/Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/illum-2017U1-r-frm51to72.fits', header=True)
+dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
+dat_head2 = dat_head1
+
+# ll, ul, lr, ur
+quads = ['DSEC11', 'DSEC21', 'DSEC12', 'DSEC22']
+
+dat = [[],[],[],[]]
+for i,quad in enumerate(quads):
+    idx_string = pyfits.open('/Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171029/skyflat_r.0099.fits')[0].header[quad]
+    idx = re.split('[: ,]',idx_string.rstrip(']').lstrip('['))
+    dat[i] = dat_raw[int(idx[2])-1:int(idx[3]),int(idx[0])-1:int(idx[1])]
+
+sci_lo = np.concatenate((dat[2], dat[3]), axis = 1)
+sci_up = np.concatenate((dat[0], dat[1]), axis = 1)
+sci = np.concatenate((sci_up, sci_lo), axis = 0)
+
+pyfits.writeto('/Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/illum-2017U1-r-frm51to72_fixed.fits',sci.astype(np.float32),overwrite=True,header=dat_head1)
+
+
+
+datfile = pyfits.getdata('/Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171029/skyflat_r.0099.fits', header=True)
+dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
+dat_head1 = datfile[1]
+
+datfile = pyfits.getdata('/Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/flat-r.fits', header=True)
+dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
+dat_head2 = dat_head1
+
+# ll, ul, lr, ur
+quads = ['DSEC11', 'DSEC21', 'DSEC12', 'DSEC22']
+
+dat = [[],[],[],[]]
+for i,quad in enumerate(quads):
+    idx_string = pyfits.open('/Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171029/skyflat_r.0099.fits')[0].header[quad]
+    idx = re.split('[: ,]',idx_string.rstrip(']').lstrip('['))
+    dat[i] = dat_raw[int(idx[2])-1:int(idx[3]),int(idx[0])-1:int(idx[1])]
+
+sci_lo = np.concatenate((dat[2], dat[3]), axis = 1)
+sci_up = np.concatenate((dat[0], dat[1]), axis = 1)
+sci = np.concatenate((sci_up, sci_lo), axis = 0)
+
+pyfits.writeto('/Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/flat-r_fixed.fits',sci.astype(np.float32),overwrite=True,header=dat_head1)
+
+
 
 '''

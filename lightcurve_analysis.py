@@ -282,8 +282,8 @@ DCTAPO_mag_unc = DCTAPO_date_MJD_mag_mag_unc[:,2]
 
 t = np.linspace(0, DCTAPO_date_MJD[-1]-DCTAPO_date_MJD[0],10000.)
 Amplitude = 2
-offset = 0.5
-y = (Amplitude * 0.5* np.sin((2*np.pi*t*best_frequency)+offset)) +np.median(DCTAPO_mag)
+offset = -2.4
+y = (Amplitude * 0.5* np.sin((2*np.pi*t*best_frequency*1.1)+offset)) +np.median(DCTAPO_mag)
 
 line_width = 2.5
 mult = 1.2
@@ -298,8 +298,6 @@ plt.xlabel(r'$\mathrm{\mathrm{Time \; of \; observation \; (MJD)}}$')
 plt.ylabel(r'$r \; \mathrm{Magnitude}$')
 plt.show()
 plt.savefig('APO_DCT_combined_lightcurve_2017_10_29_to_30.png')
-
-
 
 #matplotlib.pyplot.close("all")
 
