@@ -233,20 +233,28 @@ plt.xlim((1/maximum_frequency)*24,(1/minimum_frequency)*24)
 plt.show()
 plt.savefig('APO_DCT_combined_power_spectrum_2017_10_29_to_30.png')
 
-best_frequency = frequency[np.argmax(power)]*0.5 #need half frequency beacuse doubly peaked lightcurve
+
+minimum_frequency = 1.0
+maximum_frequency=40.
+frequency, power = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).autopower(samples_per_peak=1000, minimum_frequency = minimum_frequency, maximum_frequency=maximum_frequency)
+
+best_frequency = frequency[np.argmax(power)] #need half frequency beacuse doubly peaked lightcurve
 t_fit = np.linspace(0, 0.5,len(DCTAPO_date_MJD))
 y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t_fit, best_frequency) #need half frequency beacuse doubly peaked lightcurve
 
-
+best_frequency = frequency[np.argmax(power)]*1.0
+phase_fit = np.linspace(0, 1)
+y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_fit / best_frequency,
+                                    frequency=best_frequency)
 phase = (DCTAPO_date_MJD * best_frequency) % 1
 
 fig, ax = plt.subplots(figsize=(6, 4.5))
-ax.errorbar(phase, DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5)
-ax.plot(phase, y_fit, color='black')
+ax.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5)
+ax.plot(phase_fit, y_fit, color='black')
 ax.invert_yaxis()
 ax.set(xlabel='phase',
        ylabel='magnitude',
-       title='phased data at frequency={0:.2f}'.format(best_frequency))
+       title='phased data at period={0:.2f} hrs'.format((1/best_frequency)*24.))
 
 
 #matplotlib.pyplot.close("all")
@@ -258,6 +266,9 @@ y = np.sin(2 * np.pi * t) + dy * rand.randn(100)
 
 frequency, power = LombScargle(t, y, dy).autopower(minimum_frequency=0.1,
                                                    maximum_frequency=1.9)
+plt.figure()
+plt.plot(frequency, power)
+
 best_frequency = frequency[np.argmax(power)]
 phase_fit = np.linspace(0, 1)
 y_fit = LombScargle(t, y, dy).model(t=phase_fit / best_frequency,
