@@ -28,7 +28,7 @@ import argparse
 import scipy.signal as signal
 import pyslalib.slalib as sla
 
-
+plt.ion()
 
 lightcurve_mjd_mag_mag_unc = np.loadtxt('A_2017_U1_APO_2017_10_29_lightcurve')
 
@@ -62,7 +62,7 @@ for i in range(0,len(mag)):
 
 from astropy.table import Table
 t = Table([full_times_mjd, mag, mag], names=('time', 'mag', 'unc'))
-t.write('A_2017_U1_APO_DCT_2017_10_29_30_combined_lightcurve.fits', format='fits')
+#t.write('A_2017_U1_APO_DCT_2017_10_29_30_combined_lightcurve.fits', format='fits')
 
 time_seconds = (full_times_mjd - full_times_mjd[0]) * 24 * 3600.
 #longest_period_s = (dct_fulldate_mjd[0]-time_mjd[0])*24*3600.
@@ -315,6 +315,8 @@ ax1.set_xlim(0.99,40.0)
 ax1.legend(loc='upper right',prop={'size':19})
 
 plt.savefig('APO_DCT_combined_phased_data_2017_10_29_to_30_three_periods.eps')
+plt.savefig('APO_DCT_combined_phased_data_2017_10_29_to_30_three_periods.png')
+
 
 #Time vs r' mag
 
@@ -357,15 +359,16 @@ DCTAPO_mag_unc = DCTAPO_date_MJD_mag_mag_unc[:,2]
 t = np.linspace(-2, (DCTAPO_date_MJD[-1]-DCTAPO_date_MJD[0] + (DCTAPO_date_MJD[0]-np.round(DCTAPO_date_MJD[0],2)))*1.5,10000.)*24.0
 Amplitude = 2
 offset = -1.0 * np.pi *1.25
-y = (Amplitude * 0.5* np.sin((2*np.pi*t*(best_frequency/24.)*num_peaks)+offset)) +np.median(DCTAPO_mag)
+y = (Amplitude * 0.5* np.sin((2*np.pi*t*(best_frequency/24.)*num_peaks)+offset)) +np.median(DCTAPO_mag)*0.997
 
-plt.plot(t, y,alpha=0.55, color="grey",linewidth=5.0)
+plt.plot(t, y,alpha=0.55, color="blue",linewidth=5.0)
 plt.errorbar(((DCTAPO_date_MJD-DCTAPO_date_MJD[0] + (DCTAPO_date_MJD[0]-np.round(DCTAPO_date_MJD[0],2))))*24., DCTAPO_mag, yerr=DCTAPO_mag_unc, ecolor='black',capsize=3,capthick=1.25,markeredgecolor='black',markeredgewidth=1.2, linestyle='none')
 plt.xlabel(r'$\mathrm{\mathrm{Time \; from \; MJD \;'+ str(np.round(DCTAPO_date_MJD[0],2))+' \; (hr)}}$')
 plt.ylabel(r'$r \; \mathrm{Magnitude}$')
 plt.xlim(-2.5,30.0)
 plt.show()
 plt.savefig('APO_DCT_phase_combined_lightcurve_2017_10_29_to_30.eps')
+plt.savefig('APO_DCT_phase_combined_lightcurve_2017_10_29_to_30.png')
 
 
 #time vs mag different periods
@@ -443,21 +446,21 @@ best_frequency = frequency[np.argmax(power)]/num_peak
 
 t = np.linspace(-2, (DCTAPO_date_MJD[-1]-DCTAPO_date_MJD[0] + (DCTAPO_date_MJD[0]-np.round(DCTAPO_date_MJD[0],2)))*1.5,10000.)*24.0
 Amplitude = 2
-#offset = -1.0 * np.pi *1.1
-y = (Amplitude * 0.5* np.sin((2*np.pi*t*(best_frequency/24.)*num_peaks)+offset)) +np.median(DCTAPO_mag)*0.995
+offset = -np.pi*1.25
+y = (Amplitude * 0.5* np.sin((2*np.pi*t*(best_frequency/24.)*num_peaks)+offset)) +np.median(DCTAPO_mag)*0.997
 
 plt.plot(t, y,alpha=0.55, color="blue",linewidth=5.0)
 best_frequency1 = 1/test_period_1
 t = np.linspace(-2, (DCTAPO_date_MJD[-1]-DCTAPO_date_MJD[0] + (DCTAPO_date_MJD[0]-np.round(DCTAPO_date_MJD[0],2)))*1.5,10000.)*24.0
 Amplitude = 2
-#offset = -1.0 * np.pi *1.1
-y = (Amplitude * 0.5* np.sin((2*np.pi*t*(best_frequency1/24.)*num_peaks)+offset)) +np.median(DCTAPO_mag)*0.995
+offset = -np.pi*1.25
+y = (Amplitude * 0.5* np.sin((2*np.pi*t*(best_frequency1/24.)*num_peaks)+offset)) +np.median(DCTAPO_mag)*0.997
 plt.plot(t, y,alpha=0.55, color="green",linewidth=5.0)
 best_frequency2 = 1/test_period_2
 t = np.linspace(-2, (DCTAPO_date_MJD[-1]-DCTAPO_date_MJD[0] + (DCTAPO_date_MJD[0]-np.round(DCTAPO_date_MJD[0],2)))*1.5,10000.)*24.0
 Amplitude = 2
-#offset = -1.0 * np.pi *1.1
-y = (Amplitude * 0.5* np.sin((2*np.pi*t*(best_frequency2/24.)*num_peaks)+offset)) +np.median(DCTAPO_mag)*0.995
+offset = -np.pi*1.25
+y = (Amplitude * 0.5* np.sin((2*np.pi*t*(best_frequency2/24.)*num_peaks)+offset)) +np.median(DCTAPO_mag)*0.997
 plt.plot(t, y,alpha=0.55, color="orange",linewidth=5.0)
 plt.errorbar(((DCTAPO_date_MJD-DCTAPO_date_MJD[0] + (DCTAPO_date_MJD[0]-np.round(DCTAPO_date_MJD[0],2))))*24., DCTAPO_mag, yerr=DCTAPO_mag_unc, ecolor='black',capsize=3,capthick=1.25,markeredgecolor='black',markeredgewidth=1.2, linestyle='none')
 plt.xlabel(r'$\mathrm{\mathrm{Time \; from \; MJD \;'+ str(np.round(DCTAPO_date_MJD[0],2))+' \; (hr)}}$')
@@ -465,6 +468,7 @@ plt.ylabel(r'$r \; \mathrm{Magnitude}$')
 plt.xlim(-2.5,30.0)
 plt.show()
 plt.savefig('APO_DCT_phase_combined_lightcurve_2017_10_29_to_30_three_curves.eps')
+plt.savefig('APO_DCT_phase_combined_lightcurve_2017_10_29_to_30_three_curves.png')
 
 
 #matplotlib.pyplot.close("all")
