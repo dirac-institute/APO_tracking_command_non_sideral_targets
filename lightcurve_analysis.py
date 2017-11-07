@@ -220,6 +220,7 @@ for i in range(0,len(combined_string_sort)):
     if combined_string_sort[i,3] != '705':
         print(combined_string_sort[i,0], combined_string_sort[i,1], combined_string_sort[i,2], combined_string_sort[i,3])
 
+#periodogram analysis
 
 from astropy.stats import LombScargle
 
@@ -241,6 +242,8 @@ minimum_frequency = 0.5
 maximum_frequency=20.
 frequency, power = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).autopower(samples_per_peak=1000, minimum_frequency = minimum_frequency, maximum_frequency=maximum_frequency)
 
+best_frequency = frequency[np.argmax(power)]/num_peak
+
 line_width = 2.5
 mult = 1.2
 paperheight = 6.5*1.15
@@ -251,6 +254,7 @@ fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
 #plt.plot(((1.0/frequencies) * 2.0 * np.pi)/3600., periodigram)
 #plt.plot(frequencies, periodigram)
 plt.semilogx((1.0/(frequency/num_peak)) *24.,power)
+plt.axvline((1.0/(best_frequency)) *24., color='r', linestyle='-')
 plt.ylabel(r'$\mathrm{Power}$')
 plt.xlabel(r'$\mathrm{Period \; (h)}$')
 plt.xlim((1/(maximum_frequency/num_peak))*24,(1/(minimum_frequency/num_peak))*24)
@@ -273,7 +277,8 @@ phase = (DCTAPO_date_MJD * best_frequency) % 1
 
 t = np.linspace(0, 1.0,1000.)
 Amplitude = 2
-y = (Amplitude * 0.5* np.sin(2 * np.pi * t*num_peak)) +np.median(DCTAPO_mag)
+set_phase = np.pi*1.15
+y = (Amplitude * 0.5* np.sin(2 * np.pi * t*num_peak + set_phase)) +np.median(DCTAPO_mag)
 
 line_width = 2.5
 mult = 1.2
@@ -296,14 +301,15 @@ plt.savefig('APO_DCT_combined_phased_data_2017_10_29_to_30.png')
 
 #Time vs r' mag
 
+num_peaks = 2.0
 DCTAPO_date_MJD = DCTAPO_date_MJD_mag_mag_unc[:,0]
 DCTAPO_mag = DCTAPO_date_MJD_mag_mag_unc[:,1]
 DCTAPO_mag_unc = DCTAPO_date_MJD_mag_mag_unc[:,2]
 
-t = np.linspace(0, DCTAPO_date_MJD[-1]-DCTAPO_date_MJD[0],10000.)
+t = np.linspace(-2, (DCTAPO_date_MJD[-1]-DCTAPO_date_MJD[0])*1.5,10000.)
 Amplitude = 2
-offset = -2.4
-y = (Amplitude * 0.5* np.sin((2*np.pi*t*best_frequency*1.1)+offset)) +np.median(DCTAPO_mag)
+offset = -1.0 * np.pi *1.25
+y = (Amplitude * 0.5* np.sin((2*np.pi*t*best_frequency*num_peaks)+offset)) +np.median(DCTAPO_mag)
 
 line_width = 2.5
 mult = 1.2
@@ -312,10 +318,11 @@ paperwidth = 9.5*1.15
 margin = 0.5
 #plt.ion()
 fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
+plt.plot(t, y,alpha=0.55, color="grey",linewidth=5.0)
 plt.errorbar(DCTAPO_date_MJD-DCTAPO_date_MJD[0], DCTAPO_mag, yerr=DCTAPO_mag_unc, ecolor='black',capsize=3,capthick=1.25,markeredgecolor='black',markeredgewidth=1.2, linestyle='none')
-plt.plot(t, y, color='black')
 plt.xlabel(r'$\mathrm{\mathrm{Time \; of \; observation \; (MJD)}}$')
 plt.ylabel(r'$r \; \mathrm{Magnitude}$')
+plt.xlim(-.05,1.15)
 plt.show()
 plt.savefig('APO_DCT_combined_lightcurve_2017_10_29_to_30.png')
 

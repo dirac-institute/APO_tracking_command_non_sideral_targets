@@ -26,6 +26,8 @@ ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata
 ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/ -od /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/reduced/data/stacked_frames/ -sf object_stars_positions3 -cd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/centered_frames/ -od /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/stacked_frames/
 
 
+ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/ -od /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/reduced/data/stacked_frames/ -sf object_stars_positions4 -cd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/centered_frames/ -od /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/stacked_frames/
+
 
 file info:
 
@@ -234,7 +236,7 @@ filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.ope
 
 #start_stop = np.array([[51,45],[45,41],[41,39],[39,37],[37,35],[35,33],[33,31],[31,29],[29,25],[25,21],[21,15],[15,0]])
 #start_stop = np.array([[8,0]])
-start_stop = np.array([[8,6]])
+start_stop = np.array([[3,0]])
 for qq in range(0,len(start_stop)):
 #for qq in range(0,1):
     stop, start = start_stop[qq]

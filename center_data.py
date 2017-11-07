@@ -21,6 +21,7 @@ ipython -i -- center_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdat
 
 ipython -i -- center_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/ -cd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/centered_frames/ -sf object_stars_positions3
 
+ipython -i -- center_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/ -cd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/centered_frames/ -sf object_stars_positions4
 
 
 file info:
