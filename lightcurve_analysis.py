@@ -220,12 +220,13 @@ for i in range(0,len(combined_string_sort)):
     if combined_string_sort[i,3] != '705':
         print(combined_string_sort[i,0], combined_string_sort[i,1], combined_string_sort[i,2], combined_string_sort[i,3])
 
+
 #periodogram analysis
 
 from astropy.stats import LombScargle
 
+#Test periods combine with periodogram
 
-#double peak
 num_peak = 2.0
 
 #combine DCT + APO
@@ -234,9 +235,57 @@ DCTAPO_date_MJD = DCTAPO_date_MJD_mag_mag_unc[:,0]
 DCTAPO_mag = DCTAPO_date_MJD_mag_mag_unc[:,1]
 DCTAPO_mag_unc = DCTAPO_date_MJD_mag_mag_unc[:,2]
 
-from astropy.table import Table
-t = Table([DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc], names=('time', 'mag', 'unc'))
-#t.write('APO_DCT_A2017U1_2017_10_30_date_mjd_mag_r_mag_unc_obs_code.fits', format='fits')
+#plt.ion()
+test_period_1 = 6.826/24.
+test_period_2 = 9.97/24
+
+line_width = 2.5
+mult = 1.2
+paperheight = 6.5*1.75
+paperwidth = 9.5*1.75
+margin = 0.5
+
+fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
+ax1 = fig.add_subplot(2,1,1)
+
+
+minimum_frequency = 1.0
+maximum_frequency=40.
+frequency, power = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).autopower(samples_per_peak=1000, minimum_frequency = minimum_frequency, maximum_frequency=maximum_frequency)
+
+num_peak = 2.0
+best_frequency = frequency[np.argmax(power)]/num_peak
+phase_fit = np.linspace(0, num_peak)
+y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_fit / (best_frequency),
+                                    frequency=best_frequency)
+phase = (DCTAPO_date_MJD * best_frequency) % 1
+ax1.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5)
+
+best_frequency = 1/test_period_1
+phase_fit = np.linspace(0, num_peak)
+y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_fit / (best_frequency),
+                                    frequency=best_frequency)
+phase = (DCTAPO_date_MJD * best_frequency) % 1
+ax1.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5)
+
+best_frequency = 1/test_period_2
+phase_fit = np.linspace(0, num_peak)
+y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_fit / (best_frequency),
+                                    frequency=best_frequency)
+phase = (DCTAPO_date_MJD * best_frequency) % 1
+ax1.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5)
+
+t = np.linspace(0, 1.0,1000.)
+Amplitude = 2
+set_phase = np.pi*1.15
+y = (Amplitude * 0.5* np.sin(2 * np.pi * t*num_peak + set_phase)) +np.median(DCTAPO_mag)
+ax1.plot(t, y, color='black')
+ax1.invert_yaxis()
+ax1.set(xlabel=r'$\mathrm{Phase}$', ylabel=r'$\mathrm{Magnitude}$')
+#plt.title(r'$\mathrm{Phased \; data \;  at \; period:\; '+ str(np.round((1/best_frequency)*24,2))+'\;  h}$')
+plt.gca().invert_yaxis()
+
+ax1 = fig.add_subplot(2,1,2)
 
 minimum_frequency = 0.5
 maximum_frequency=20.
@@ -250,100 +299,18 @@ paperheight = 6.5*1.15
 paperwidth = 9.5*1.15
 margin = 0.5
 #plt.ion()
-fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
 #plt.plot(((1.0/frequencies) * 2.0 * np.pi)/3600., periodigram)
 #plt.plot(frequencies, periodigram)
-plt.semilogx((1.0/(frequency/num_peak)) *24.,power)
-plt.axvline((1.0/(best_frequency)) *24., color='r', linestyle='-')
-plt.ylabel(r'$\mathrm{Power}$')
-plt.xlabel(r'$\mathrm{Period \; (h)}$')
-plt.xlim((1/(maximum_frequency/num_peak))*24,(1/(minimum_frequency/num_peak))*24)
-plt.show()
-plt.savefig('APO_DCT_combined_power_spectrum_2017_10_29_to_30.png')
+ax1.semilogx((1.0/(frequency/num_peak)) *24.,power,color='grey')
+ax1.axvline((1.0/(best_frequency)) *24., color='blue', linestyle='-')
+best_frequency = 1/test_period_1
+ax1.axvline((1.0/(best_frequency)) *24., color='orange', linestyle='-')
+best_frequency = 1/test_period_2
+ax1.axvline((1.0/(best_frequency)) *24., color='green', linestyle='-')
 
-
-
-#double peak
-
-#plt.ion()
-fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
-ax1 = fig.add_subplot(111)
-
-minimum_frequency = 1.0
-maximum_frequency=40.
-frequency, power = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).autopower(samples_per_peak=1000, minimum_frequency = minimum_frequency, maximum_frequency=maximum_frequency)
-
-num_peak = 2.0
-best_frequency = frequency[np.argmax(power)]/num_peak
-phase_fit = np.linspace(0, num_peak)
-y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_fit / (best_frequency),
-                                    frequency=best_frequency)
-phase = (DCTAPO_date_MJD * best_frequency) % 1
-
-t = np.linspace(0, 1.0,1000.)
-Amplitude = 2
-set_phase = np.pi*1.15
-y = (Amplitude * 0.5* np.sin(2 * np.pi * t*num_peak + set_phase)) +np.median(DCTAPO_mag)
-
-line_width = 2.5
-mult = 1.2
-paperheight = 6.5*1.15
-paperwidth = 9.5*1.15
-margin = 0.5
-ax1.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5)
-#ax1.plot(phase_fit[::-1]/num_peak, y_fit, color='black')
-ax1.plot(t, y, color='black')
-ax1.invert_yaxis()
-ax1.set(xlabel=r'$\mathrm{Phase}$', ylabel=r'$\mathrm{Magnitude}$')
-plt.title(r'$\mathrm{Phased \; data \;  at \; period:\; '+ str(np.round((1/best_frequency)*24,2))+'\;  h}$')
-plt.gca().invert_yaxis()
-plt.show()
-plt.savefig('APO_DCT_combined_phased_data_2017_10_29_to_30.png')
-
-
-
-#double peak
-#period = 9.97 hrs
-#plt.ion()
-fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
-ax1 = fig.add_subplot(111)
-
-
-minimum_frequency = 1.0
-maximum_frequency=40.
-frequency, power = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).autopower(samples_per_peak=1000, minimum_frequency = minimum_frequency, maximum_frequency=maximum_frequency)
-
-num_peak = 2.0
-best_frequency = frequency[np.argmax(power)]/num_peak
-#best_frequency = 1/test_period
-phase_fit = np.linspace(0, num_peak)
-y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_fit / (best_frequency),
-                                    frequency=best_frequency)
-phase = (DCTAPO_date_MJD * best_frequency) % 1
-
-t = np.linspace(0, 1.0,1000.)
-Amplitude = 2
-set_phase = np.pi*1.15
-y = (Amplitude * 0.5* np.sin(2 * np.pi * t*num_peak + set_phase)) +np.median(DCTAPO_mag)
-
-line_width = 2.5
-mult = 1.2
-paperheight = 6.5*1.15
-paperwidth = 9.5*1.15
-margin = 0.5
-ax1.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5)
-#ax1.plot(phase_fit[::-1]/num_peak, y_fit, color='black')
-ax1.plot(t, y, color='black')
-ax1.invert_yaxis()
-ax1.set(xlabel=r'$\mathrm{Phase}$', ylabel=r'$\mathrm{Magnitude}$')
-plt.title(r'$\mathrm{Phased \; data \;  at \; period:\; '+ str(np.round((1/best_frequency)*24,2))+'\;  h}$')
-plt.gca().invert_yaxis()
-plt.show()
+ax1.set(xlabel=r'$\mathrm{Power}$', ylabel=r'$\mathrm{Period \; (h)}$')
+ax1.set_xlim((1/(maximum_frequency/num_peak))*24,(1/(minimum_frequency/num_peak))*24)
 plt.savefig('APO_DCT_combined_phased_data_2017_10_29_to_30_three_periods.png')
-
-test_period_1 = 6.826/24.
-test_period_2 = 8.14/24.
-test_period_3 = 9.97/24
 
 #Time vs r' mag
 
