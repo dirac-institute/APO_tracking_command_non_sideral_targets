@@ -17,10 +17,10 @@ import glob
 '''
 sample execution: 
 
-ipython -i -- center_data.py -dd reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -od reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/stacked_frames/ -sf object_stars_positions -cd reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/centered_frames/
+ipython -i -- center_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/reduced/data/ -cd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/reduced/data/centered_frames/ -sf object_stars_positions2
 
+ipython -i -- center_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/ -cd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/centered_frames/ -sf object_stars_positions3
 
-ipython -i -- center_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/reduced/data/ -od /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/reduced/data/stacked_frames/ -sf object_stars_positions2 -cd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/reduced/data/centered_frames/
 
 
 file info:
@@ -32,16 +32,13 @@ gethead FILTER *fits |grep asteroid | grep "SDSS r" | awk '{print $'1'}' | xargs
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-dd", "--data_directory", help="directory for the storage of data.", nargs='*')
-parser.add_argument("-od", "--output_directory", help="directory for the storage of stacked data", nargs='*')
 parser.add_argument("-cd", "--center_directory", help="directory for the storage of centered data", nargs='*')
-parser.add_argument("-sf", "--stack_file", help="text file containing file name, object x,y, ref star x,y", nargs='*')
 #parser.add_argument("-af","--argument_file", type=open, action=LoadFromFile)
+parser.add_argument("-sf", "--stack_file", help="text file containing file name, object x,y, ref star x,y", nargs='*')
 args = parser.parse_args()
 
 data_directory = args.data_directory[0]
 center_directory = args.center_directory[0]
-center_directory = args.center_directory[0]
-output_directory = args.output_directory[0]
 stack_file = args.stack_file[0]
 
 files = np.loadtxt(stack_file,usecols=(0,),dtype='string')

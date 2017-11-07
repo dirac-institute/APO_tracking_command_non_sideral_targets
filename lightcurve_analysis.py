@@ -39,16 +39,20 @@ apo_mag = lightcurve_mjd_mag_mag_unc[:,1]
 apo_mag_unc = lightcurve_mjd_mag_mag_unc[:,2]
 
 #DCT lightcurve
-lightcurve_hours_mag = np.loadtxt('A_2017_U1_DCT_2017_10_29_lightcurve')
+lightcurve_hours_mag = np.loadtxt('A_2017_U1_DCT_2017_10_30_lightcurve')
 
 dct_date_MJD = cal_date_to_mjd(2017,10,30)
 DCT_2017_10_30_hours = lightcurve_hours_mag[:,0]
 dct_fulldate_mjd = dct_date_MJD + (DCT_2017_10_30_hours/24.)
 dct_fulldate_seconds = (dct_fulldate_mjd - time_mjd[0]) * 3600*24
 dct_mag = lightcurve_hours_mag[:,1]
-dct_mag_unc = dct_mag*0.01
+dct_mag_unc = lightcurve_hours_mag[:,2]
 
-mag = np.append(apo_mag,dct_mag-0.2)#normalize to 2017-10-29 UTC for purpose of publication
+print ("Date (MJD) Magnitude r' Magnitude uncertainty")
+for i in range(0,len(dct_fulldate_mjd)):
+    print (dct_fulldate_mjd[i], dct_mag[i], dct_mag_unc[i])
+
+mag = np.append(apo_mag+0.2,dct_mag)#normalized APO mags to 10/30
 mag_unc = np.append(apo_mag_unc,dct_mag_unc)
 full_times_mjd = np.append(time_mjd, dct_fulldate_mjd)
 
@@ -193,6 +197,18 @@ DCT_date = np.loadtxt('DCT_A2017U1_2017_10_30_date_mjd_mag_r_mag_unc_obs_code.tx
 MPC_string = np.loadtxt('MPC_A2017U1_2017_10_30_date_mjd_mag_r_mag_unc_obs_code.txt',usecols=(0,1,2,3),dtype='string')
 MPC_date = np.loadtxt('MPC_A2017U1_2017_10_30_date_mjd_mag_r_mag_unc_obs_code.txt',usecols=(0))
 
+#DCT + APO
+
+combined_string = np.append(APO_string, DCT_string,axis=0)
+combined_date = np.append(APO_date,DCT_date,axis=0)
+
+combined_string_sort = combined_string[np.argsort(combined_date)]
+for i in range(0,len(combined_string_sort)):
+    if combined_string_sort[i,3] == '705': #normalize brightness to 2017-10-30
+        print(combined_string_sort[i,0], combined_string_sort[i,1]+0.2, combined_string_sort[i,2], combined_string_sort[i,3])
+    print(combined_string_sort[i,0], combined_string_sort[i,1], combined_string_sort[i,2], combined_string_sort[i,3])
+
+#DCT + APO + MPC
 combined_string = np.append(np.append(APO_string, DCT_string,axis=0),MPC_string, axis=0)
 combined_date = np.append(np.append(APO_date,DCT_date,axis=0), MPC_date,axis=0)
 
