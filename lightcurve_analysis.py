@@ -205,8 +205,9 @@ combined_date = np.append(APO_date,DCT_date,axis=0)
 combined_string_sort = combined_string[np.argsort(combined_date)]
 for i in range(0,len(combined_string_sort)):
     if combined_string_sort[i,3] == '705': #normalize brightness to 2017-10-30
-        print(combined_string_sort[i,0], combined_string_sort[i,1]+0.2, combined_string_sort[i,2], combined_string_sort[i,3])
-    print(combined_string_sort[i,0], combined_string_sort[i,1], combined_string_sort[i,2], combined_string_sort[i,3])
+        print(combined_string_sort[i,0], str(float(combined_string_sort[i,1])+0.2), combined_string_sort[i,2], combined_string_sort[i,3])
+    if combined_string_sort[i,3] != '705':
+        print(combined_string_sort[i,0], combined_string_sort[i,1], combined_string_sort[i,2], combined_string_sort[i,3])
 
 #DCT + APO + MPC
 combined_string = np.append(np.append(APO_string, DCT_string,axis=0),MPC_string, axis=0)
@@ -214,7 +215,10 @@ combined_date = np.append(np.append(APO_date,DCT_date,axis=0), MPC_date,axis=0)
 
 combined_string_sort = combined_string[np.argsort(combined_date)]
 for i in range(0,len(combined_string_sort)):
-    print(combined_string_sort[i,0], combined_string_sort[i,1], combined_string_sort[i,2], combined_string_sort[i,3])
+    if combined_string_sort[i,3] == '705': #normalize brightness to 2017-10-30
+        print(combined_string_sort[i,0], str(float(combined_string_sort[i,1])+0.2), combined_string_sort[i,2], combined_string_sort[i,3])
+    if combined_string_sort[i,3] != '705':
+        print(combined_string_sort[i,0], combined_string_sort[i,1], combined_string_sort[i,2], combined_string_sort[i,3])
 
 
 from astropy.stats import LombScargle
