@@ -248,7 +248,6 @@ margin = 0.5
 fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
 ax1 = fig.add_subplot(2,1,1)
 
-
 minimum_frequency = 1.0
 maximum_frequency=40.
 frequency, power = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).autopower(samples_per_peak=1000, minimum_frequency = minimum_frequency, maximum_frequency=maximum_frequency)
@@ -278,17 +277,18 @@ ax1.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elin
 t = np.linspace(0, 1.0,1000.)
 Amplitude = 2
 set_phase = np.pi*1.15
-y = (Amplitude * 0.5* np.sin(2 * np.pi * t*num_peak + set_phase)) +np.median(DCTAPO_mag)
+y = (Amplitude * 0.5* np.sin(2 * np.pi * t*num_peak + set_phase)) +np.median(DCTAPO_mag)*0.995
 ax1.plot(t, y, color='black')
 ax1.invert_yaxis()
-ax1.set(xlabel=r'$\mathrm{Phase}$', ylabel=r'$\mathrm{Magnitude}$')
+ax1.set(xlabel=r'$\mathrm{Phase}$', ylabel=r'$r \; \mathrm{Magnitude}$')
 #plt.title(r'$\mathrm{Phased \; data \;  at \; period:\; '+ str(np.round((1/best_frequency)*24,2))+'\;  h}$')
 plt.gca().invert_yaxis()
+ax1.set_xlim(0.0,1.0)
 
 ax1 = fig.add_subplot(2,1,2)
 
-minimum_frequency = 0.5
-maximum_frequency=20.
+minimum_frequency = 1.0
+maximum_frequency=80.0
 frequency, power = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).autopower(samples_per_peak=1000, minimum_frequency = minimum_frequency, maximum_frequency=maximum_frequency)
 
 best_frequency = frequency[np.argmax(power)]/num_peak
@@ -301,19 +301,22 @@ margin = 0.5
 #plt.ion()
 #plt.plot(((1.0/frequencies) * 2.0 * np.pi)/3600., periodigram)
 #plt.plot(frequencies, periodigram)
-ax1.semilogx((1.0/(frequency/num_peak)) *24.,power,color='grey')
-ax1.axvline((1.0/(best_frequency)) *24., color='blue', linestyle='-')
-best_frequency = 1/test_period_1
-ax1.axvline((1.0/(best_frequency)) *24., color='orange', linestyle='-')
-best_frequency = 1/test_period_2
-ax1.axvline((1.0/(best_frequency)) *24., color='green', linestyle='-')
+#ax1.semilogx((1.0/(frequency/num_peak)) *24.,(power*50)+8965,color='grey')
+ax1.semilogx((1.0/(frequency/num_peak)) *24.,(power),color='grey')
+best_frequency1 = 1/test_period_1
+ax1.axvline((1.0/(best_frequency1)) *24., color='green', linestyle='-',label =r'$\mathrm{Period:\; '+ str(np.round((1/best_frequency1)*24,2))+'\;  h}$',linewidth=2.2)
+ax1.axvline((1.0/(best_frequency)) *24., color='blue', linestyle='-',label =r'$\mathrm{Period:\; '+ str(np.round((1/best_frequency)*24,2))+'\;  h}$',linewidth=2.2)
+best_frequency2 = 1/test_period_2
+ax1.axvline((1.0/(best_frequency2)) *24., color='orange', linestyle='-',label =r'$\mathrm{Period:\; '+ str(np.round((1/best_frequency2)*24,2))+'\;  h}$',linewidth=2.2)
 
-ax1.set(xlabel=r'$\mathrm{Power}$', ylabel=r'$\mathrm{Period \; (h)}$')
-ax1.set_xlim((1/(maximum_frequency/num_peak))*24,(1/(minimum_frequency/num_peak))*24)
-plt.savefig('APO_DCT_combined_phased_data_2017_10_29_to_30_three_periods.png')
+#ax1.set(ylabel=r'$\mathrm{Power \; level}$', xlabel=r'$\mathrm{Period \; (h)}$')
+ax1.set(ylabel=r'$\mathrm{Power}$', xlabel=r'$\mathrm{Period \; (h)}$')
+ax1.set_xlim(0.99,40.0)
+ax1.legend(loc='upper right',prop={'size':19})
+
+plt.savefig('APO_DCT_combined_phased_data_2017_10_29_to_30_three_periods.eps')
 
 #Time vs r' mag
-
 
 line_width = 2.5
 mult = 1.2
@@ -362,9 +365,106 @@ plt.xlabel(r'$\mathrm{\mathrm{Time \; from \; MJD \;'+ str(np.round(DCTAPO_date_
 plt.ylabel(r'$r \; \mathrm{Magnitude}$')
 plt.xlim(-2.5,30.0)
 plt.show()
-plt.savefig('APO_DCT_phase_combined_lightcurve_2017_10_29_to_30.png')
+plt.savefig('APO_DCT_phase_combined_lightcurve_2017_10_29_to_30.eps')
 
 
+#time vs mag different periods
+
+num_peak = 2.0
+
+#combine DCT + APO
+DCTAPO_date_MJD_mag_mag_unc = np.loadtxt('APO_DCT_A2017U1_2017_10_30_date_mjd_mag_r_mag_unc_obs_code.txt',usecols=(0,1,2))
+DCTAPO_date_MJD = DCTAPO_date_MJD_mag_mag_unc[:,0]
+DCTAPO_mag = DCTAPO_date_MJD_mag_mag_unc[:,1]
+DCTAPO_mag_unc = DCTAPO_date_MJD_mag_mag_unc[:,2]
+
+#plt.ion()
+test_period_1 = 6.826/24.
+test_period_2 = 9.97/24
+
+line_width = 2.5
+mult = 1.2
+paperheight = 6.5*1.75
+paperwidth = 9.5*1.75
+margin = 0.5
+
+fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
+ax1 = fig.add_subplot(2,1,1)
+
+minimum_frequency = 1.0
+maximum_frequency=40.
+frequency, power = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).autopower(samples_per_peak=1000, minimum_frequency = minimum_frequency, maximum_frequency=maximum_frequency)
+
+num_peak = 2.0
+best_frequency = frequency[np.argmax(power)]/num_peak
+phase_fit = np.linspace(0, num_peak)
+y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_fit / (best_frequency),
+                                    frequency=best_frequency)
+phase = (DCTAPO_date_MJD * best_frequency) % 1
+ax1.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5,color='blue')
+
+best_frequency = 1/test_period_1
+phase_fit = np.linspace(0, num_peak)
+y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_fit / (best_frequency),
+                                    frequency=best_frequency)
+phase = (DCTAPO_date_MJD * best_frequency) % 1
+ax1.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5,color='green')
+
+best_frequency = 1/test_period_2
+phase_fit = np.linspace(0, num_peak)
+y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_fit / (best_frequency),
+                                    frequency=best_frequency)
+phase = (DCTAPO_date_MJD * best_frequency) % 1
+ax1.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5,color='orange')
+
+t = np.linspace(0, 1.0,1000.)
+Amplitude = 2
+set_phase = np.pi*1.15
+y = (Amplitude * 0.5* np.sin(2 * np.pi * t*num_peak + set_phase)) +np.median(DCTAPO_mag)*0.995
+ax1.plot(t, y, color='black')
+ax1.invert_yaxis()
+ax1.set(xlabel=r'$\mathrm{Phase}$', ylabel=r'$r \; \mathrm{Magnitude}$')
+#plt.title(r'$\mathrm{Phased \; data \;  at \; period:\; '+ str(np.round((1/best_frequency)*24,2))+'\;  h}$')
+plt.gca().invert_yaxis()
+ax1.set_xlim(0.0,1.0)
+
+ax1 = fig.add_subplot(2,1,2)
+num_peaks = 2.0
+DCTAPO_date_MJD = DCTAPO_date_MJD_mag_mag_unc[:,0]
+DCTAPO_mag = DCTAPO_date_MJD_mag_mag_unc[:,1]
+DCTAPO_mag_unc = DCTAPO_date_MJD_mag_mag_unc[:,2]
+
+minimum_frequency = 1.0
+maximum_frequency=40.
+frequency, power = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).autopower(samples_per_peak=1000, minimum_frequency = minimum_frequency, maximum_frequency=maximum_frequency)
+
+num_peak = 2.0
+best_frequency = frequency[np.argmax(power)]/num_peak
+
+t = np.linspace(-2, (DCTAPO_date_MJD[-1]-DCTAPO_date_MJD[0] + (DCTAPO_date_MJD[0]-np.round(DCTAPO_date_MJD[0],2)))*1.5,10000.)*24.0
+Amplitude = 2
+#offset = -1.0 * np.pi *1.1
+y = (Amplitude * 0.5* np.sin((2*np.pi*t*(best_frequency/24.)*num_peaks)+offset)) +np.median(DCTAPO_mag)*0.995
+
+plt.plot(t, y,alpha=0.55, color="blue",linewidth=5.0)
+best_frequency1 = 1/test_period_1
+t = np.linspace(-2, (DCTAPO_date_MJD[-1]-DCTAPO_date_MJD[0] + (DCTAPO_date_MJD[0]-np.round(DCTAPO_date_MJD[0],2)))*1.5,10000.)*24.0
+Amplitude = 2
+#offset = -1.0 * np.pi *1.1
+y = (Amplitude * 0.5* np.sin((2*np.pi*t*(best_frequency1/24.)*num_peaks)+offset)) +np.median(DCTAPO_mag)*0.995
+plt.plot(t, y,alpha=0.55, color="green",linewidth=5.0)
+best_frequency2 = 1/test_period_2
+t = np.linspace(-2, (DCTAPO_date_MJD[-1]-DCTAPO_date_MJD[0] + (DCTAPO_date_MJD[0]-np.round(DCTAPO_date_MJD[0],2)))*1.5,10000.)*24.0
+Amplitude = 2
+#offset = -1.0 * np.pi *1.1
+y = (Amplitude * 0.5* np.sin((2*np.pi*t*(best_frequency2/24.)*num_peaks)+offset)) +np.median(DCTAPO_mag)*0.995
+plt.plot(t, y,alpha=0.55, color="orange",linewidth=5.0)
+plt.errorbar(((DCTAPO_date_MJD-DCTAPO_date_MJD[0] + (DCTAPO_date_MJD[0]-np.round(DCTAPO_date_MJD[0],2))))*24., DCTAPO_mag, yerr=DCTAPO_mag_unc, ecolor='black',capsize=3,capthick=1.25,markeredgecolor='black',markeredgewidth=1.2, linestyle='none')
+plt.xlabel(r'$\mathrm{\mathrm{Time \; from \; MJD \;'+ str(np.round(DCTAPO_date_MJD[0],2))+' \; (hr)}}$')
+plt.ylabel(r'$r \; \mathrm{Magnitude}$')
+plt.xlim(-2.5,30.0)
+plt.show()
+plt.savefig('APO_DCT_phase_combined_lightcurve_2017_10_29_to_30_three_curves.eps')
 
 
 #matplotlib.pyplot.close("all")
