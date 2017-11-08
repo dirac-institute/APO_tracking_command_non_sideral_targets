@@ -260,6 +260,24 @@ y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_f
 phase = (DCTAPO_date_MJD * best_frequency) % 1
 ax1.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5)
 
+#2x
+num_peak = 2.0
+best_frequency = (frequency[np.argmax(power)]/num_peak) *0.5
+phase_fit = np.linspace(0, num_peak)
+y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_fit / (best_frequency),
+                                    frequency=best_frequency)
+phase = (DCTAPO_date_MJD * best_frequency) % 1
+ax1.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5, color='red')
+
+#0.5x
+num_peak = 2.0
+best_frequency = (frequency[np.argmax(power)]/num_peak) * 2
+phase_fit = np.linspace(0, num_peak)
+y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_fit / (best_frequency),
+                                    frequency=best_frequency)
+phase = (DCTAPO_date_MJD * best_frequency) % 1
+ax1.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5, color='grey')
+
 best_frequency = 1/test_period_1
 phase_fit = np.linspace(0, num_peak)
 y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_fit / (best_frequency),
@@ -304,15 +322,23 @@ margin = 0.5
 #ax1.semilogx((1.0/(frequency/num_peak)) *24.,(power*50)+8965,color='grey')
 ax1.semilogx((1.0/(frequency/num_peak)) *24.,(power),color='grey')
 best_frequency1 = 1/test_period_1
+
+ax1.axvline((0.5/(best_frequency)) *24., color='red', linestyle='-',label =r'$\mathrm{Period:\; '+ str(np.round((1/best_frequency* 0.5)*24,2))+'\;  h}$',linewidth=2.2)
+
 ax1.axvline((1.0/(best_frequency1)) *24., color='green', linestyle='-',label =r'$\mathrm{Period:\; '+ str(np.round((1/best_frequency1)*24,2))+'\;  h}$',linewidth=2.2)
+
 ax1.axvline((1.0/(best_frequency)) *24., color='blue', linestyle='-',label =r'$\mathrm{Period:\; '+ str(np.round((1/best_frequency)*24,2))+'\;  h}$',linewidth=2.2)
+
 best_frequency2 = 1/test_period_2
 ax1.axvline((1.0/(best_frequency2)) *24., color='orange', linestyle='-',label =r'$\mathrm{Period:\; '+ str(np.round((1/best_frequency2)*24,2))+'\;  h}$',linewidth=2.2)
+
+ax1.axvline((2.0/(best_frequency)) *24., color='grey', linestyle='-',label =r'$\mathrm{Period:\; '+ str(np.round((1/best_frequency* 2)*24,2))+'\;  h}$',linewidth=2.2)
+
 
 #ax1.set(ylabel=r'$\mathrm{Power \; level}$', xlabel=r'$\mathrm{Period \; (h)}$')
 ax1.set(ylabel=r'$\mathrm{Power}$', xlabel=r'$\mathrm{Period \; (h)}$')
 ax1.set_xlim(0.99,40.0)
-ax1.legend(loc='upper right',prop={'size':19})
+ax1.legend(loc='upper left',prop={'size':19})
 
 plt.savefig('APO_DCT_combined_phased_data_2017_10_29_to_30_three_periods.eps')
 plt.savefig('APO_DCT_combined_phased_data_2017_10_29_to_30_three_periods.png')
@@ -547,3 +573,33 @@ plt.title(r'$\mathrm{Phased \; data \;  at \; period:\; '+ str(np.round((1/best_
 plt.gca().invert_yaxis()
 plt.show()
 plt.savefig('APO_DCT_MPC_combined_phased_data_2017_10_29_to_30.png')
+
+
+#extrapolation spectral slope thing
+
+masiero_nm_ref = np.loadtxt('masiero_nm_ref')
+nm = masiero_nm_ref[:,0]
+ref = masiero_nm_ref[:,1]
+nm_continuous = np.linspace(nm[0],nm[-1],1000.)
+
+nm_function_lambda = lambda x, a, b: a*x + b
+slope, intercept = 3.0, 1/1650.
+slope_pm, intercept_pm = 1.5, 1/1650.
+fit_ref = semimajor_axis_function_lambda(nm_continuous,slope, intercept)
+
+norm_factor = fit_ref[find_nearest(nm_continuous,500)[0]]
+ref_norm = fit_ref/norm_factor
+
+corellation_coefficient = scipy.stats.pearsonr(nm_continuous, ref_norm)[0]
+
+#errors on each extrapolated y point
+nm_continuous_vs_ref_norm_err = np.array(map(error_propagation_weighted_sum, np.ones(len(ref_norm)), np.ones(len(ref_norm)) * intercept_pm, ref_norm, np.ones(len(ref_norm)) * slope_pm, np.ones(len(ref_norm))*corellation_coefficient))
+
+fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
+ax1 = fig.add_subplot(1,1,1)
+ax1.plot(nm,ref,'.')
+ax1.plot(nm_continuous,ref_norm)
+ax1.errorbar(nm_continuous[::50],ref_norm[::50],yerr=nm_continuous_vs_ref_norm_err[::50])
+ax1.set_ylim(-1.2,6.2)
+ax1.set(xlabel=r'$\mathrm{wavelength \; (nm)}$', ylabel=r'$\mathrm{Normalized \; reflectance}$')
+

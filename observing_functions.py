@@ -175,6 +175,16 @@ def dictionary_month(numerical_month):
     month = dict([[1,'Jan'], [2,'Feb'], [3,'Mar'], [4,'Apr'], [5,'May'], [6,'Jun'], [7,'Jul'], [8,'Aug'], [9,'Sep'], [10,'Oct'], [11,'Nov'], [12,'Dec']])
     return month[numerical_month]
 
+ def error_propagation_weighted_sum(a,sigma_u,b,sigma_v,correlation_coefficient):
+    #weighted sum of u and v:
+    #x = a*u + b*v
+    #a and b are constants
+    #sigma_x^2 = a^2 * sigma_u^2 + b^2 * sigma_v^2 + 2 * a * b * correlation_coefficient * sigma_u^2 * sigma_v^2
+    #correlation_coefficient is the correlation coefficient of the x vs y data
+    #returns sqrt(sigma_x^2)
+    return np.sqrt( (a * sigma_u)**2 + (b * sigma_v)**2 + (2 * a * b * sigma_u * sigma_v * correlation_coefficient))
+
+
 def get_rates_no_cos_dec(rate, pa_deg): #rate is in "/min, pa is in degs USE FOR UH 88" when cos dec is turned on
     RA = rate * np.sin(np.radians(pa_deg))
     DEC = rate  * np.cos(np.radians(pa_deg))
