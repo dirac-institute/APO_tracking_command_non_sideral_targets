@@ -246,6 +246,7 @@ paperwidth = 9.5*1.75
 margin = 0.5
 
 fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
+fig.subplots_adjust(hspace=.35)
 ax1 = fig.add_subplot(2,1,1)
 
 minimum_frequency = 1.0
@@ -354,6 +355,7 @@ margin = 0.5
 #plt.ion()
 
 fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
+fig.subplots_adjust(hspace=.35)
 ax1 = fig.add_subplot(2,1,1)
 minimum_frequency = 1.0
 maximum_frequency=40.
@@ -370,7 +372,7 @@ set_phase = np.pi*1.15
 y = (Amplitude * 0.5* np.sin(2 * np.pi * t*num_peak + set_phase)) +np.median(DCTAPO_mag)
 ax1.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5)
 #ax1.plot(phase_fit[::-1]/num_peak, y_fit, color='black')
-ax1.plot(t, y, color='black')
+ax1.plot(t, y, color="grey",linewidth=3.0)
 ax1.invert_yaxis()
 ax1.set(xlabel=r'$\mathrm{Phase}$', ylabel=r'$r\; \mathrm{Magnitude}$')
 plt.title(r'$\mathrm{Phased \; data \;  at \; period:\; '+ str(np.round((1/best_frequency)*24,2))+'\;  h}$')
@@ -384,11 +386,11 @@ DCTAPO_mag_unc = DCTAPO_date_MJD_mag_mag_unc[:,2]
 
 t = np.linspace(-2, (DCTAPO_date_MJD[-1]-DCTAPO_date_MJD[0] + (DCTAPO_date_MJD[0]-np.round(DCTAPO_date_MJD[0],2)))*1.5,10000.)*24.0
 Amplitude = 2
-offset = -1.0 * np.pi *1.25
-y = (Amplitude * 0.5* np.sin((2*np.pi*t*(best_frequency/24.)*num_peaks)+offset)) +np.median(DCTAPO_mag)*0.997
+offset = -1.0 * np.pi *1.3
+y = (Amplitude * 0.5* np.sin((2*np.pi*t*(best_frequency/24.)*num_peaks)+offset)) +np.median(DCTAPO_mag)*0.99999999
 
-plt.plot(t, y,alpha=0.55, color="blue",linewidth=5.0)
-plt.errorbar(((DCTAPO_date_MJD-DCTAPO_date_MJD[0] + (DCTAPO_date_MJD[0]-np.round(DCTAPO_date_MJD[0],2))))*24., DCTAPO_mag, yerr=DCTAPO_mag_unc, ecolor='black',capsize=3,capthick=1.25,markeredgecolor='black',markeredgewidth=1.2, linestyle='none')
+plt.plot(t, y,alpha=0.55, color="grey",linewidth=3.0)
+plt.errorbar(((DCTAPO_date_MJD-DCTAPO_date_MJD[0] + (DCTAPO_date_MJD[0]-np.round(DCTAPO_date_MJD[0],2))))*24., DCTAPO_mag, yerr=DCTAPO_mag_unc,fmt='o', mew=0, capsize=0, elinewidth=1.5)
 plt.xlabel(r'$\mathrm{\mathrm{Time \; from \; MJD \;'+ str(np.round(DCTAPO_date_MJD[0],2))+' \; (hr)}}$')
 plt.ylabel(r'$r \; \mathrm{Magnitude}$')
 plt.xlim(-2.5,30.0)
@@ -418,6 +420,7 @@ paperwidth = 9.5*1.75
 margin = 0.5
 
 fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
+fig.subplots_adjust(hspace=.35)
 ax1 = fig.add_subplot(2,1,1)
 
 minimum_frequency = 1.0

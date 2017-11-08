@@ -166,6 +166,10 @@ def create_frame_for_stacking(fits_file, x_pos, y_pos):
     null_frame[add_array_edge_coord_y:add_array_edge_coord_y+frame_size,add_array_edge_coord_x:add_array_edge_coord_x+frame_size] += dat_raw
     return null_frame[::-1,:], dat_head
 
+def critical_period_axial_ratio(axial_ratio, density_g_cm_3):#Jewit et al. 2012, Samarasinha et al. 2004
+    density_km_m_3 = density_g_cm_3 * 1000.
+    P_crit = np.sqrt(axial_ratio * ((3*np.pi)/(G* density_km_m_3)))
+    return P_crit
 
 
 def css_efficiency(m,epsilon_0, m_lim, m_drop):
