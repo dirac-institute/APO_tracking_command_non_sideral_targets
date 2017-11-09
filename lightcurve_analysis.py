@@ -613,10 +613,18 @@ ax1.set(xlabel=r'$\mathrm{wavelength \; (nm)}$', ylabel=r'$\mathrm{Normalized \;
 
 #daniela plot
 #amp and amp unc
-amp = np.loadtxt('amplitude_pdf')
+amp_frac = np.loadtxt('amplitude_pdf')
+frac = amp_frac[:,1]
+bins = amp_frac[:,0]
+number_entries_per_bin = np.round(amp_frac[:,1]*10000000.).astype('int')
 
-bins = amp[:,1]
-number_entries_per_bin = np.round(amp[:,1]*10000000.)
+for i in range(0, len(number_entries_per_bin)):
+    if i == 0:
+        synthetic_entries = np.ones(number_entries_per_bin[0])*bins[0]
+        print (number_entries_per_bin[i])
+    if i > 0:
+        synthetic_entries = np.append(synthetic_entries, np.ones(number_entries_per_bin[i])*bins[i])
+        print (number_entries_per_bin[i])
 
 #period and period unc
 
