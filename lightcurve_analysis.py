@@ -370,16 +370,48 @@ t = np.linspace(0, 1.0,1000.)
 Amplitude = 2
 set_phase = np.pi*1.15
 y = (Amplitude * 0.5* np.sin(2 * np.pi * t*num_peak + set_phase)) +np.median(DCTAPO_mag)
-ax1.errorbar(phase[:13],  DCTAPO_mag[:13], DCTAPO_mag_unc[:13], fmt='o', mew=0, capsize=0, elinewidth=1.5,label=r'$\mathrm{2017-10-29 \; UTC \; APO \; 3.5 \; m}$')
-ax1.errorbar(phase[13:],  DCTAPO_mag[13:], DCTAPO_mag_unc[13:], fmt='o', mew=0, capsize=0, elinewidth=1.5,label=r'$\mathrm{2017-10-30 \; UTC \; DCT}$')
+ax1.errorbar(phase[:13],  DCTAPO_mag[:13]+6, DCTAPO_mag_unc[:13], fmt='o', mew=0, capsize=0, elinewidth=1.5,color='blue')
+ax1.errorbar(phase[13:],  DCTAPO_mag[13:]+6, DCTAPO_mag_unc[13:], fmt='o', mew=0, capsize=0, elinewidth=1.5,color='orange')
 #ax1.plot(phase_fit[::-1]/num_peak, y_fit, color='black')
-ax1.plot(t, y, color="grey",linewidth=3.0)
+ax1.plot(t, y+6, color="green",linewidth=3.0)
+ax1.invert_yaxis()
+ax1.set(ylabel=r'$r\; \mathrm{Magnitude}$')
+plt.title(r'$\mathrm{Phased \; data \;  at \; period:\; '+ str(np.round((1/best_frequency)*24,2))+'\;  h}$')
+frequency, power = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).autopower(samples_per_peak=1000, minimum_frequency = minimum_frequency, maximum_frequency=maximum_frequency)
+num_peak = 2.0
+best_frequency = (frequency[np.argmax(power)]/num_peak) * 2 # half period
+phase_fit = np.linspace(0, num_peak)
+y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_fit / (best_frequency),
+                                   frequency=best_frequency)
+phase = (DCTAPO_date_MJD * best_frequency) % 1
+t = np.linspace(0, 1.0,1000.)
+Amplitude = 2
+set_phase = np.pi*1.15
+y = (Amplitude * 0.5* np.sin(2 * np.pi * t*num_peak + set_phase)) +np.median(DCTAPO_mag)
+ax1.errorbar(phase[:13],  DCTAPO_mag[:13]+3, DCTAPO_mag_unc[:13], fmt='o', mew=0, capsize=0, elinewidth=1.5,color='blue')
+ax1.errorbar(phase[13:],  DCTAPO_mag[13:]+3, DCTAPO_mag_unc[13:], fmt='o', mew=0, capsize=0, elinewidth=1.5,color='orange')
+#ax1.plot(phase_fit[::-1]/num_peak, y_fit, color='black')
+ax1.plot(t, y+3, color="red",linewidth=3.0)
+
+frequency, power = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).autopower(samples_per_peak=1000, minimum_frequency = minimum_frequency, maximum_frequency=maximum_frequency)
+num_peak = 2.0
+best_frequency = frequency[np.argmax(power)]/num_peak * 0.5
+phase_fit = np.linspace(0, num_peak*2)
+y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_fit / (best_frequency),
+                                   frequency=best_frequency)
+phase = (DCTAPO_date_MJD * best_frequency) % 1
+t = np.linspace(0, 1.0,1000.)
+Amplitude = 2
+set_phase = np.pi*1.15
+y = (Amplitude * 0.5* np.sin(2 * np.pi * t*num_peak + set_phase)) +np.median(DCTAPO_mag)
+ax1.plot(t, y, color="black",linewidth=3.0)
+ax1.errorbar(phase[:13],  DCTAPO_mag[:13], DCTAPO_mag_unc[:13], fmt='o', mew=0, capsize=0, elinewidth=1.5,label=r'$\mathrm{2017-10-29 \; UTC \; APO \; 3.5 \; m}$',color='blue')
+ax1.errorbar(phase[13:],  DCTAPO_mag[13:], DCTAPO_mag_unc[13:], fmt='o', mew=0, capsize=0, elinewidth=1.5,label=r'$\mathrm{2017-10-30 \; UTC \; DCT}$',color='orange')
+#ax1.plot(phase_fit[::-1]/num_peak, y_fit, color='black')
 ax1.invert_yaxis()
 ax1.set(xlabel=r'$\mathrm{Phase}$', ylabel=r'$r\; \mathrm{Magnitude}$')
-plt.title(r'$\mathrm{Phased \; data \;  at \; period:\; '+ str(np.round((1/best_frequency)*24,2))+'\;  h}$')
-plt.gca().invert_yaxis()
 plt.xlim(0.0,1.0)
-plt.ylim(22,25.3)
+plt.ylim(20,35.3)
 plt.legend(loc='upper right',prop={'size':19})
 ax1 = fig.add_subplot(2,1,2)
 num_peaks = 2.0
@@ -617,34 +649,26 @@ amp_frac = np.loadtxt('amplitude_pdf')
 
 bins = amp_frac[:,0]
 frac = amp_frac[:,1]
+
+
 number_entries_per_bin = np.round(amp_frac[:,1]*10000000.).astype('int')
 
 bin_width = 0.8
 for i in range(0, len(number_entries_per_bin)):
     if i == 0:
-        synthetic_entries = (np.ones(number_entries_per_bin[0])*bins[0])
-        print (number_entries_per_bin[i])
+        synthetic_entries = (np.ones(number_entries_per_bin[0])*bins[0])+ np.random.uniform(-1.0 * bin_width/2,bin_width/2,number_entries_per_bin[0])
+        #print (number_entries_per_bin[i])
     if i > 0:
-        synthetic_entries = np.append(synthetic_entries, np.ones(number_entries_per_bin[i])*bins[i]) - np.random.uniform(-1.0 * bin_width/2,bin_width/2,1)
+        synthetic_entries = np.append(synthetic_entries, np.ones(number_entries_per_bin[i])*bins[i]+ np.random.uniform(-1.0 * bin_width/2,bin_width/2,number_entries_per_bin[i]))
         #print (number_entries_per_bin[i])
 
-synthetic_entries
 
-from lmfit.models import LognormalModel
-
-model = LognormalModel()
-
-# set initial parameter values
-params = model.make_params(amplitude=30, center=-3.52, sigma=1.29, gamma=0)
-
-# adjust parameters  to best fit data.
-result = model.fit(frac, params, x=bins)
-print(result.fit_report())
 
 
 plt.figure()
-plt.plot(bins, frac)
-plt.plot(bins, result.best_fit)
+plt.hist(synthetic_entries,50)
+
+shape, mean, unc =  skewnorm.fit(synthetic_entries[::100])
 
 
 #period and period unc
