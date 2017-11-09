@@ -370,7 +370,8 @@ t = np.linspace(0, 1.0,1000.)
 Amplitude = 2
 set_phase = np.pi*1.15
 y = (Amplitude * 0.5* np.sin(2 * np.pi * t*num_peak + set_phase)) +np.median(DCTAPO_mag)
-ax1.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5)
+ax1.errorbar(phase[:13],  DCTAPO_mag[:13], DCTAPO_mag_unc[:13], fmt='o', mew=0, capsize=0, elinewidth=1.5,label=r'$\mathrm{2017-10-29 \; UTC \; APO \; 3.5 \; m}$')
+ax1.errorbar(phase[13:],  DCTAPO_mag[13:], DCTAPO_mag_unc[13:], fmt='o', mew=0, capsize=0, elinewidth=1.5,label=r'$\mathrm{2017-10-30 \; UTC \; DCT}$')
 #ax1.plot(phase_fit[::-1]/num_peak, y_fit, color='black')
 ax1.plot(t, y, color="grey",linewidth=3.0)
 ax1.invert_yaxis()
@@ -378,6 +379,8 @@ ax1.set(xlabel=r'$\mathrm{Phase}$', ylabel=r'$r\; \mathrm{Magnitude}$')
 plt.title(r'$\mathrm{Phased \; data \;  at \; period:\; '+ str(np.round((1/best_frequency)*24,2))+'\;  h}$')
 plt.gca().invert_yaxis()
 plt.xlim(0.0,1.0)
+plt.ylim(22,25.3)
+plt.legend(loc='upper right',prop={'size':19})
 ax1 = fig.add_subplot(2,1,2)
 num_peaks = 2.0
 DCTAPO_date_MJD = DCTAPO_date_MJD_mag_mag_unc[:,0]
@@ -385,15 +388,17 @@ DCTAPO_mag = DCTAPO_date_MJD_mag_mag_unc[:,1]
 DCTAPO_mag_unc = DCTAPO_date_MJD_mag_mag_unc[:,2]
 
 t = np.linspace(-2, (DCTAPO_date_MJD[-1]-DCTAPO_date_MJD[0] + (DCTAPO_date_MJD[0]-np.round(DCTAPO_date_MJD[0],2)))*1.5,10000.)*24.0
-Amplitude = 2
+Amplitude = 1.7
 offset = -1.0 * np.pi *1.3
 y = (Amplitude * 0.5* np.sin((2*np.pi*t*(best_frequency/24.)*num_peaks)+offset)) +np.median(DCTAPO_mag)*0.99999999
 
 plt.plot(t, y,alpha=0.55, color="grey",linewidth=3.0)
-plt.errorbar(((DCTAPO_date_MJD-DCTAPO_date_MJD[0] + (DCTAPO_date_MJD[0]-np.round(DCTAPO_date_MJD[0],2))))*24., DCTAPO_mag, yerr=DCTAPO_mag_unc,fmt='o', mew=0, capsize=0, elinewidth=1.5)
+plt.errorbar(((DCTAPO_date_MJD[:12]-DCTAPO_date_MJD[0] + (DCTAPO_date_MJD[0]-np.round(DCTAPO_date_MJD[0],2))))*24., DCTAPO_mag[:12], yerr=DCTAPO_mag_unc[:12],fmt='o', mew=0, capsize=0, elinewidth=1.5)
+plt.errorbar(((DCTAPO_date_MJD[12:]-DCTAPO_date_MJD[0] + (DCTAPO_date_MJD[0]-np.round(DCTAPO_date_MJD[0],2))))*24., DCTAPO_mag[12:], yerr=DCTAPO_mag_unc[12:],fmt='o', mew=0, capsize=0, elinewidth=1.5)
 plt.xlabel(r'$\mathrm{\mathrm{Time \; from \; MJD \;'+ str(np.round(DCTAPO_date_MJD[0],2))+' \; (hr)}}$')
 plt.ylabel(r'$r \; \mathrm{Magnitude}$')
 plt.xlim(-2.5,30.0)
+plt.ylim(22,25.3)
 plt.show()
 plt.savefig('APO_DCT_phase_combined_lightcurve_2017_10_29_to_30.eps')
 plt.savefig('APO_DCT_phase_combined_lightcurve_2017_10_29_to_30.png')

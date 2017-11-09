@@ -166,11 +166,16 @@ def create_frame_for_stacking(fits_file, x_pos, y_pos):
     null_frame[add_array_edge_coord_y:add_array_edge_coord_y+frame_size,add_array_edge_coord_x:add_array_edge_coord_x+frame_size] += dat_raw
     return null_frame[::-1,:], dat_head
 
-def critical_period_axial_ratio(axial_ratio, density_g_cm_3):#Jewit et al. 2012, Samarasinha et al. 2004
-    density_km_m_3 = density_g_cm_3 * 1000.
-    P_crit = np.sqrt(axial_ratio * ((3*np.pi)/(G* density_km_m_3)))
-    return P_crit
+def cohesive_strength_asteroid_pascals(period_s,diamter_km, density_g_cm_3):#lisse et al 1999.
+    radius_cm = (diamter_km *1e5) * 0.5
+    angular_rotation_speed_rad_s = ((2 * np.pi)/period_s)
+    strength_dynes_cm_2 = ((np.pi * 2)/(period_s))**2 * (radius_cm)**2 * density_g_cm_3 * .5
+    return strength_dynes_cm_2/10.
 
+def critical_period_axial_ratio_s(axial_ratio, density_g_cm_3):#Jewit et al. 2012, Samarasinha et al. 2004
+    density_kg_m_3 = density_g_cm_3 * 1000.
+    P_crit = np.sqrt(axial_ratio * ((3*np.pi)/(6.67e-11* density_kg_m_3)))
+    return P_crit
 
 def css_efficiency(m,epsilon_0, m_lim, m_drop):
     return epsilon_0 / (1 + np.exp((m -m_lim)/m_drop))
@@ -193,6 +198,10 @@ def get_rates_no_cos_dec(rate, pa_deg): #rate is in "/min, pa is in degs USE FOR
     RA = rate * np.sin(np.radians(pa_deg))
     DEC = rate  * np.cos(np.radians(pa_deg))
     return RA, DEC #mili arcsec per sec
+
+def lightcurve_amplitude_to_axial_ratio(light_curve_amplitude_mags):
+    axial_ratio = 10**(0.4 * light_curve_amplitude_mags)
+    return axial_ratio
 
 def magnitude_calc(zero_point_magnitude, flux_circle_counts, aperture_radius_pixels, sky_flux_counts, exp_time_s):
     #flux is flux_circle - sky_value* area
