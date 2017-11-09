@@ -611,3 +611,12 @@ ax1.errorbar(nm_continuous[::50],ref_norm[::50],yerr=nm_continuous_vs_ref_norm_e
 ax1.set_ylim(-1.2,6.2)
 ax1.set(xlabel=r'$\mathrm{wavelength \; (nm)}$', ylabel=r'$\mathrm{Normalized \; reflectance}$')
 
+#daniela plot
+#amp and amp unc
+amp = np.loadtxt('amplitude_pdf')
+
+bins = amp[:,1]
+number_entries_per_bin = np.round(amp[:,1]*10000000.)
+
+#period and period unc
+
