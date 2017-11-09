@@ -614,17 +614,38 @@ ax1.set(xlabel=r'$\mathrm{wavelength \; (nm)}$', ylabel=r'$\mathrm{Normalized \;
 #daniela plot
 #amp and amp unc
 amp_frac = np.loadtxt('amplitude_pdf')
-frac = amp_frac[:,1]
+
 bins = amp_frac[:,0]
+frac = amp_frac[:,1]
 number_entries_per_bin = np.round(amp_frac[:,1]*10000000.).astype('int')
 
+bin_width = 0.8
 for i in range(0, len(number_entries_per_bin)):
     if i == 0:
-        synthetic_entries = np.ones(number_entries_per_bin[0])*bins[0]
+        synthetic_entries = (np.ones(number_entries_per_bin[0])*bins[0])
         print (number_entries_per_bin[i])
     if i > 0:
-        synthetic_entries = np.append(synthetic_entries, np.ones(number_entries_per_bin[i])*bins[i])
-        print (number_entries_per_bin[i])
+        synthetic_entries = np.append(synthetic_entries, np.ones(number_entries_per_bin[i])*bins[i]) - np.random.uniform(-1.0 * bin_width/2,bin_width/2,1)
+        #print (number_entries_per_bin[i])
+
+synthetic_entries
+
+from lmfit.models import LognormalModel
+
+model = LognormalModel()
+
+# set initial parameter values
+params = model.make_params(amplitude=30, center=-3.52, sigma=1.29, gamma=0)
+
+# adjust parameters  to best fit data.
+result = model.fit(frac, params, x=bins)
+print(result.fit_report())
+
+
+plt.figure()
+plt.plot(bins, frac)
+plt.plot(bins, result.best_fit)
+
 
 #period and period unc
 

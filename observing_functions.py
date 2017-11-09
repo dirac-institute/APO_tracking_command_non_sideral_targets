@@ -277,6 +277,12 @@ def mjd_to_mpc_date_inc_seconds(time_ut_mjd):
         end_time_ut = np.array([end_time_year, end_time_month, end_time_day, end_time_hour, end_time_minutes,end_time_sec])
     return end_time_ut
 
+def root_mean_square(array):
+     return np.sqrt((1.0/len(array)) * np.sum(array**2))
+
+def root_mean_square_uncertainty(data):
+     return (np.sqrt(np.sum((data-np.mean(data))**2)/len(data)))
+
 def semi_major_axis_massive_body_to_orbital_period_seconds(a_au,mass_kg):
     a_m = a_au *au_to_meters
     period_seconds = np.pi * 2.0 * np.sqrt(a_m**3 / (G*mass_kg))
