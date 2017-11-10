@@ -220,9 +220,9 @@ filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.ope
 #start, stop = 0, 15
 '''
 
-fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='EMPTY']['fname'].tolist())
-time_s_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='EMPTY']['exptime_s'].tolist())
-dates_mjd_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='EMPTY']['date_obs'].tolist())
+fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['fname'].tolist())
+time_s_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['exptime_s'].tolist())
+dates_mjd_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['date_obs'].tolist())
 
 fits_file_name = center_directory+fname_temp[0]#stack i frames for asteroids
 centered_name_asteroid = fits_file_name.replace('.fits','_centered_asteroid.fits')
@@ -231,12 +231,12 @@ dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
 dat_head = datfile[1]
 stack_array = np.zeros(dat_raw.shape)
 
-filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.open(centered_name_asteroid)[0].header['FILTER'].find('EMPTY')+5:]
+filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.open(centered_name_asteroid)[0].header['FILTER'].find('SDSS r')+5:]
 
 
 #start_stop = np.array([[51,45],[45,41],[41,39],[39,37],[37,35],[35,33],[33,31],[31,29],[29,25],[25,21],[21,15],[15,0]])
 #start_stop = np.array([[8,0]])
-start_stop = np.array([[3,0]])
+start_stop = np.array([[39,35]])
 for qq in range(0,len(start_stop)):
 #for qq in range(0,1):
     stop, start = start_stop[qq]
