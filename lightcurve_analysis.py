@@ -191,7 +191,7 @@ for i in range(0, len(DCT_2017_10_30_mjd_mags_mag_unc)):
 
 #combine everything
 APO_string = np.loadtxt('APO_A2017U1_2017_10_29_date_mjd_mag_r_mag_unc_obs_code.txt',usecols=(0,1,2,3),dtype='string')
-APO_date = np.loadtxt('APO_A2017U1_2017_10_29_date_mjd_mag_r_mag_unc_obs_code.txt',usecols=(0))
+APO_date = np.loadtxt('APO_A2017U1_2017_10_29_date_mjd_mag_r_mag_unc_obs_code.txt',usecols=(0,))
 DCT_string = np.loadtxt('DCT_A2017U1_2017_10_30_date_mjd_mag_r_mag_unc_obs_code.txt',usecols=(0,1,2,3),dtype='string')
 DCT_date = np.loadtxt('DCT_A2017U1_2017_10_30_date_mjd_mag_r_mag_unc_obs_code.txt',usecols=(0))
 MPC_string = np.loadtxt('MPC_A2017U1_2017_10_30_date_mjd_mag_r_mag_unc_obs_code.txt',usecols=(0,1,2,3),dtype='string')
