@@ -629,6 +629,9 @@ def phase_function_bowell_muinonen (system, phase_angle_radians, G_or_G_12, sun_
 
     return V_minus_H_mag
 
+def planck_function_lambda(wavelength_meters, temp_kelvin):
+    return ( (2 *planks_c_m_sq_kg_p_s * c_m_p_s**2 / (wavelength_meters**5)) * ( 1 / (np.exp( (planks_c_m_sq_kg_p_s * c_m_p_s) / (wavelength_meters * boltzmans_c_m_sq_kg_p_s_sq_p_K * temp_kelvin) ) - 1) ) )
+
 def relative_tracking_rate_for_streak_length_arcsec_p_minute(streak_length_arcsec,exposure_time_s):
     return (streak_length_arcsec / (exposure_time_s/minutes_to_seconds))
 
