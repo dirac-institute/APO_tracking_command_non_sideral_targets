@@ -726,7 +726,7 @@ ax1 = fig.add_subplot(1,1,1)
 CS = plt.contourf(X, Y, Z, 10, cmap=parula_map, origin=origin)
 CS4 = plt.contour(X, Y, Z, 10, origin=origin)
 manual_locations = [(5.35,3.72), (5.35, 2.42), (5.35, 1.65), (5.35, 1.21), (5.35, 1.0), (5.35, 0.78),(5.35,0.56)]
-strs = ['5.0', '6.0', '7.0', '8.0', '9.0', '10.0', '11.0']
+strs = [r'$5.0$', r'$6.0$', r'$7.0$', r'$8.0$', r'$9.0$', r'$10.0$', r'$11.0$']
 fmt = {}
 for l, s in zip(CS4.levels, strs):
     fmt[l] = s
@@ -736,7 +736,12 @@ plt.clabel(CS4, CS4.levels, inline=True, fmt=fmt, fontsize=18,manual=manual_loca
 
 #plt.clabel(CS4, colors='k', fontsize=18,inline=1,manual=manual_locations,format = fmt)
 ax1.set(xlabel=r'$a/b$', ylabel=r'$\rho \; \mathrm{(g cm^{-3})}$')
-cb = fig.colorbar(CS, ax=ax1)
+cb = plt.colorbar(CS)
+tick_locs = np.array([3,4,5,6,7,8,9,10,11,12,13])
+tick_labels = np.array([r'$3.0$',r'$4.0$',r'$5.0$', r'$6.0$', r'$7.0$', r'$8.0$', r'$9.0$', r'$10.0$',r'$11.0$',r'$12.0$',r'$13.0$'])
+cb.locator     = matplotlib.ticker.FixedLocator(tick_locs)
+cb.formatter   = matplotlib.ticker.FixedFormatter(tick_labels)
+cb.update_ticks()
 cb.set_label(r'$\mathrm{Critical \; period \; (h)}$')
 plt.savefig('axial_ratio_vs_densit_vs_critical_period.eps')
 plt.savefig('axial_ratio_vs_densit_vs_critical_period.png')
