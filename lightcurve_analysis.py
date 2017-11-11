@@ -675,7 +675,7 @@ model = periodic.LombScargleFast()
 model.fit(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc)
 minimum_period = 0.01
 maximum_period=2
-periods = np.linspace(minimum_frequency, maximum_frequency, 10000)
+periods = np.linspace(minimum_period, maximum_period, 10000)
 scores = model.score(periods)
 ax1 = fig.add_subplot(1,1,1)
 line_width = 2.5
