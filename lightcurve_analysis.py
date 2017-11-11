@@ -732,9 +732,9 @@ for l, s in zip(CS4.levels, strs):
     fmt[l] = s
 
 # Label every other level using strings
-#plt.clabel(CS4, CS4.levels, inline=True, fmt=fmt, fontsize=18,manual=manual_locations)
+plt.clabel(CS4, CS4.levels, inline=True, fmt=fmt, fontsize=18,manual=manual_locations,colors='k')
 
-plt.clabel(CS4, colors='k', fontsize=18,inline=1,manual=manual_locations,format = fmt)
+#plt.clabel(CS4, colors='k', fontsize=18,inline=1,manual=manual_locations,format = fmt)
 ax1.set(xlabel=r'$a/b$', ylabel=r'$\rho \; \mathrm{(g cm^{-3})}$')
 cb = fig.colorbar(CS, ax=ax1)
 cb.set_label(r'$\mathrm{Critical \; period \; (h)}$')
