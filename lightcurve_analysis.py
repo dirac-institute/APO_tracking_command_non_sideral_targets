@@ -724,6 +724,17 @@ Z=critical_period_h = critical_period_axial_ratio_s(X,Y)/3600.
 fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
 ax1 = fig.add_subplot(1,1,1)
 CS = plt.contourf(X, Y, Z, 10, cmap=parula_map, origin=origin)
+CS4 = plt.contour(X, Y, Z, 10, origin=origin)
+manual_locations = [(5.35,3.72), (5.35, 2.42), (5.35, 1.65), (5.35, 1.21), (5.35, 1.0), (5.35, 0.78),(5.35,0.56)]
+strs = ['5.0', '6.0', '7.0', '8.0', '9.0', '10.0', '11.0']
+fmt = {}
+for l, s in zip(CS4.levels, strs):
+    fmt[l] = s
+
+# Label every other level using strings
+#plt.clabel(CS4, CS4.levels, inline=True, fmt=fmt, fontsize=18,manual=manual_locations)
+
+plt.clabel(CS4, colors='k', fontsize=18,inline=1,manual=manual_locations,format = fmt)
 ax1.set(xlabel=r'$a/b$', ylabel=r'$\rho \; \mathrm{(g cm^{-3})}$')
 cb = fig.colorbar(CS, ax=ax1)
 cb.set_label(r'$\mathrm{Critical \; period \; (h)}$')
