@@ -141,6 +141,7 @@ def convert_h_m_s_to_deg(h,m,s):
     return (h * np.sign(h)) + ((m* np.sign(h))/60.) + ((s* np.sign(h))/3600.)
 
 def convert_h_m_s_to_deg_no_sign(h,m,s):
+    
     return (h) + ((m)/60.) + ((s)/3600.)
 
 def create_frame_for_stacking(fits_file, x_pos, y_pos):
@@ -193,6 +194,18 @@ def error_propagation_weighted_sum(a,sigma_u,b,sigma_v,correlation_coefficient):
     #returns sqrt(sigma_x^2)
     return np.sqrt( (a * sigma_u)**2 + (b * sigma_v)**2 + (2 * a * b * sigma_u * sigma_v * correlation_coefficient))
 
+def flux_mJy(central_wavelength_microns, central_wavelength_transmission, bond_albedo, r_au, Delta_au, emissivity, radius_m):
+    solar_flux_watts_p_m_sq = solar_flux_arbitrary_solar_distance(r_au)
+    sub_solar_temperature_k = temperature_sub_solar_kelvin(bond_albedo, solar_flux_watts_p_m_sq,eta)
+    #sub_solar_temperature_k = temperature_sub_solar_kelvin(ba, solar_flux_watts_p_m_sq)
+    #planck function
+    radiance_central_wavelength_watts_p_sr_p_m_cu = planck_function_lambda(central_wavelength_microns * microns_to_meters, sub_solar_temperature_k)
+    radiance_central_wavelength_watts = radiance_central_wavelength_watts_p_sr_p_m_cu * emissivity * np.pi * microns_to_meters
+    #even though the name of this variable may indicate m to mu, it can be used to convert m^-1 to microns^-1, see also Mainzer et al. 2011, eq. 1
+    flux_central_wavelength_mJy = (radius_m)**2 * central_wavelength_transmission * radiance_central_wavelength_watts * watts_m_square_per_micron_to_mJy * central_wavelength_microns**2 * (1.0/(Delta_au*au_to_meters))**2
+    #
+    #radius_test = np.sqrt(flux_central_wavelength_mJy_test/(central_wavelength_transmission * radiance_central_wavelength_watts * watts_m_square_per_micron_to_mJy * central_wavelength_microns**2 * (1.0/(Delta_au*au_to_meters))**2))
+    return flux_central_wavelength_mJy
 
 def get_rates_no_cos_dec(rate, pa_deg): #rate is in "/min, pa is in degs USE FOR UH 88" when cos dec is turned on
     RA = rate * np.sin(np.radians(pa_deg))

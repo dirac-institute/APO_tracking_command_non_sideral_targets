@@ -227,7 +227,7 @@ from astropy.stats import LombScargle
 
 #Test periods combine with periodogram
 
-num_peak = 2.0
+num_peak = 1.0
 
 #combine DCT + APO
 DCTAPO_date_MJD_mag_mag_unc = np.loadtxt('APO_DCT_A2017U1_2017_10_30_date_mjd_mag_r_mag_unc_obs_code.txt',usecols=(0,1,2))
@@ -236,8 +236,8 @@ DCTAPO_mag = DCTAPO_date_MJD_mag_mag_unc[:,1]
 DCTAPO_mag_unc = DCTAPO_date_MJD_mag_mag_unc[:,2]
 
 #plt.ion()
-test_period_1 = 6.826/24.
-test_period_2 = 9.97/24
+test_period_1 = 3.41/24.
+test_period_2 = 4.99/24
 
 line_width = 2.5
 mult = 1.2
@@ -253,7 +253,7 @@ minimum_frequency = 1.0
 maximum_frequency=40.
 frequency, power = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).autopower(samples_per_peak=1000, minimum_frequency = minimum_frequency, maximum_frequency=maximum_frequency)
 
-num_peak = 2.0
+num_peak = 1.0
 best_frequency = frequency[np.argmax(power)]/num_peak
 phase_fit = np.linspace(0, num_peak)
 y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_fit / (best_frequency),
@@ -262,7 +262,7 @@ phase = (DCTAPO_date_MJD * best_frequency) % 1
 ax1.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5)
 
 #2x
-num_peak = 2.0
+num_peak = 1.0
 best_frequency = (frequency[np.argmax(power)]/num_peak) *0.5
 phase_fit = np.linspace(0, num_peak)
 y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_fit / (best_frequency),
@@ -271,7 +271,7 @@ phase = (DCTAPO_date_MJD * best_frequency) % 1
 ax1.errorbar(phase,  DCTAPO_mag, DCTAPO_mag_unc, fmt='o', mew=0, capsize=0, elinewidth=1.5, color='red')
 
 #0.5x
-num_peak = 2.0
+num_peak = 1.0
 best_frequency = (frequency[np.argmax(power)]/num_peak) * 2
 phase_fit = np.linspace(0, num_peak)
 y_fit = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).model(t=phase_fit / (best_frequency),
@@ -337,8 +337,8 @@ ax1.axvline((2.0/(best_frequency)) *24., color='grey', linestyle='-',label =r'$\
 
 
 #ax1.set(ylabel=r'$\mathrm{Power \; level}$', xlabel=r'$\mathrm{Period \; (h)}$')
-ax1.set(ylabel=r'$\mathrm{Power}$', xlabel=r'$\mathrm{Period \; (h)}$')
-ax1.set_xlim(0.99,40.0)
+ax1.set(ylabel=r'$\mathrm{Power}$', xlabel=r'$\mathrm{Lightcurve \; period \; (h)}$')
+ax1.set_xlim(0.99,15.0)
 ax1.legend(loc='upper left',prop={'size':19})
 
 plt.savefig('APO_DCT_combined_phased_data_2017_10_29_to_30_three_periods.eps')
@@ -685,8 +685,18 @@ paperwidth = 9.5*1.15
 margin = 0.5
 fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
 ax1 = fig.add_subplot(1,1,1)
-ax1.semilogx(periods,scores,color='grey')
+ax1.semilogx(periods,scores,color='blue')
+
+minimum_frequency = 1.0
+maximum_frequency=80.0
+frequency, power = LombScargle(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc).autopower(samples_per_peak=1000, minimum_frequency = minimum_frequency, maximum_frequency=maximum_frequency)
+
+#plt.ion()
+#plt.plot(((1.0/frequencies) * 2.0 * np.pi)/3600., periodigram)
+#plt.plot(frequencies, periodigram)
+#ax1.semilogx((1.0/(frequency/num_peak)) *24.,(power*50)+8965,color='grey')
+ax1.semilogx((1.0/(frequency/num_peak)) *24.,(power),color='red')
 ax1.set(ylabel=r'$\mathrm{Power}$', xlabel=r'$\mathrm{Period \; (h)}$')
-ax1.set_xlim(0.99,40.0)
+ax1.set_xlim(0.01,2)
 plt.savefig('APO_DCT_combined_phased_data_gatspy.eps')
 plt.savefig('APO_DCT_combined_phased_data_gatspy.png')
