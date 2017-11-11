@@ -734,7 +734,7 @@ for l, s in zip(CS4.levels, strs):
 
 # Label every other level using strings
 
-plt.clabel(CS4, CS4.levels, inline=True, fmt=fmt, fontsize=18,manual=manual_locations,colors=('k','k','k','w','k','k','k'))
+plt.clabel(CS4, CS4.levels, inline=True, fmt=fmt, fontsize=18,manual=manual_locations,colors=('k','k','k','k','k','k','k'))
 
 #plt.clabel(CS5, CS5.levels, inline=True, fontsize=18,manual=manual_locations,colors=('w',))
 #plt.clabel(CS4, colors='k', fontsize=18,inline=1,manual=manual_locations,format = fmt)
