@@ -625,7 +625,7 @@ nm_continuous = np.linspace(nm[0],nm[-1],1000.)
 nm_function_lambda = lambda x, a, b: a*x + b
 slope, intercept = 3.0, 1/1650.
 slope_pm, intercept_pm = 1.5, 1/1650.
-fit_ref = semimajor_axis_function_lambda(nm_continuous,slope, intercept)
+fit_ref = nm_function_lambda(nm_continuous,slope, intercept)
 
 norm_factor = fit_ref[find_nearest(nm_continuous,500)[0]]
 ref_norm = fit_ref/norm_factor
@@ -662,14 +662,31 @@ for i in range(0, len(number_entries_per_bin)):
         synthetic_entries = np.append(synthetic_entries, np.ones(number_entries_per_bin[i])*bins[i]+ np.random.uniform(-1.0 * bin_width/2,bin_width/2,number_entries_per_bin[i]))
         #print (number_entries_per_bin[i])
 
-
-
-
 plt.figure()
 plt.hist(synthetic_entries,50)
 
 shape, mean, unc =  skewnorm.fit(synthetic_entries[::100])
 
 
-#period and period unc
+#gatspy periodogram
+from gatspy import periodic
 
+model = periodic.LombScargleFast()
+model.fit(DCTAPO_date_MJD, DCTAPO_mag, DCTAPO_mag_unc)
+minimum_period = 0.01
+maximum_period=2
+periods = np.linspace(minimum_frequency, maximum_frequency, 10000)
+scores = model.score(periods)
+ax1 = fig.add_subplot(1,1,1)
+line_width = 2.5
+mult = 1.2
+paperheight = 6.5*1.15
+paperwidth = 9.5*1.15
+margin = 0.5
+fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
+ax1 = fig.add_subplot(1,1,1)
+ax1.semilogx(periods,scores,color='grey')
+ax1.set(ylabel=r'$\mathrm{Power}$', xlabel=r'$\mathrm{Period \; (h)}$')
+ax1.set_xlim(0.99,40.0)
+plt.savefig('APO_DCT_combined_phased_data_gatspy.eps')
+plt.savefig('APO_DCT_combined_phased_data_gatspy.png')

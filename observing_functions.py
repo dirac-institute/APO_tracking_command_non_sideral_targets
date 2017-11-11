@@ -125,9 +125,6 @@ def cal_date_fits_format_to_mjd(date_fits_header_string):
 
     return date_mjd + fraction_day
 
-def close_all_plots():
-    matplotlib.pyplot.close("all")
-
 def convert_deg_to_hms_RA(deg):
     decimal_m, h = np.modf(deg/hours_to_deg )
     decimal_s, m = np.modf(np.abs(decimal_m) * hours_to_minutes)
