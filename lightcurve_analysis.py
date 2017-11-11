@@ -706,28 +706,26 @@ plt.savefig('APO_DCT_combined_phased_data_gatspy.png')
 line_width = 2.5
 mult = 1.2
 paperheight = 6.5*1.75
-paperwidth = 9.5*1.75
+paperwidth = 8.5*1.75
 margin = 0.5
 
-np.random.seed(0)
-n = 100000
-x = np.random.standard_normal(n)
-y = 2.0 + 3.0 * x + 4.0 * np.random.standard_normal(n)
+origin = 'lower'
+n = 1000
+#x = np.random.standard_normal(n)
+#y = 2.0 + 3.0 * x + 4.0 * np.random.standard_normal(n)
+y = np.linspace(0.5,4,n) #rho
+x = np.linspace(2,8,n)  #a/b
 xmin = x.min()
 xmax = x.max()
 ymin = y.min()
 ymax = y.max()
-
+X, Y = np.meshgrid(x,y)
+Z=critical_period_h = critical_period_axial_ratio_s(X,Y)/3600.
 fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
 ax1 = fig.add_subplot(1,1,1)
-hb = ax1.hexbin(x, y, gridsize=50, cmap=parula_map)
-counts,xbins,ybins=np.histogram2d(x,y,bins=50)
-# make the contour plot
-plt.contour(counts.transpose(),extent=[xbins.min(),xbins.max(),
-    ybins.min(),ybins.max()],linewidths=3,colors='black',
-    linestyles='solid')
-ax1.axis([xmin, xmax, ymin, ymax])
-cb = fig.colorbar(hb, ax=ax1)
+CS = plt.contourf(X, Y, Z, 10, cmap=parula_map, origin=origin)
 ax1.set(xlabel=r'$a/b$', ylabel=r'$\rho \; \mathrm{(g cm^{-3})}$')
+cb = fig.colorbar(CS, ax=ax1)
 cb.set_label(r'$\mathrm{Critical \; period \; (h)}$')
-plt.show()
+plt.savefig('axial_ratio_vs_densit_vs_critical_period.eps')
+plt.savefig('axial_ratio_vs_densit_vs_critical_period.png')
