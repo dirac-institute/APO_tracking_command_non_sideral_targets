@@ -264,6 +264,19 @@ def magnitude_loss_filter_mean_S_C_taxonomy_ugrizywGRI_lsst(filter_string):
     V_minus_filter = {'u':-1.7705,'g':-0.349,'r':0.214,'i':0.373,'z':0.350,'y':0.355, 'w':0.16,'G':0.212,'R':0.363,'I':0.713}
     return V_minus_filter[filter_string]
 
+def sdss_magnitude_to_flux(mag,filter_string):
+    '''
+    mag = -(2.5/ln(10))*[asinh((f/f0)/2b)+ln(b)]
+    calculate f/f0
+    flux = 3631 Jy * f/f0.
+    '''
+    zero_point = 2.7953167544859577e-08 #w/m^2/micron
+    #dictonary takes name of filter and gives mean
+    b = {'u':1.4e-10,'g':0.9e-10,'r':1.2e-10,'i':1.8e-10,'z':7.4e-10}
+    f_div_f0 = np.sinh((mag/ (-2.5 / np.log(10) ) )-np.log(b[filter_string]))*2*b[filter_string]
+    flux = zero_point * f_div_f0
+    return flux
+
 
 def M_anom_and_mean_motion_to_time_of_peri(M,n,epoch_mjd_ut): #both M and n are in degrees and degrees/day.
     if M > 180:

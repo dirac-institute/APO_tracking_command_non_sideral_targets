@@ -39,16 +39,19 @@ apo_mag = lightcurve_mjd_mag_mag_unc[:,1]
 apo_mag_unc = lightcurve_mjd_mag_mag_unc[:,2]
 
 #DCT lightcurve
-lightcurve_hours_mag = np.loadtxt('A_2017_U1_DCT_2017_10_30_lightcurve')
+lightcurve_hours_mag = np.loadtxt('2017u1_lc.txt')
 
 dct_date_MJD = cal_date_to_mjd(2017,10,30)
 DCT_2017_10_30_hours = lightcurve_hours_mag[:,0]
 dct_fulldate_mjd = dct_date_MJD + (DCT_2017_10_30_hours/24.)
 dct_fulldate_seconds = (dct_fulldate_mjd - time_mjd[0]) * 3600*24
 dct_mag = lightcurve_hours_mag[:,1]
-dct_mag_unc = lightcurve_hours_mag[:,2]
+dct_mag_unc_upper = lightcurve_hours_mag[:,2]
+dct_mag_unc_lower = lightcurve_hours_mag[:,3]
 
-print ("Date (MJD) Magnitude r' Magnitude uncertainty")
+dct_mag_unc = (dct_mag_unc_upper + dct_mag_unc_lower)/2
+
+print ("#Date (MJD) Magnitude r' Magnitude uncertainty")
 for i in range(0,len(dct_fulldate_mjd)):
     print (dct_fulldate_mjd[i], dct_mag[i], dct_mag_unc[i])
 
@@ -56,7 +59,7 @@ mag = np.append(apo_mag+0.2,dct_mag)#normalized APO mags to 10/30
 mag_unc = np.append(apo_mag_unc,dct_mag_unc)
 full_times_mjd = np.append(time_mjd, dct_fulldate_mjd)
 
-print ("Date (MJD) Magnitude r' Magnitude uncertainty")
+print ("#Date (MJD) Magnitude r' Magnitude uncertainty")
 for i in range(0,len(mag)):
     print (full_times_mjd[i], mag[i], mag_unc[i])
 
@@ -236,8 +239,8 @@ DCTAPO_mag = DCTAPO_date_MJD_mag_mag_unc[:,1]
 DCTAPO_mag_unc = DCTAPO_date_MJD_mag_mag_unc[:,2]
 
 #plt.ion()
-test_period_1 = 3.41/24.
-test_period_2 = 4.99/24
+test_period_1 = 4.06/24.
+test_period_2 = 6.36/24
 
 line_width = 2.5
 mult = 1.2
@@ -725,7 +728,7 @@ fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
 ax1 = fig.add_subplot(1,1,1)
 CS = plt.contourf(X, Y, Z, 10, cmap=parula_map, origin=origin)
 CS4 = plt.contour(X, Y, Z, 10, origin=origin)
-CS5 = plt.contour(X, Y, Z, 10, levels =[7], colors ='white',origin=origin,linestyle='--')
+CS5 = plt.contour(X, Y, Z, 10, levels =[9], colors ='white',origin=origin,linestyle='--',linewidth=12)
 manual_locations = [(5.35,3.72), (5.35, 2.42), (5.35, 1.75), (5.35, 1.40), (5.35, 1.0), (5.35, 0.78),(5.35,0.56)]
 strs = [r'$5.0$', r'$6.0$', r'$7.0$', r'$8.0$', r'$9.0$', r'$10.0$', r'$11.0$']
 fmt = {}
