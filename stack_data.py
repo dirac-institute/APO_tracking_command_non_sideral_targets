@@ -72,10 +72,10 @@ for ff,fname in enumerate(files):
     image_data_frame['date_obs'][ff] = cal_date_fits_format_to_mjd(pyfits.open(fits_file_name)[0].header['DATE-OBS'])
     #create centered_star_frames
 
-'''
+
 #i frames
 
-cut = 0.15
+cut = 0.35
 
 #cut = 0.16 is good
 #display reduced_2017U1.0034_frames_0005_to_0034_filter_i_stacked_asteroid.fits 1 zr- zs- z1=2490 z2=2580
@@ -138,10 +138,10 @@ stacked_name_stars = fits_file_name.replace('.fits',frame_interval+'_filter_' + 
 dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
 pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),cut,axis=2),overwrite=True,header=dat_head)
+
+
+
 '''
-
-
-
 #g frames
 #Yan's is best version  display stack-g-15frames-45min-cl2.fits 1 zr- zs- z1=0.01 z2=0.
 
@@ -204,7 +204,7 @@ stacked_name_stars = fits_file_name.replace('.fits',frame_interval+'_filter_' + 
 dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
 pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),cut,axis=2),overwrite=True,header=dat_head)
-
+'''
 
 '''
 #r frames
