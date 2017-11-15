@@ -18,16 +18,7 @@ import glob
 '''
 sample execution: 
 
-ipython -i -- stack_data.py -dd reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -od reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/stacked_frames/ -sf object_stars_positions -cd reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/centered_frames/
-
-
-ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/reduced/data/ -od /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/reduced/data/stacked_frames/ -sf object_stars_positions2 -cd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/reduced/data/centered_frames/
-
-ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/ -od /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/reduced/data/stacked_frames/ -sf object_stars_positions3 -cd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/centered_frames/ -od /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/stacked_frames/
-
-
-ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/ -od /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/reduced/data/stacked_frames/ -sf object_stars_positions4 -cd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/centered_frames/ -od /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/stacked_frames/
-
+ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -od reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/stacked_frames/ -sf object_stars_positions -cd reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/centered_frames/
 
 file info:
 

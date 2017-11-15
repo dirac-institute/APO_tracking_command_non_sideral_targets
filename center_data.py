@@ -17,11 +17,8 @@ import glob
 '''
 sample execution: 
 
-ipython -i -- center_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/reduced/data/ -cd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/reduced/data/centered_frames/ -sf object_stars_positions2
+ipython -i -- center_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -cd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/centered_frames/ -sf object_stars_positions
 
-ipython -i -- center_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/ -cd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/centered_frames/ -sf object_stars_positions3
-
-ipython -i -- center_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/ -cd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171107/reduced/data/centered_frames/ -sf object_stars_positions4
 
 
 file info:
