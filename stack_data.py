@@ -141,7 +141,7 @@ pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array[::-1,:].asty
 '''
 
 
-'''
+
 #g frames
 #Yan's is best version  display stack-g-15frames-45min-cl2.fits 1 zr- zs- z1=0.01 z2=0.
 
@@ -204,14 +204,14 @@ stacked_name_stars = fits_file_name.replace('.fits',frame_interval+'_filter_' + 
 dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
 pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),cut,axis=2),overwrite=True,header=dat_head)
+
+
 '''
-
-
 #r frames
 #cut = 0.4 works
 #display reduced_2017U1.0061_frames_0058_to_0061_filter_r_stacked_asteroid.fits 3 zr- zs- z1=1700 z2=1800
 
-cut = 0.4 #for robust average
+cut = 0.48 #for robust average
 
 fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['fname'].tolist())
 time_s_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['exptime_s'].tolist())
@@ -293,7 +293,7 @@ for qq in range(0,len(start_stop)):
     dat_head['EXPTIME'] = time_s.sum()
     dat_head['DATE-OBS'] = np.mean(dates_mjd)
     pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),cut,axis=2),overwrite=True,header=dat_head)
-
+'''
 
 
 '''
