@@ -394,11 +394,11 @@ sci = np.concatenate((sci_up, sci_lo), axis = 0)
 pyfits.writeto('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/cals/master_flat_i.fits',sci.astype(np.float32),overwrite=True,header=dat_head1)
 
 #g
-datfile = pyfits.getdata('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/skyflat_i.0080.fits', header=True)
+datfile = pyfits.getdata('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/skyflat_g.0089.fits', header=True)
 dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
 dat_head1 = datfile[1]
 
-datfile = pyfits.getdata('/Users/bolin/Dropbox/Interstellar/yans-flats/illum-2017U1-i-allframes.fits', header=True)
+datfile = pyfits.getdata('/Users/bolin/Dropbox/Interstellar/yans-flats/illum-2017U1-g-allframes.fits', header=True)
 dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
 dat_head2 = dat_head1
 
@@ -415,13 +415,13 @@ sci_lo = np.concatenate((dat[2], dat[3]), axis = 1)
 sci_up = np.concatenate((dat[0], dat[1]), axis = 1)
 sci = np.concatenate((sci_up, sci_lo), axis = 0)
 
-pyfits.writeto('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/cals/2master_flat_i.fits',sci.astype(np.float32),overwrite=True,header=dat_head1)
+pyfits.writeto('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/cals/2master_flat_g.fits',sci.astype(np.float32),overwrite=True,header=dat_head1)
 
-datfile = pyfits.getdata('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/skyflat_i.0080.fits', header=True)
+datfile = pyfits.getdata('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/skyflat_g.0089.fits', header=True)
 dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
 dat_head1 = datfile[1]
 
-datfile = pyfits.getdata('/Users/bolin/Dropbox/Interstellar/yans-flats/flat-i.fits', header=True)
+datfile = pyfits.getdata('/Users/bolin/Dropbox/Interstellar/yans-flats/flat-g.fits', header=True)
 dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
 dat_head2 = dat_head1
 
@@ -438,6 +438,6 @@ sci_lo = np.concatenate((dat[2], dat[3]), axis = 1)
 sci_up = np.concatenate((dat[0], dat[1]), axis = 1)
 sci = np.concatenate((sci_up, sci_lo), axis = 0)
 
-pyfits.writeto('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/cals/master_flat_i.fits',sci.astype(np.float32),overwrite=True,header=dat_head1)
+pyfits.writeto('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/cals/master_flat_g.fits',sci.astype(np.float32),overwrite=True,header=dat_head1)
 
 '''
