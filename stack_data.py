@@ -81,7 +81,7 @@ for ff,fname in enumerate(files):
     image_data_frame['date_obs'][ff] = cal_date_fits_format_to_mjd(pyfits.open(fits_file_name)[0].header['DATE-OBS'])
     #create centered_star_frames
 
-'''
+
 #i frames
 
 fname =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS i']['fname'].tolist())
@@ -113,7 +113,7 @@ fits_file_name = output_directory + fname[i]
 stacked_name_asteroid = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_asteroid.fits')
 dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
-pyfits.writeto(stacked_name_asteroid,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
+pyfits.writeto(stacked_name_asteroid,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.15,axis=2),overwrite=True,header=dat_head)
 
 
 fits_file_name = center_directory+fname[0]#stack i frames for asteroids
@@ -139,7 +139,7 @@ fits_file_name = output_directory + fname[i]
 stacked_name_stars = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_stars.fits')
 dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
-pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
+pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.15,axis=2),overwrite=True,header=dat_head)
 
 
 #g frames
@@ -173,7 +173,7 @@ fits_file_name = output_directory + fname[i]
 stacked_name_asteroid = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_asteroid.fits')
 dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
-pyfits.writeto(stacked_name_asteroid,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
+pyfits.writeto(stacked_name_asteroid,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.1,axis=2),overwrite=True,header=dat_head)
 
 
 fits_file_name = center_directory+fname[0]#stack i frames for asteroids
@@ -183,7 +183,6 @@ dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
 dat_head = datfile[1]
 stack_array = np.zeros(dat_raw.shape[0] * dat_raw.shape[1]* len(fname)).reshape(dat_raw.shape[0], dat_raw.shape[1], len(fname))
 
-#stack i frames for stars
 for i in range(0, len(fname)):
     fits_file_name = center_directory+fname[i]
     centered_name_star = fits_file_name.replace('.fits','_centered_star.fits')
@@ -198,7 +197,7 @@ fits_file_name = output_directory + fname[i]
 stacked_name_stars = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_stars.fits')
 dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
-pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
+pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.1,axis=2),overwrite=True,header=dat_head)
 
 '''
 
@@ -218,7 +217,6 @@ stack_array = np.zeros(dat_raw.shape)
 
 filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.open(centered_name_asteroid)[0].header['FILTER'].find('SDSS ')+5:]
 #start, stop = 0, 15
-'''
 
 fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['fname'].tolist())
 time_s_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['exptime_s'].tolist())
@@ -234,9 +232,9 @@ stack_array = np.zeros(dat_raw.shape)
 filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.open(centered_name_asteroid)[0].header['FILTER'].find('SDSS r')+5:]
 
 
-#start_stop = np.array([[51,45],[45,41],[41,39],[39,37],[37,35],[35,33],[33,31],[31,29],[29,25],[25,21],[21,15],[15,0]])
+start_stop = np.array([[51,45],[45,41],[41,39],[39,37],[37,35],[35,33],[33,31],[31,29],[29,25],[25,21],[21,15],[15,0]])
 #start_stop = np.array([[8,0]])
-start_stop = np.array([[39,35]])
+#start_stop = np.array([[39,35]])
 for qq in range(0,len(start_stop)):
 #for qq in range(0,1):
     stop, start = start_stop[qq]
@@ -260,7 +258,7 @@ for qq in range(0,len(start_stop)):
     stacked_name_asteroid = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_asteroid.fits')
     dat_head['EXPTIME'] = time_s.sum()
     dat_head['DATE-OBS'] = np.mean(dates_mjd)
-    pyfits.writeto(stacked_name_asteroid,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
+    pyfits.writeto(stacked_name_asteroid,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.15,axis=2),overwrite=True,header=dat_head)
 
 
     fits_file_name = center_directory+fname[0]#stack i frames for asteroids
@@ -285,7 +283,7 @@ for qq in range(0,len(start_stop)):
     stacked_name_stars = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_stars.fits')
     dat_head['EXPTIME'] = time_s.sum()
     dat_head['DATE-OBS'] = np.mean(dates_mjd)
-    pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.05,axis=2),overwrite=True,header=dat_head)
+    pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),0.15,axis=2),overwrite=True,header=dat_head)
 
 
 
@@ -301,11 +299,12 @@ a_slope(g, g_unc, r, r_unc, i, i_unc)
 
 Fix yan's flats:
 
-datfile = pyfits.getdata('/Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171029/skyflat_r.0099.fits', header=True)
+#r
+datfile = pyfits.getdata('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/skyflat_r.0099.fits', header=True)
 dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
 dat_head1 = datfile[1]
 
-datfile = pyfits.getdata('/Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/illum-2017U1-r-frm51to72.fits', header=True)
+datfile = pyfits.getdata('/Users/bolin/Dropbox/Interstellar/yans-flats/illum-2017U1-r-frm51to72.fits', header=True)
 dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
 dat_head2 = dat_head1
 
@@ -322,15 +321,13 @@ sci_lo = np.concatenate((dat[2], dat[3]), axis = 1)
 sci_up = np.concatenate((dat[0], dat[1]), axis = 1)
 sci = np.concatenate((sci_up, sci_lo), axis = 0)
 
-pyfits.writeto('/Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/illum-2017U1-r-frm51to72_fixed.fits',sci.astype(np.float32),overwrite=True,header=dat_head1)
+pyfits.writeto('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/cals/2master_flat_r.fits',sci.astype(np.float32),overwrite=True,header=dat_head1)
 
-
-
-datfile = pyfits.getdata('/Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171029/skyflat_r.0099.fits', header=True)
+datfile = pyfits.getdata('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/skyflat_r.0099.fits', header=True)
 dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
 dat_head1 = datfile[1]
 
-datfile = pyfits.getdata('/Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/flat-r.fits', header=True)
+datfile = pyfits.getdata('/Users/bolin/Dropbox/Interstellar/yans-flats/flat-r.fits', header=True)
 dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
 dat_head2 = dat_head1
 
@@ -347,8 +344,100 @@ sci_lo = np.concatenate((dat[2], dat[3]), axis = 1)
 sci_up = np.concatenate((dat[0], dat[1]), axis = 1)
 sci = np.concatenate((sci_up, sci_lo), axis = 0)
 
-pyfits.writeto('/Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/Q4DD04/UT171106/flat-r_fixed.fits',sci.astype(np.float32),overwrite=True,header=dat_head1)
+pyfits.writeto('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/cals/master_flat_r.fits',sci.astype(np.float32),overwrite=True,header=dat_head1)
 
+#i
+datfile = pyfits.getdata('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/skyflat_i.0080.fits', header=True)
+dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
+dat_head1 = datfile[1]
 
+datfile = pyfits.getdata('/Users/bolin/Dropbox/Interstellar/yans-flats/illum-2017U1-i-allframes.fits', header=True)
+dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
+dat_head2 = dat_head1
+
+# ll, ul, lr, ur
+quads = ['DSEC11', 'DSEC21', 'DSEC12', 'DSEC22']
+
+dat = [[],[],[],[]]
+for i,quad in enumerate(quads):
+    idx_string = pyfits.open('/Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171029/skyflat_r.0099.fits')[0].header[quad]
+    idx = re.split('[: ,]',idx_string.rstrip(']').lstrip('['))
+    dat[i] = dat_raw[int(idx[2])-1:int(idx[3]),int(idx[0])-1:int(idx[1])]
+
+sci_lo = np.concatenate((dat[2], dat[3]), axis = 1)
+sci_up = np.concatenate((dat[0], dat[1]), axis = 1)
+sci = np.concatenate((sci_up, sci_lo), axis = 0)
+
+pyfits.writeto('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/cals/2master_flat_i.fits',sci.astype(np.float32),overwrite=True,header=dat_head1)
+
+datfile = pyfits.getdata('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/skyflat_i.0080.fits', header=True)
+dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
+dat_head1 = datfile[1]
+
+datfile = pyfits.getdata('/Users/bolin/Dropbox/Interstellar/yans-flats/flat-i.fits', header=True)
+dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
+dat_head2 = dat_head1
+
+# ll, ul, lr, ur
+quads = ['DSEC11', 'DSEC21', 'DSEC12', 'DSEC22']
+
+dat = [[],[],[],[]]
+for i,quad in enumerate(quads):
+    idx_string = pyfits.open('/Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171029/skyflat_r.0099.fits')[0].header[quad]
+    idx = re.split('[: ,]',idx_string.rstrip(']').lstrip('['))
+    dat[i] = dat_raw[int(idx[2])-1:int(idx[3]),int(idx[0])-1:int(idx[1])]
+
+sci_lo = np.concatenate((dat[2], dat[3]), axis = 1)
+sci_up = np.concatenate((dat[0], dat[1]), axis = 1)
+sci = np.concatenate((sci_up, sci_lo), axis = 0)
+
+pyfits.writeto('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/cals/master_flat_i.fits',sci.astype(np.float32),overwrite=True,header=dat_head1)
+
+#g
+datfile = pyfits.getdata('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/skyflat_i.0080.fits', header=True)
+dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
+dat_head1 = datfile[1]
+
+datfile = pyfits.getdata('/Users/bolin/Dropbox/Interstellar/yans-flats/illum-2017U1-i-allframes.fits', header=True)
+dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
+dat_head2 = dat_head1
+
+# ll, ul, lr, ur
+quads = ['DSEC11', 'DSEC21', 'DSEC12', 'DSEC22']
+
+dat = [[],[],[],[]]
+for i,quad in enumerate(quads):
+    idx_string = pyfits.open('/Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171029/skyflat_r.0099.fits')[0].header[quad]
+    idx = re.split('[: ,]',idx_string.rstrip(']').lstrip('['))
+    dat[i] = dat_raw[int(idx[2])-1:int(idx[3]),int(idx[0])-1:int(idx[1])]
+
+sci_lo = np.concatenate((dat[2], dat[3]), axis = 1)
+sci_up = np.concatenate((dat[0], dat[1]), axis = 1)
+sci = np.concatenate((sci_up, sci_lo), axis = 0)
+
+pyfits.writeto('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/cals/2master_flat_i.fits',sci.astype(np.float32),overwrite=True,header=dat_head1)
+
+datfile = pyfits.getdata('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/skyflat_i.0080.fits', header=True)
+dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
+dat_head1 = datfile[1]
+
+datfile = pyfits.getdata('/Users/bolin/Dropbox/Interstellar/yans-flats/flat-i.fits', header=True)
+dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
+dat_head2 = dat_head1
+
+# ll, ul, lr, ur
+quads = ['DSEC11', 'DSEC21', 'DSEC12', 'DSEC22']
+
+dat = [[],[],[],[]]
+for i,quad in enumerate(quads):
+    idx_string = pyfits.open('/Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q4DD04/UT171029/skyflat_r.0099.fits')[0].header[quad]
+    idx = re.split('[: ,]',idx_string.rstrip(']').lstrip('['))
+    dat[i] = dat_raw[int(idx[2])-1:int(idx[3]),int(idx[0])-1:int(idx[1])]
+
+sci_lo = np.concatenate((dat[2], dat[3]), axis = 1)
+sci_up = np.concatenate((dat[0], dat[1]), axis = 1)
+sci = np.concatenate((sci_up, sci_lo), axis = 0)
+
+pyfits.writeto('/Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/cals/master_flat_i.fits',sci.astype(np.float32),overwrite=True,header=dat_head1)
 
 '''

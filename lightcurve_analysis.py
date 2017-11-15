@@ -727,8 +727,8 @@ Z=critical_period_h = critical_period_axial_ratio_s(X,Y)/3600.
 fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
 ax1 = fig.add_subplot(1,1,1)
 CS = plt.contourf(X, Y, Z, 10, cmap=parula_map, origin=origin)
-CS4 = plt.contour(X, Y, Z, 10, origin=origin)
-CS5 = plt.contour(X, Y, Z, 10, levels =[9], colors ='white',origin=origin,linestyle='--',linewidth=12)
+CS4 = plt.contour(X, Y, Z, 10, origin=origin,linewidths=2)
+CS5 = plt.contour(X, Y, Z, 10, levels =[7], colors ='white',origin=origin,linestyle='--',linewidths=6)
 manual_locations = [(5.35,3.72), (5.35, 2.42), (5.35, 1.75), (5.35, 1.40), (5.35, 1.0), (5.35, 0.78),(5.35,0.56)]
 strs = [r'$5.0$', r'$6.0$', r'$7.0$', r'$8.0$', r'$9.0$', r'$10.0$', r'$11.0$']
 fmt = {}
