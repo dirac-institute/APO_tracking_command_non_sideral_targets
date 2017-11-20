@@ -168,11 +168,17 @@ def create_frame_for_stacking(fits_file, x_pos, y_pos):
     null_frame[add_array_edge_coord_y:add_array_edge_coord_y+frame_size,add_array_edge_coord_x:add_array_edge_coord_x+frame_size] += dat_raw
     return null_frame[::-1,:], dat_head
 
-def cohesive_strength_asteroid_pascals(period_s,diamter_km, density_g_cm_3):#lisse et al 1999.
-    radius_cm = (diamter_km *1e5) * 0.5
+def cohesive_strength_asteroid_pascals(period_s,radius_km, density_g_cm_3):#lisse et al 1999.
+    radius_cm = (radius_km *1e5)
     angular_rotation_speed_rad_s = ((2 * np.pi)/period_s)
     strength_dynes_cm_2 = ((np.pi * 2)/(period_s))**2 * (radius_cm)**2 * density_g_cm_3 * .5
     return strength_dynes_cm_2/10.
+
+def cohesive_strength_asteroid_axial_ratio_density_pascals(period_s,radius_km, density_g_cm_3,b_to_a_ratio):#lisse et al 1999.
+    volume_km_3 = sphere_volume(radius_km)
+    a_km, b_km = sphere_volume_to_triaxial_a_b_prolate_dimensions(volume_km_3,b_to_a_ratio)
+    strength_Pa = cohesive_strength_asteroid_pascals(period_s,b_km, density_g_cm_3)
+    return strength_Pa
 
 def critical_period_axial_ratio_s_prolate(axial_ratio, density_g_cm_3):#Jewit et al. 2012, Samarasinha et al. 2004
     density_kg_m_3 = density_g_cm_3 * 1000.

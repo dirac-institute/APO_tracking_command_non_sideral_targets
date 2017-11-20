@@ -748,3 +748,58 @@ cb.update_ticks()
 cb.set_label(r'$\mathrm{Critical \; period \; (h)}$')
 plt.savefig('axial_ratio_vs_densit_vs_critical_period.pdf')
 plt.savefig('axial_ratio_vs_densit_vs_critical_period.png')
+
+#cohesion
+
+radius_km = .120 #km assuming pv = 0.1
+volume_km_3 = sphere_volume(radius_km)
+b_to_a_ratio= 6.1
+a_km, b_km = sphere_volume_to_triaxial_a_b_prolate_dimensions(volume_km_3,b_to_a_ratio)
+period_s = 8.1 * 3600.
+density_g_cm_3 = 1.0
+cohesive_strength_asteroid_pascals(period_s,b_km,density_g_cm_3)
+
+
+
+line_width = 2.5
+mult = 1.2
+paperheight = 6.5*1.75
+paperwidth = 8.5*1.75
+margin = 0.5
+origin = 'lower'
+n = 1000
+#x = np.random.standard_normal(n)
+#y = 2.0 + 3.0 * x + 4.0 * np.random.standard_normal(n)
+y = np.linspace(0.65,7,n) #rho
+x = np.linspace(4,7,n)  #a/b
+xmin = x.min()
+xmax = x.max()
+ymin = y.min()
+ymax = y.max()
+X, Y = np.meshgrid(x,y)
+Z=cohseive_strenght = critical_period_axial_ratio_s_prolate(X,Y)/3600.
+fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
+ax1 = fig.add_subplot(1,1,1)
+increment = 1
+levels = np.arange(np.floor(np.min(Z)), np.ceil(np.max(Z)),increment)
+levels = np.delete(levels,np.where(levels==8)[0][0])
+levels_white = np.array([8.0])
+CS = plt.contourf(X, Y, Z, 10, cmap=parula_map, origin=origin, levels = levels)
+CS4 = plt.contour(X, Y, Z, 10, origin=origin,linewidths=2, levels=levels, alphas=0.8)
+#CS5 = plt.contour(X, Y, Z, 10, origin=origin,linewidths=4, levels=levels_white, alphas=0.8,colors='white')
+#manual_locations_odd = np.array([(5.47,6.66), (5.47,4.01), (5.47,2.69), (5.47,1.85), (5.47,1.39), (5.47,1.1), (5.47,0.88), (5.47,0.73)])
+#manual_locations_even = np.array([(6.0,3.95),(6.0,2.76),(6.0,2.02),(6.0,1.54),(6.0,1.22),(6.0,0.97),(6.0,0.8)])
+#manual_locations = np.concatenate((manual_locations_odd, manual_locations_even),axis=0).tolist()
+#manual_location_white = [(6.0,6.35)]
+#plt.clabel(CS4, CS4.levels, inline=True, fmt='%1.1f', fontsize=18,manual=manual_locations, colors='k')
+#plt.clabel(CS5, CS5.levels, inline=True, fmt='%1.1f', fontsize=18,manual=manual_location_white, colors='w')
+ax1.set(xlabel=r'$a/b$', ylabel=r'$\rho \; \mathrm{(g cm^{-3})}$')
+cb = plt.colorbar(CS)
+#tick_locs = np.array([4,6,8,10,12,14,16,18,20,22, 24,26, 28])
+#tick_labels = np.array([r'$4.0$',r'$6.0$',r'$8.0$', r'$10.0$', r'$12.0$', r'$14.0$', r'$16.0$', r'$18.0$',r'$20.0$',r'$22.0$',r'$24.0$',r'$26.0$',r'$28.0$'])
+#cb.locator     = matplotlib.ticker.FixedLocator(tick_locs)
+#cb.formatter   = matplotlib.ticker.FixedFormatter(tick_labels)
+#cb.update_ticks()
+cb.set_label(r'$\mathrm{Cohesive \; strength \; (Pa)}$')
+plt.savefig('axial_ratio_vs_densit_vs_cohesive_strength.pdf')
+plt.savefig('axial_ratio_vs_densit_vs_cohesive_strength.png')
