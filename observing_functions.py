@@ -648,6 +648,15 @@ def planck_function_lambda(wavelength_meters, temp_kelvin):
 def relative_tracking_rate_for_streak_length_arcsec_p_minute(streak_length_arcsec,exposure_time_s):
     return (streak_length_arcsec / (exposure_time_s/minutes_to_seconds))
 
+def sphere_volume(radius):
+    volume = (4/3.) * np.pi * radius**3
+    return volume
+
+def sphere_volume_to_triaxial_a_b_prolate_dimensions(volume,b_to_a_ratio): #or a prolate spheroid
+    a = (((volume / ((4/3.)* np.pi))/b_to_a_ratio)**.3333)
+    b = a*b_to_a_ratio
+    return a,b
+
 def sign_to_plus_minus(number):
     sign = np.sign(number)
     if sign >= 0:
@@ -695,6 +704,7 @@ def total_track_length(streak_length_arcsec, exposure_time_s, readout_time_s, nu
     total_track_time_s = (num_filters * ((num_exposures * exposure_time_s) + (num_exposures * readout_time_s))) + ((num_filters-1) * cfht_filter_change_time_s) - readout_time_s #since we do not count the last readout time, nor do we count the first filter for the purposes of a filter change time
     total_track_length_arcsec = tracking_rate_arcsec_p_s * total_track_time_s
     return total_track_time_s, total_track_length_arcsec
+
 
 def visir_exp_time_s(SNR,flux_Jy):
     return (SNR/(visir_constant * flux_Jy))**2
