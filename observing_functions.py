@@ -24,6 +24,7 @@ from statsmodels.nonparametric.kernel_density import KDEMultivariate
 import pyslalib.slalib as sla
 import subprocess
 import astropy.io.fits as pyfits
+import itertools
 
 
 sed_paretheses =  'awk -F "[()]" \'{ for (i=2; i<NF; i+=2) print $i }\''
@@ -173,9 +174,9 @@ def cohesive_strength_asteroid_pascals(period_s,diamter_km, density_g_cm_3):#lis
     strength_dynes_cm_2 = ((np.pi * 2)/(period_s))**2 * (radius_cm)**2 * density_g_cm_3 * .5
     return strength_dynes_cm_2/10.
 
-def critical_period_axial_ratio_s(axial_ratio, density_g_cm_3):#Jewit et al. 2012, Samarasinha et al. 2004
+def critical_period_axial_ratio_s_prolate(axial_ratio, density_g_cm_3):#Jewit et al. 2012, Samarasinha et al. 2004
     density_kg_m_3 = density_g_cm_3 * 1000.
-    P_crit = np.sqrt(axial_ratio * ((3*np.pi)/(6.67e-11* density_kg_m_3)))
+    P_crit = np.sqrt(((3*np.pi)/(6.67e-11* density_kg_m_3)))*axial_ratio
     return P_crit
 
 def css_efficiency(m,epsilon_0, m_lim, m_drop):

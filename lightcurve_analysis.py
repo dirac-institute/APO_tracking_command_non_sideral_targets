@@ -711,43 +711,40 @@ mult = 1.2
 paperheight = 6.5*1.75
 paperwidth = 8.5*1.75
 margin = 0.5
-
 origin = 'lower'
 n = 1000
 #x = np.random.standard_normal(n)
 #y = 2.0 + 3.0 * x + 4.0 * np.random.standard_normal(n)
-y = np.linspace(0.5,4,n) #rho
+y = np.linspace(0.75,7,n) #rho
 x = np.linspace(4,7,n)  #a/b
 xmin = x.min()
 xmax = x.max()
 ymin = y.min()
 ymax = y.max()
 X, Y = np.meshgrid(x,y)
-Z=critical_period_h = critical_period_axial_ratio_s(X,Y)/3600.
+Z=critical_period_h = critical_period_axial_ratio_s_prolate(X,Y)/3600.
 fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
 ax1 = fig.add_subplot(1,1,1)
-CS = plt.contourf(X, Y, Z, 10, cmap=parula_map, origin=origin)
-CS4 = plt.contour(X, Y, Z, 10, origin=origin,linewidths=2)
-CS5 = plt.contour(X, Y, Z, 10, levels =[7], colors ='white',origin=origin,linestyle='--',linewidths=6)
-manual_locations = [(5.35,3.72), (5.35, 2.42), (5.35, 1.75), (5.35, 1.40), (5.35, 1.0), (5.35, 0.78),(5.35,0.56)]
-strs = [r'$5.0$', r'$6.0$', r'$7.0$', r'$8.0$', r'$9.0$', r'$10.0$', r'$11.0$']
-fmt = {}
-for l, s in zip(CS4.levels, strs):
-    fmt[l] = s
-
-# Label every other level using strings
-
-plt.clabel(CS4, CS4.levels, inline=True, fmt=fmt, fontsize=18,manual=manual_locations,colors=('k','k','k','k','k','k','k'))
-
-#plt.clabel(CS5, CS5.levels, inline=True, fontsize=18,manual=manual_locations,colors=('w',))
-#plt.clabel(CS4, colors='k', fontsize=18,inline=1,manual=manual_locations,format = fmt)
+increment = 1
+levels = np.arange(np.floor(np.min(critical_period_h)), 28.0,increment)
+levels = np.delete(levels,np.where(levels==8)[0][0])
+levels_white = np.array([8.0])
+CS = plt.contourf(X, Y, Z, 10, cmap=parula_map, origin=origin, levels = levels)
+CS4 = plt.contour(X, Y, Z, 10, origin=origin,linewidths=2, levels=levels, alphas=0.8)
+CS5 = plt.contour(X, Y, Z, 10, origin=origin,linewidths=4, levels=levels_white, alphas=0.8,colors='white')
+manual_locations_odd = np.array([(5.47,6.66), (5.47,4.01), (5.47,2.69), (5.47,1.85), (5.47,1.39), (5.47,1.1), (5.47,0.88), (5.47,0.73)])
+manual_locations_even = np.array([(6.0,3.95),(6.0,2.76),(6.0,2.02),(6.0,1.54),(6.0,1.22),(6.0,0.97),(6.0,0.8)])
+manual_locations = np.concatenate((manual_locations_odd, manual_locations_even),axis=0).tolist()
+manual_location_white = [(6.0,6.35)]
+plt.clabel(CS4, CS4.levels, inline=True, fmt='%1.1f', fontsize=18,manual=manual_locations, colors='k')
+plt.clabel(CS5, CS5.levels, inline=True, fmt='%1.1f', fontsize=18,manual=manual_location_white, colors='w')
 ax1.set(xlabel=r'$a/b$', ylabel=r'$\rho \; \mathrm{(g cm^{-3})}$')
 cb = plt.colorbar(CS)
-tick_locs = np.array([3,4,5,6,7,8,9,10,11,12,13])
-tick_labels = np.array([r'$3.0$',r'$4.0$',r'$5.0$', r'$6.0$', r'$7.0$', r'$8.0$', r'$9.0$', r'$10.0$',r'$11.0$',r'$12.0$',r'$13.0$'])
+tick_locs = np.array([4,6,8,10,12,14,16,18,20,22])
+tick_labels = np.array([r'$4.0$',r'$6.0$',r'$8.0$', r'$10.0$', r'$12.0$', r'$14.0$', r'$16.0$', r'$18.0$',r'$20.0$',r'$22.0$'])
 cb.locator     = matplotlib.ticker.FixedLocator(tick_locs)
 cb.formatter   = matplotlib.ticker.FixedFormatter(tick_labels)
 cb.update_ticks()
 cb.set_label(r'$\mathrm{Critical \; period \; (h)}$')
-plt.savefig('axial_ratio_vs_densit_vs_critical_period.eps')
+plt.savefig('axial_ratio_vs_densit_vs_critical_period.pdf')
 plt.savefig('axial_ratio_vs_densit_vs_critical_period.png')
