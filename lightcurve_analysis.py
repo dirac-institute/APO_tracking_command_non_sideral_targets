@@ -752,15 +752,7 @@ plt.savefig('axial_ratio_vs_densit_vs_critical_period.png')
 #cohesion
 
 radius_km = .120 #km assuming pv = 0.1
-volume_km_3 = sphere_volume(radius_km)
-b_to_a_ratio= 6.1
-a_km, b_km = sphere_volume_to_triaxial_a_b_prolate_dimensions(volume_km_3,b_to_a_ratio)
 period_s = 8.1 * 3600.
-density_g_cm_3 = 1.0
-cohesive_strength_asteroid_pascals(period_s,b_km,density_g_cm_3)
-
-
-
 line_width = 2.5
 mult = 1.2
 paperheight = 6.5*1.75
@@ -777,11 +769,11 @@ xmax = x.max()
 ymin = y.min()
 ymax = y.max()
 X, Y = np.meshgrid(x,y)
-Z=cohseive_strenght = critical_period_axial_ratio_s_prolate(X,Y)/3600.
+Z=cohseive_strenght = cohesive_strength_asteroid_axial_ratio_density_pascals(period_s, radius_km,Y,X)
 fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
 ax1 = fig.add_subplot(1,1,1)
 increment = 1
-levels = np.arange(np.floor(np.min(Z)), np.ceil(np.max(Z)),increment)
+levels = np.arange(np.floor(np.min(Z)), np.ceil(np.max(Z))+increment,increment)
 levels = np.delete(levels,np.where(levels==8)[0][0])
 levels_white = np.array([8.0])
 CS = plt.contourf(X, Y, Z, 10, cmap=parula_map, origin=origin, levels = levels)
