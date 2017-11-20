@@ -715,7 +715,7 @@ origin = 'lower'
 n = 1000
 #x = np.random.standard_normal(n)
 #y = 2.0 + 3.0 * x + 4.0 * np.random.standard_normal(n)
-y = np.linspace(0.75,7,n) #rho
+y = np.linspace(0.65,7,n) #rho
 x = np.linspace(4,7,n)  #a/b
 xmin = x.min()
 xmax = x.max()
@@ -726,7 +726,7 @@ Z=critical_period_h = critical_period_axial_ratio_s_prolate(X,Y)/3600.
 fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
 ax1 = fig.add_subplot(1,1,1)
 increment = 1
-levels = np.arange(np.floor(np.min(critical_period_h)), 28.0,increment)
+levels = np.arange(np.floor(np.min(critical_period_h)), 30,increment)
 levels = np.delete(levels,np.where(levels==8)[0][0])
 levels_white = np.array([8.0])
 CS = plt.contourf(X, Y, Z, 10, cmap=parula_map, origin=origin, levels = levels)
@@ -740,8 +740,8 @@ plt.clabel(CS4, CS4.levels, inline=True, fmt='%1.1f', fontsize=18,manual=manual_
 plt.clabel(CS5, CS5.levels, inline=True, fmt='%1.1f', fontsize=18,manual=manual_location_white, colors='w')
 ax1.set(xlabel=r'$a/b$', ylabel=r'$\rho \; \mathrm{(g cm^{-3})}$')
 cb = plt.colorbar(CS)
-tick_locs = np.array([4,6,8,10,12,14,16,18,20,22])
-tick_labels = np.array([r'$4.0$',r'$6.0$',r'$8.0$', r'$10.0$', r'$12.0$', r'$14.0$', r'$16.0$', r'$18.0$',r'$20.0$',r'$22.0$'])
+tick_locs = np.array([4,6,8,10,12,14,16,18,20,22, 24,26, 28])
+tick_labels = np.array([r'$4.0$',r'$6.0$',r'$8.0$', r'$10.0$', r'$12.0$', r'$14.0$', r'$16.0$', r'$18.0$',r'$20.0$',r'$22.0$',r'$24.0$',r'$26.0$',r'$28.0$'])
 cb.locator     = matplotlib.ticker.FixedLocator(tick_locs)
 cb.formatter   = matplotlib.ticker.FixedFormatter(tick_labels)
 cb.update_ticks()
