@@ -773,25 +773,24 @@ Z=cohseive_strenght = cohesive_strength_asteroid_axial_ratio_density_pascals(per
 fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
 ax1 = fig.add_subplot(1,1,1)
 increment = 1
-levels = np.arange(np.floor(np.min(Z)), np.ceil(np.max(Z))+increment,increment)
-levels = np.delete(levels,np.where(levels==8)[0][0])
-levels_white = np.array([8.0])
-CS = plt.contourf(X, Y, Z, 10, cmap=parula_map, origin=origin, levels = levels)
-CS4 = plt.contour(X, Y, Z, 10, origin=origin,linewidths=2, levels=levels, alphas=0.8)
-#CS5 = plt.contour(X, Y, Z, 10, origin=origin,linewidths=4, levels=levels_white, alphas=0.8,colors='white')
-#manual_locations_odd = np.array([(5.47,6.66), (5.47,4.01), (5.47,2.69), (5.47,1.85), (5.47,1.39), (5.47,1.1), (5.47,0.88), (5.47,0.73)])
-#manual_locations_even = np.array([(6.0,3.95),(6.0,2.76),(6.0,2.02),(6.0,1.54),(6.0,1.22),(6.0,0.97),(6.0,0.8)])
-#manual_locations = np.concatenate((manual_locations_odd, manual_locations_even),axis=0).tolist()
-#manual_location_white = [(6.0,6.35)]
-#plt.clabel(CS4, CS4.levels, inline=True, fmt='%1.1f', fontsize=18,manual=manual_locations, colors='k')
-#plt.clabel(CS5, CS5.levels, inline=True, fmt='%1.1f', fontsize=18,manual=manual_location_white, colors='w')
+#levels = np.arange(np.floor(np.min(Z)), np.ceil(np.max(Z))+increment,increment)
+CS = plt.contourf(X, Y, Z, 10, cmap=parula_map, origin=origin)
+CS4 = plt.contour(X, Y, Z, 10, origin=origin,linewidths=2, alphas=0.8)
+manual_locations = [(4.67,1.15),(4.96,2.1),(5.26,2.94),(5.46,3.71),(5.72,4.4),(5.87,5.07),(6.12,5.6),(6.32,6.11),(6.56,6.56),(6.87,6.83)]
+
+fmt = {}
+strs = np.arange(3.0,33,3).astype('string').tolist()
+for l,s in zip( CS.levels, strs ):
+    fmt[l] = s
+#plt.clabel(CS4, CS4.levels, inline=True, fmt=fmt, fontsize=18, colors='k',manual=manual_locations)
+plt.clabel(CS4, CS4.levels, inline=True, fmt='%1.1f', fontsize=18, colors='k',manual=manual_locations)
 ax1.set(xlabel=r'$a/b$', ylabel=r'$\rho \; \mathrm{(g cm^{-3})}$')
 cb = plt.colorbar(CS)
-#tick_locs = np.array([4,6,8,10,12,14,16,18,20,22, 24,26, 28])
-#tick_labels = np.array([r'$4.0$',r'$6.0$',r'$8.0$', r'$10.0$', r'$12.0$', r'$14.0$', r'$16.0$', r'$18.0$',r'$20.0$',r'$22.0$',r'$24.0$',r'$26.0$',r'$28.0$'])
-#cb.locator     = matplotlib.ticker.FixedLocator(tick_locs)
-#cb.formatter   = matplotlib.ticker.FixedFormatter(tick_labels)
-#cb.update_ticks()
+tick_locs = np.array([0,3,6,9,12,15,18,21,24,27,30])
+tick_labels = np.array([r'$0.0$',r'$3.0$',r'$6.0$',r'$9.0$', r'$12.0$', r'$15.0$', r'$18.0$', r'$21.0$', r'$24.0$',r'$27.0$',r'$30.0$'])
+cb.locator     = matplotlib.ticker.FixedLocator(tick_locs)
+cb.formatter   = matplotlib.ticker.FixedFormatter(tick_labels)
+cb.update_ticks()
 cb.set_label(r'$\mathrm{Cohesive \; strength \; (Pa)}$')
 plt.savefig('axial_ratio_vs_densit_vs_cohesive_strength.pdf')
 plt.savefig('axial_ratio_vs_densit_vs_cohesive_strength.png')
