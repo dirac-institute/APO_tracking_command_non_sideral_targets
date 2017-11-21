@@ -799,10 +799,12 @@ plt.savefig('axial_ratio_vs_densit_vs_cohesive_strength.png')
 
 #order combined data
 
+#light time correction 2017 10 30
+light_time_correction_2017_10_30 = 0.003260956790123456
 date_mjd_mags_mags_unc = np.loadtxt('combined_unordered', usecols=(0,1,2))
 date, mags,mags_unc = date_mjd_mags_mags_unc[:,0] , date_mjd_mags_mags_unc[:,1], date_mjd_mags_mags_unc[:,2]
 obs_code = np.loadtxt('combined_unordered',usecols=(3,),dtype='string')
 combined_string = np.loadtxt('combined_unordered',dtype='string')
 combined_string_sort = combined_string[np.argsort(date)]
 for i in range(0,len(combined_string_sort)):
-    print(combined_string_sort[i,0], combined_string_sort[i,1], combined_string_sort[i,2], combined_string_sort[i,3])
+    print(str(float(combined_string_sort[i,0]) - light_time_correction_2017_10_30), combined_string_sort[i,1], combined_string_sort[i,2], combined_string_sort[i,3])

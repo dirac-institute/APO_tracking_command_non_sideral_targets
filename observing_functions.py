@@ -180,7 +180,7 @@ def cohesive_strength_asteroid_axial_ratio_density_pascals(period_s,radius_km, d
     strength_Pa = cohesive_strength_asteroid_pascals(period_s,b_km, density_g_cm_3)
     return strength_Pa
 
-def critical_period_axial_ratio_s_prolate(axial_ratio, density_g_cm_3):#Jewit et al. 2012, Samarasinha et al. 2004
+def critical_period_axial_ratio_s_prolate(axial_ratio, density_g_cm_3):#Jewit et al. 2017
     density_kg_m_3 = density_g_cm_3 * 1000.
     P_crit = np.sqrt(((3*np.pi)/(6.67e-11* density_kg_m_3)))*axial_ratio
     return P_crit
