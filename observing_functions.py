@@ -219,6 +219,10 @@ def get_rates_no_cos_dec(rate, pa_deg): #rate is in "/min, pa is in degs USE FOR
     DEC = rate  * np.cos(np.radians(pa_deg))
     return RA, DEC #mili arcsec per sec
 
+def hours_minutes_seconds_to_degrees(hours, minutes, seconds):
+    degrees = np.degrees(sla.sla_ctf2r(hours, minutes, seconds)[0])
+    return degrees
+
 def lightcurve_amplitude_to_axial_ratio(light_curve_amplitude_mags):
     axial_ratio = 10**(0.4 * light_curve_amplitude_mags)
     return axial_ratio
