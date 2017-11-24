@@ -785,7 +785,7 @@ increment = 5
 contour_levels = np.arange(0,55,5)
 CS = plt.contourf(X, Y, Z, 10, cmap=parula_map, origin=origin, levels = levels)
 CS4 = plt.contour(X, Y, Z, 10, origin=origin,linewidths=2, alphas=0.8, levels = contour_levels)
-manual_locations = [(4.95,2.12),(5.8,3.1),(6.6,3.9),(7.1,4.5), (7.7,5.1), (8.2,5.6), (8.8,5.87), (9.33,6.2), (9.7,6.5), (10.1,6.8)]
+manual_locations = [(4.95,2.12),(5.8,3.1),(6.6,3.9),(7.1,4.5), (7.7,4.9), (8.25,5.36), (8.8,5.87), (9.33,6.2), (9.7,6.5), (10.1,6.8)]
 #fmt = {}
 #strs = np.arange(3.0,33,3).astype('string').tolist()
 #for l,s in zip( CS.levels, strs ):
