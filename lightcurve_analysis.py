@@ -779,20 +779,26 @@ fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
 ax1 = fig.add_subplot(1,1,1)
 increment = 1
 #levels = np.arange(np.floor(np.min(Z)), np.ceil(np.max(Z))+increment,increment)
-CS = plt.contourf(X, Y, Z, 10, cmap=parula_map, origin=origin)
-CS4 = plt.contour(X, Y, Z, 10, origin=origin,linewidths=2, alphas=0.8)
-manual_locations = [(4.67,1.15),(4.96,2.1),(5.26,2.94),(5.46,3.71),(5.72,4.4),(5.87,5.07),(6.12,5.6),(6.32,6.11),(6.56,6.56),(6.87,6.83)]
-
-fmt = {}
-strs = np.arange(3.0,33,3).astype('string').tolist()
-for l,s in zip( CS.levels, strs ):
-    fmt[l] = s
+increment = 0.125
+levels = np.arange(np.floor(np.min(Z)), np.ceil(np.max(Z))+increment,increment)
+increment = 5
+contour_levels = np.arange(0,55,5)
+CS = plt.contourf(X, Y, Z, 10, cmap=parula_map, origin=origin, levels = levels)
+CS4 = plt.contour(X, Y, Z, 10, origin=origin,linewidths=2, alphas=0.8, levels = contour_levels)
+manual_locations = [(4.95,2.12),(5.8,3.1),(6.6,3.9),(7.1,4.5), (7.7,5.1), (8.2,5.6), (8.8,5.87), (9.33,6.2), (9.7,6.5), (10.1,6.8)]
+#fmt = {}
+#strs = np.arange(3.0,33,3).astype('string').tolist()
+#for l,s in zip( CS.levels, strs ):
+#    fmt[l] = s
 #plt.clabel(CS4, CS4.levels, inline=True, fmt=fmt, fontsize=18, colors='k',manual=manual_locations)
 plt.clabel(CS4, CS4.levels, inline=True, fmt='%1.1f', fontsize=18, colors='k',manual=manual_locations)
+#plt.clabel(CS4, CS4.levels, inline=True, fmt='%1.1f', fontsize=18, colors='k')
 ax1.set(xlabel=r'$b/a$', ylabel=r'$\rho \; \mathrm{(g cm^{-3})}$')
 cb = plt.colorbar(CS)
-tick_locs = np.array([0,3,6,9,12,15,18,21,24,27,30])
-tick_labels = np.array([r'$0.0$',r'$3.0$',r'$6.0$',r'$9.0$', r'$12.0$', r'$15.0$', r'$18.0$', r'$21.0$', r'$24.0$',r'$27.0$',r'$30.0$'])
+#tick_locs = np.array([0,3,6,9,12,15,18,21,24,27,30])
+#tick_labels = np.array([r'$0.0$',r'$3.0$',r'$6.0$',r'$9.0$', r'$12.0$', r'$15.0$', r'$18.0$', r'$21.0$', r'$24.0$',r'$27.0$',r'$30.0$'])
+tick_locs = np.arange(0,55,5)
+tick_labels = np.array([r'$0.0$',r'$5.0$',r'$10.0$',r'$15.0$', r'$20.0$', r'$25.0$', r'$30.0$', r'$35.0$', r'$40.0$',r'$45.0$',r'$50.0$'])
 cb.locator     = matplotlib.ticker.FixedLocator(tick_locs)
 cb.formatter   = matplotlib.ticker.FixedFormatter(tick_labels)
 cb.update_ticks()
