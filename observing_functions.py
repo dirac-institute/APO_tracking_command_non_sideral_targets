@@ -188,6 +188,10 @@ def critical_period_axial_ratio_s_prolate(axial_ratio, density_g_cm_3):#Jewit et
 def css_efficiency(m,epsilon_0, m_lim, m_drop):
     return epsilon_0 / (1 + np.exp((m -m_lim)/m_drop))
 
+def degrees_minutes_seconds_to_degrees(degrees, minutes, seconds):
+    degrees = degrees + (minutes)/60. + (seconds)/3600.
+    return degrees
+
 def dictionary_month(numerical_month):
     month = dict([[1,'Jan'], [2,'Feb'], [3,'Mar'], [4,'Apr'], [5,'May'], [6,'Jun'], [7,'Jul'], [8,'Aug'], [9,'Sep'], [10,'Oct'], [11,'Nov'], [12,'Dec']])
     return month[numerical_month]
