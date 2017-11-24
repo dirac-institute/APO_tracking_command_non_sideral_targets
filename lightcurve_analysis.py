@@ -725,7 +725,7 @@ X, Y = np.meshgrid(x,y)
 Z=critical_period_h = critical_period_axial_ratio_s_prolate(X,Y)/3600.
 fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
 ax1 = fig.add_subplot(1,1,1)
-increment = 0.125
+increment = 0.25
 levels = np.arange(np.floor(np.min(critical_period_h)), np.ceil(np.max(critical_period_h))+increment,increment)
 increment = 4
 contour_levels = np.arange(np.floor(np.min(critical_period_h)), np.ceil(np.max(critical_period_h))+increment,increment)
@@ -779,7 +779,7 @@ fig = plt.figure(figsize=(paperwidth - 2*margin, paperheight - 2*margin))
 ax1 = fig.add_subplot(1,1,1)
 increment = 1
 #levels = np.arange(np.floor(np.min(Z)), np.ceil(np.max(Z))+increment,increment)
-increment = 0.125
+increment = 0.25
 levels = np.arange(np.floor(np.min(Z)), np.ceil(np.max(Z))+increment,increment)
 increment = 5
 contour_levels = np.arange(0,55,5)
@@ -797,8 +797,8 @@ ax1.set(xlabel=r'$b/a$', ylabel=r'$\rho \; \mathrm{(g cm^{-3})}$')
 cb = plt.colorbar(CS)
 #tick_locs = np.array([0,3,6,9,12,15,18,21,24,27,30])
 #tick_labels = np.array([r'$0.0$',r'$3.0$',r'$6.0$',r'$9.0$', r'$12.0$', r'$15.0$', r'$18.0$', r'$21.0$', r'$24.0$',r'$27.0$',r'$30.0$'])
-tick_locs = np.arange(0,55,5)
-tick_labels = np.array([r'$0.0$',r'$5.0$',r'$10.0$',r'$15.0$', r'$20.0$', r'$25.0$', r'$30.0$', r'$35.0$', r'$40.0$',r'$45.0$',r'$50.0$'])
+tick_locs = np.arange(1,56,5)
+tick_labels = np.array([r'$1.0$',r'$6.0$',r'$11.0$',r'$16.0$', r'$21.0$', r'$26.0$', r'$31.0$', r'$36.0$', r'$41.0$',r'$46.0$',r'$51.0$'])
 cb.locator     = matplotlib.ticker.FixedLocator(tick_locs)
 cb.formatter   = matplotlib.ticker.FixedFormatter(tick_labels)
 cb.update_ticks()
