@@ -102,7 +102,7 @@ for i in range(0, len(fname)):
     datfile = pyfits.getdata(centered_name_asteroid, header=True)
     dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
     dat_head = datfile[1]
-    stack_array[:,:,i] = plt.imshow(scipy.ndimage.interpolation.rotate(dat_raw,30*i, reshape = False))
+    stack_array[:,:,i] = scipy.ndimage.interpolation.rotate(dat_raw,30*i, reshape = False)
     #stack_array[:,:,i] = dat_raw
 
 frame_interval = '_frames_'+fname[0][fname[0].find('00'):].replace('.fits','') + '_to_' + fname[-1][fname[-1].find('00'):].replace('.fits','')
