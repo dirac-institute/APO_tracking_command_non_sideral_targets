@@ -126,6 +126,7 @@ if mode == 'i':
             datfile = pyfits.getdata(centered_name_asteroid, header=True)
             dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
             dat_head = datfile[1]
+            dat_raw[np.where(dat_raw == np.inf)] = 0.0
             stack_array[:,:,i+(len(fname)*mm)] = scipy.ndimage.interpolation.rotate(dat_raw,np.random.randint(0,359), reshape = False)
             #stack_array[:,:,i] = dat_raw
 
@@ -222,6 +223,7 @@ if mode == 'g':
                 fits_file_name = center_directory+fname[i]
                 centered_name_asteroid = fits_file_name.replace('.fits','_centered_asteroid.fits')
                 datfile = pyfits.getdata(centered_name_asteroid, header=True)
+                dat_raw[np.where(dat_raw == np.inf)] = 0.0
                 dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
                 dat_head = datfile[1]
                 #stack_array[:,:,i+(len(fname)*mm)] = scipy.ndimage.interpolation.rotate(dat_raw,np.random.randint(0,359), reshape = False)
@@ -271,7 +273,7 @@ if mode == 'r':
     #cut = 0.4 works
     #display reduced_2017U1.0067_frames_0054_to_0067_filter_r_stacked_asteroid_mean.fits 1 zr- zs- z1=1700 z2=1800
 
-    cut = 0.05 #for robust average
+    cut = 0.4 #for robust average
 
     fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['fname'].tolist())
     time_s_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['exptime_s'].tolist())
@@ -321,10 +323,11 @@ if mode == 'r':
                 centered_name_asteroid = fits_file_name.replace('.fits','_centered_asteroid.fits')
                 datfile = pyfits.getdata(centered_name_asteroid, header=True)
                 dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
+                dat_raw[np.where(dat_raw == np.inf)] = 0.0
                 dat_head = datfile[1]
-                #stack_array[:,:,i+(len(fname)*mm)] = scipy.ndimage.interpolation.rotate(dat_raw,np.random.randint(0,359), reshape = False)
+                stack_array[:,:,i+(len(fname)*mm)] = scipy.ndimage.interpolation.rotate(dat_raw,np.random.randint(0,359), reshape = False)
 
-                stack_array[:,:,i+(len(fname)*mm)]  = np.rot90(dat_raw, np.random.randint(1,5))
+                #stack_array[:,:,i+(len(fname)*mm)]  = np.rot90(dat_raw, np.random.randint(1,5))
                 #stack_array[:,:,i] = dat_raw
 
 
