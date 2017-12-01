@@ -173,9 +173,10 @@ if mode == 'g':
 
     cut = 0.05
     #g frames
-    #Yan's is best version  display stack-g-15frames-45min-cl2.fits 1 zr- zs- z1=0.01 z2=0.
+    #Yan's is best version  display
+    #display stack-g-15frames-45min-cl2.fits 2 zr- zs- z1=0.01 z2=0.
     #my g frames
-    #
+    #display  reduced_2017U1.0019_frames_0003_to_0019_filter_g_stacked_asteroid_mean.fits 1
 
     fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS g']['fname'].tolist())
     time_s_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS g']['exptime_s'].tolist())
@@ -207,7 +208,7 @@ if mode == 'g':
 
     #start_stop = np.array([[51,45],[45,41],[41,39],[39,37],[37,35],[35,33],[33,31],[31,29],[29,25],[25,21],[21,15],[15,0]])
     #start_stop = np.array([[8,0]])
-    start_stop = np.array([[8,0]])
+    start_stop = np.array([[7,0]])
     for qq in range(0,len(start_stop)):
     #for qq in range(0,1):
         stop, start = start_stop[qq]
@@ -240,6 +241,7 @@ if mode == 'g':
         dat_head['DATE-OBS'] = np.mean(dates_mjd)
         pyfits.writeto(stacked_name_asteroid.replace('.fits','_mean.fits'),scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),cut,axis=2),overwrite=True,header=dat_head)
         pyfits.writeto(stacked_name_asteroid.replace('.fits','_median.fits'),np.median(stack_array[::-1,:].astype(np.float32),axis=2),overwrite=True,header=dat_head)
+        pyfits.writeto(stacked_name_asteroid.replace('.fits','_sum.fits'),np.sum(stack_array[::-1,:].astype(np.float32),axis=2),overwrite=True,header=dat_head)
 
 
     '''
