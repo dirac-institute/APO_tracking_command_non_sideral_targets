@@ -19,7 +19,7 @@ import scipy.ndimage
 '''
 sample execution: 
 
-ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -od reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/stacked_frames/ -sf object_stars_positions -cd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/centered_frames/ -sf object_stars_positions -m g
+ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -od reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/stacked_frames/ -sf object_stars_positions -cd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/centered_frames/ -sf object_stars_positions -m g -nt 1
 
 file info:
 
@@ -34,6 +34,7 @@ parser.add_argument("-od", "--output_directory", help="directory for the storage
 parser.add_argument("-cd", "--center_directory", help="directory for the storage of centered data", nargs='*')
 parser.add_argument("-sf", "--stack_file", help="text file containing file name, object x,y, ref star x,y", nargs='*')
 parser.add_argument("-m", "--mode", help="g, r or i.", nargs='*')
+parser.add_argument("-nt", "--number_mean_median_stack_trials", help="g, r or i.", nargs='*')
 
 #parser.add_argument("-af","--argument_file", type=open, action=LoadFromFile)
 args = parser.parse_args()
@@ -44,6 +45,7 @@ center_directory = args.center_directory[0]
 output_directory = args.output_directory[0]
 stack_file = args.stack_file[0]
 mode = args.mode[0]
+number_mean_median_stack_trials = int(args.number_mean_median_stack_trials[0])
 
 files = np.loadtxt(stack_file,usecols=(0,),dtype='string')
 image_data_frame = pd.DataFrame(files,columns=['fname'])
@@ -84,7 +86,7 @@ if mode == 'i':
     cut = 0.38
 
     #cut = 0.16 is good
-    #display reduced_2017U1.0034_frames_0005_to_0034_filter_i_stacked_asteroid.fits 1 zr- zs- z1=2490 z2=2580
+    #display reduced_2017U1.0034_frames_0005_to_0034_filter_i_stacked_asteroid_mean.fits 1 zr- zs- z1=2490 z2=2580
 
 
     fname =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS i']['fname'].tolist())
@@ -113,7 +115,7 @@ if mode == 'i':
     '''
 
     #experimental median rotation
-    number_trials = 30
+    number_trials = number_mean_median_stack_trials
     stack_array = np.zeros(dat_raw.shape[0] * dat_raw.shape[1]* len(fname)*number_trials).reshape(dat_raw.shape[0], dat_raw.shape[1], len(fname)*number_trials)
 
     for mm in range(0,number_trials):
@@ -168,9 +170,11 @@ if mode == 'i':
 
 if mode == 'g':
 
-    cut = 0.5
+    cut = 0.05
     #g frames
     #Yan's is best version  display stack-g-15frames-45min-cl2.fits 1 zr- zs- z1=0.01 z2=0.
+    #my g frames
+    #
 
     fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS g']['fname'].tolist())
     time_s_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS g']['exptime_s'].tolist())
@@ -209,7 +213,7 @@ if mode == 'g':
         fname = fname_temp[start:stop]
         time_s = time_s_temp[start:stop]
         dates_mjd = dates_mjd_temp[start:stop]
-        number_trials = 1
+        number_trials = number_mean_median_stack_trials
         stack_array = np.zeros(dat_raw.shape[0] * dat_raw.shape[1]* len(fname)*number_trials).reshape(dat_raw.shape[0], dat_raw.shape[1], len(fname)*number_trials)
 
         for mm in range(0,number_trials):
@@ -220,7 +224,8 @@ if mode == 'g':
                 datfile = pyfits.getdata(centered_name_asteroid, header=True)
                 dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
                 dat_head = datfile[1]
-                stack_array[:,:,i+(len(fname)*mm)] = scipy.ndimage.interpolation.rotate(dat_raw,np.random.randint(0,359), reshape = False)
+                #stack_array[:,:,i+(len(fname)*mm)] = scipy.ndimage.interpolation.rotate(dat_raw,np.random.randint(0,359), reshape = False)
+                stack_array[:,:,i+(len(fname)*mm)] = dat_raw
                 #stack_array[:,:,i] = dat_raw
 
 
@@ -264,9 +269,9 @@ if mode == 'g':
 if mode == 'r':
     #r frames
     #cut = 0.4 works
-    #display reduced_2017U1.0061_frames_0058_to_0061_filter_r_stacked_asteroid.fits 3 zr- zs- z1=1700 z2=1800
+    #display reduced_2017U1.0067_frames_0054_to_0067_filter_r_stacked_asteroid_mean.fits 1 zr- zs- z1=1700 z2=1800
 
-    cut = 0.48 #for robust average
+    cut = 0.05 #for robust average
 
     fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['fname'].tolist())
     time_s_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['exptime_s'].tolist())
@@ -306,7 +311,7 @@ if mode == 'r':
         time_s = time_s_temp[start:stop]
         dates_mjd = dates_mjd_temp[start:stop]
 #experimental rotation
-        number_trials = 1
+        number_trials = number_mean_median_stack_trials
         stack_array = np.zeros(dat_raw.shape[0] * dat_raw.shape[1]* len(fname)*number_trials).reshape(dat_raw.shape[0], dat_raw.shape[1], len(fname)*number_trials)
 
         for mm in range(0,number_trials):
@@ -317,7 +322,9 @@ if mode == 'r':
                 datfile = pyfits.getdata(centered_name_asteroid, header=True)
                 dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
                 dat_head = datfile[1]
-                stack_array[:,:,i+(len(fname)*mm)] = scipy.ndimage.interpolation.rotate(dat_raw,np.random.randint(0,359), reshape = False)
+                #stack_array[:,:,i+(len(fname)*mm)] = scipy.ndimage.interpolation.rotate(dat_raw,np.random.randint(0,359), reshape = False)
+
+                stack_array[:,:,i+(len(fname)*mm)]  = np.rot90(dat_raw, np.random.randint(1,5))
                 #stack_array[:,:,i] = dat_raw
 
 
