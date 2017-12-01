@@ -176,10 +176,7 @@ if mode == 'g':
     #Yan's is best version  display
     #display stack-g-15frames-45min-cl2.fits 2 zr- zs- z1=0.01 z2=0.
     #my g frames
-    #display reduced_2017U1.0018_frames_0003_to_0018_filter_g_stacked_asteroid_mean.fits 1 zr- zs- z1=2400 z2=2550
-
-    #test
-    #display reduced_2017U1.0037_frames_0019_to_0037_filter_g_stacked_asteroid_mean.fits 1 zr- zs- z1=2400 z2=2550
+    #display reduced_2017U1.0037_frames_0019_to_0037_filter_g_stacked_asteroid_median.fits 1 zr- zs- z1=2400 z2=2550
 
     fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS g']['fname'].tolist())
     time_s_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS g']['exptime_s'].tolist())
