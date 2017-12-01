@@ -14,6 +14,7 @@ import argparse
 sys.path.insert(0, '/Users/bolin/NEO/Follow_up/CFHT_observing/scripts/')
 from observing_functions import *
 import glob
+import scipy.ndimage
 
 '''
 sample execution: 
@@ -72,10 +73,10 @@ for ff,fname in enumerate(files):
     image_data_frame['date_obs'][ff] = cal_date_fits_format_to_mjd(pyfits.open(fits_file_name)[0].header['DATE-OBS'])
     #create centered_star_frames
 
-'''
+
 #i frames
 
-cut = 0.35
+cut = 0.05
 
 #cut = 0.16 is good
 #display reduced_2017U1.0034_frames_0005_to_0034_filter_i_stacked_asteroid.fits 1 zr- zs- z1=2490 z2=2580
@@ -101,7 +102,8 @@ for i in range(0, len(fname)):
     datfile = pyfits.getdata(centered_name_asteroid, header=True)
     dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
     dat_head = datfile[1]
-    stack_array[:,:,i] = dat_raw
+    stack_array[:,:,i] = plt.imshow(scipy.ndimage.interpolation.rotate(dat_raw,30*i, reshape = False))
+    #stack_array[:,:,i] = dat_raw
 
 frame_interval = '_frames_'+fname[0][fname[0].find('00'):].replace('.fits','') + '_to_' + fname[-1][fname[-1].find('00'):].replace('.fits','')
 #stack_array -= scipy.stats.trim_mean(stack_array)
@@ -110,10 +112,10 @@ fits_file_name = output_directory + fname[i]
 stacked_name_asteroid = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_asteroid.fits')
 dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
-pyfits.writeto(stacked_name_asteroid,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),cut,axis=2),overwrite=True,header=dat_head)
-#pyfits.writeto(stacked_name_asteroid,np.median(stack_array[::-1,:].astype(np.float32),axis=2),overwrite=True,header=dat_head)
+#pyfits.writeto(stacked_name_asteroid,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),cut,axis=2),overwrite=True,header=dat_head)
+pyfits.writeto(stacked_name_asteroid,np.median(stack_array[::-1,:].astype(np.float32),axis=2),overwrite=True,header=dat_head)
 
-
+'''
 fits_file_name = center_directory+fname[0]#stack i frames for asteroids
 centered_name_asteroid = fits_file_name.replace('.fits','_centered_asteroid.fits')
 datfile = pyfits.getdata(centered_name_asteroid, header=True)
@@ -206,7 +208,7 @@ dat_head['DATE-OBS'] = np.mean(dates_mjd)
 pyfits.writeto(stacked_name_stars,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),cut,axis=2),overwrite=True,header=dat_head)
 '''
 
-
+'''
 #r frames
 #cut = 0.4 works
 #display reduced_2017U1.0061_frames_0058_to_0061_filter_r_stacked_asteroid.fits 3 zr- zs- z1=1700 z2=1800
@@ -240,7 +242,7 @@ stack_array = np.zeros(dat_raw.shape)
 
 filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.open(centered_name_asteroid)[0].header['FILTER'].find('SDSS r')+5:]
 
-'''
+
 #start_stop = np.array([[51,45],[45,41],[41,39],[39,37],[37,35],[35,33],[33,31],[31,29],[29,25],[25,21],[21,15],[15,0]])
 #start_stop = np.array([[8,0]])
 start_stop = np.array([[45,31]])
