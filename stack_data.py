@@ -176,7 +176,7 @@ if mode == 'g':
     #Yan's is best version  display
     #display stack-g-15frames-45min-cl2.fits 2 zr- zs- z1=0.01 z2=0.
     #my g frames
-    #display  reduced_2017U1.0019_frames_0003_to_0019_filter_g_stacked_asteroid_mean.fits 1
+    #display reduced_2017U1.0018_frames_0003_to_0018_filter_g_stacked_asteroid_mean.fits 1 zr- zs- z1=2400 z2=2550
 
     fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS g']['fname'].tolist())
     time_s_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS g']['exptime_s'].tolist())
@@ -207,8 +207,8 @@ if mode == 'g':
 
 
     #start_stop = np.array([[51,45],[45,41],[41,39],[39,37],[37,35],[35,33],[33,31],[31,29],[29,25],[25,21],[21,15],[15,0]])
-    #start_stop = np.array([[8,0]])
-    start_stop = np.array([[7,0]])
+    start_stop = np.array([[16,12]])
+    #start_stop = np.array([[17,0]])
     for qq in range(0,len(start_stop)):
     #for qq in range(0,1):
         stop, start = start_stop[qq]
@@ -227,8 +227,8 @@ if mode == 'g':
                 dat_raw[np.where(dat_raw == np.inf)] = 0.0
                 dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
                 dat_head = datfile[1]
-                #stack_array[:,:,i+(len(fname)*mm)] = scipy.ndimage.interpolation.rotate(dat_raw,np.random.randint(0,359), reshape = False)
-                stack_array[:,:,i+(len(fname)*mm)] = dat_raw
+                stack_array[:,:,i+(len(fname)*mm)] = scipy.ndimage.interpolation.rotate(dat_raw,np.random.randint(0,359), reshape = False)
+                #stack_array[:,:,i+(len(fname)*mm)] = dat_raw
                 #stack_array[:,:,i] = dat_raw
 
 
