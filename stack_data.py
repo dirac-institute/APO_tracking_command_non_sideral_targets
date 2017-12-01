@@ -112,6 +112,7 @@ number_trials = 5
 stack_array = np.zeros(dat_raw.shape[0] * dat_raw.shape[1]* len(fname)*number_trials).reshape(dat_raw.shape[0], dat_raw.shape[1], len(fname)*number_trials)
 
 for mm in range(0,number_trials):
+    print ("trial stage",mm)
     for i in range(0, len(fname)):
         fits_file_name = center_directory+fname[i]
         centered_name_asteroid = fits_file_name.replace('.fits','_centered_asteroid.fits')
