@@ -108,7 +108,7 @@ for i in range(0, len(fname)):
 '''
 
 #experimental median rotation
-number_trials = 5
+number_trials = 10
 stack_array = np.zeros(dat_raw.shape[0] * dat_raw.shape[1]* len(fname)*number_trials).reshape(dat_raw.shape[0], dat_raw.shape[1], len(fname)*number_trials)
 
 for mm in range(0,number_trials):
@@ -130,8 +130,8 @@ fits_file_name = output_directory + fname[i]
 stacked_name_asteroid = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_asteroid.fits')
 dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
-#pyfits.writeto(stacked_name_asteroid,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),cut,axis=2),overwrite=True,header=dat_head)
-pyfits.writeto(stacked_name_asteroid,np.median(stack_array[::-1,:].astype(np.float32),axis=2),overwrite=True,header=dat_head)
+pyfits.writeto(stacked_name_asteroid.replace('.fits','_mean.fits'),scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),cut,axis=2),overwrite=True,header=dat_head)
+pyfits.writeto(stacked_name_asteroid.replace('.fits','_median.fits'),np.median(stack_array[::-1,:].astype(np.float32),axis=2),overwrite=True,header=dat_head)
 
 '''
 fits_file_name = center_directory+fname[0]#stack i frames for asteroids
