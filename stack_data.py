@@ -76,7 +76,7 @@ for ff,fname in enumerate(files):
 
 #i frames
 
-cut = 0.05
+cut = 0.38
 
 #cut = 0.16 is good
 #display reduced_2017U1.0034_frames_0005_to_0034_filter_i_stacked_asteroid.fits 1 zr- zs- z1=2490 z2=2580
@@ -102,7 +102,7 @@ for i in range(0, len(fname)):
     datfile = pyfits.getdata(centered_name_asteroid, header=True)
     dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
     dat_head = datfile[1]
-    stack_array[:,:,i] = scipy.ndimage.interpolation.rotate(dat_raw,30*i, reshape = False)
+    stack_array[:,:,i] = scipy.ndimage.interpolation.rotate(dat_raw,np.random.randint(0,359), reshape = False)
     #stack_array[:,:,i] = dat_raw
 
 frame_interval = '_frames_'+fname[0][fname[0].find('00'):].replace('.fits','') + '_to_' + fname[-1][fname[-1].find('00'):].replace('.fits','')
@@ -112,8 +112,8 @@ fits_file_name = output_directory + fname[i]
 stacked_name_asteroid = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_asteroid.fits')
 dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
-#pyfits.writeto(stacked_name_asteroid,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),cut,axis=2),overwrite=True,header=dat_head)
-pyfits.writeto(stacked_name_asteroid,np.median(stack_array[::-1,:].astype(np.float32),axis=2),overwrite=True,header=dat_head)
+pyfits.writeto(stacked_name_asteroid,scipy.stats.trim_mean(stack_array[::-1,:].astype(np.float32),cut,axis=2),overwrite=True,header=dat_head)
+#pyfits.writeto(stacked_name_asteroid,np.median(stack_array[::-1,:].astype(np.float32),axis=2),overwrite=True,header=dat_head)
 
 '''
 fits_file_name = center_directory+fname[0]#stack i frames for asteroids
