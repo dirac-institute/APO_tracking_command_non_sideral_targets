@@ -178,6 +178,9 @@ if mode == 'g':
     #my g frames
     #display reduced_2017U1.0018_frames_0003_to_0018_filter_g_stacked_asteroid_mean.fits 1 zr- zs- z1=2400 z2=2550
 
+    #test
+    #display reduced_2017U1.0037_frames_0019_to_0037_filter_g_stacked_asteroid_mean.fits 1 zr- zs- z1=2400 z2=2550
+
     fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS g']['fname'].tolist())
     time_s_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS g']['exptime_s'].tolist())
     dates_mjd_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS g']['date_obs'].tolist())
@@ -207,7 +210,8 @@ if mode == 'g':
 
 
     #start_stop = np.array([[51,45],[45,41],[41,39],[39,37],[37,35],[35,33],[33,31],[31,29],[29,25],[25,21],[21,15],[15,0]])
-    start_stop = np.array([[16,12]])
+    start_stop = np.array([[16,7]])
+    #start_stop = np.array([[16,12]])
     #start_stop = np.array([[17,0]])
     for qq in range(0,len(start_stop)):
     #for qq in range(0,1):
@@ -226,6 +230,7 @@ if mode == 'g':
                 datfile = pyfits.getdata(centered_name_asteroid, header=True)
                 dat_raw[np.where(dat_raw == np.inf)] = 0.0
                 dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
+                dat_raw[np.where(dat_raw == np.inf)] = 0.0
                 dat_head = datfile[1]
                 stack_array[:,:,i+(len(fname)*mm)] = scipy.ndimage.interpolation.rotate(dat_raw,np.random.randint(0,359), reshape = False)
                 #stack_array[:,:,i+(len(fname)*mm)] = dat_raw
