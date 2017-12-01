@@ -113,7 +113,7 @@ if mode == 'i':
     '''
 
     #experimental median rotation
-    number_trials = 15
+    number_trials = 30
     stack_array = np.zeros(dat_raw.shape[0] * dat_raw.shape[1]* len(fname)*number_trials).reshape(dat_raw.shape[0], dat_raw.shape[1], len(fname)*number_trials)
 
     for mm in range(0,number_trials):
@@ -167,12 +167,14 @@ if mode == 'i':
 
 
 if mode == 'g':
+
+    cut = 0.5
     #g frames
     #Yan's is best version  display stack-g-15frames-45min-cl2.fits 1 zr- zs- z1=0.01 z2=0.
 
-    fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['fname'].tolist())
-    time_s_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['exptime_s'].tolist())
-    dates_mjd_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS r']['date_obs'].tolist())
+    fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS g']['fname'].tolist())
+    time_s_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS g']['exptime_s'].tolist())
+    dates_mjd_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS g']['date_obs'].tolist())
 
     fits_file_name = center_directory+fname_temp[0]#stack i frames for asteroids
     centered_name_asteroid = fits_file_name.replace('.fits','_centered_asteroid.fits')
@@ -195,7 +197,7 @@ if mode == 'g':
     dat_head = datfile[1]
     stack_array = np.zeros(dat_raw.shape)
 
-    filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.open(centered_name_asteroid)[0].header['FILTER'].find('SDSS r')+5:]
+    filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.open(centered_name_asteroid)[0].header['FILTER'].find('SDSS g')+5:]
 
 
     #start_stop = np.array([[51,45],[45,41],[41,39],[39,37],[37,35],[35,33],[33,31],[31,29],[29,25],[25,21],[21,15],[15,0]])
