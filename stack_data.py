@@ -27,7 +27,7 @@ ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/reduced
 
 #r
 
-
+ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -od reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/stacked_frames/ -sf object_stars_positions -cd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/centered_frames/ -sf object_stars_positions -m r -nt 4 -op median_average -cut 0.16 -stst 26 7
 
 
 file info:
@@ -109,12 +109,14 @@ for ff,fname in enumerate(files):
 #display reduced_2017U1.0037_frames_0019_to_0037_filter_g_stacked_asteroid_median.fits 1 zr- zs- z1=2400 z2=2550
 
 #test
-#display reduced_2017U1.0037_frames_0027_to_0037_filter_g_stacked_asteroid_median_average_4.fits 1 zr- zs- z1=2400 z2=2550
+#display reduced_2017U1.0037_frames_0019_to_0037_filter_g_stacked_asteroid_median_average_4.fits 1 zr- zs- z1=2400 z2=2550
 
 #r frames
 #cut = 0.4 works
 #display reduced_2017U1.0067_frames_0054_to_0067_filter_r_stacked_asteroid_mean.fits 1 zr- zs- z1=1700 z2=1800
 
+#test
+#display reduced_2017U1.0067_frames_0054_to_0067_filter_r_stacked_asteroid_mean.fits 1 zr- zs- z1=1700 z2=1800
 
 
 fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS ' + mode]['fname'].tolist())
