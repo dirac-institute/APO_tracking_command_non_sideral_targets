@@ -19,7 +19,7 @@ import scipy.ndimage
 '''
 sample execution: 
 
-ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -od reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/stacked_frames/ -sf object_stars_positions -cd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/centered_frames/ -sf object_stars_positions -m i -nt 1 -op mean
+ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -od reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/stacked_frames/ -sf object_stars_positions -cd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/centered_frames/ -sf object_stars_positions -m i -nt 4 -op median average -cut 0.16
 
 file info:
 
@@ -36,6 +36,7 @@ parser.add_argument("-sf", "--stack_file", help="text file containing file name,
 parser.add_argument("-m", "--mode", help="g, r or i.", nargs='*')
 parser.add_argument("-nt", "--number_mean_median_stack_trials", help="g, r or i.", nargs='*')
 parser.add_argument("-op", "--operation", help="mean or median",nargs='*')
+parser.add_argument("-cut", "--cut", help="robust average cut",nargs='*')
 
 #parser.add_argument("-af","--argument_file", type=open, action=LoadFromFile)
 args = parser.parse_args()
@@ -48,6 +49,7 @@ stack_file = args.stack_file[0]
 mode = args.mode[0]
 number_mean_median_stack_trials = int(args.number_mean_median_stack_trials[0])
 operation = args.operation[0]
+cut = float(args.cut[0])
 
 files = np.loadtxt(stack_file,usecols=(0,),dtype='string')
 image_data_frame = pd.DataFrame(files,columns=['fname'])
@@ -82,8 +84,6 @@ for ff,fname in enumerate(files):
 
 
 
-
-cut = 0.16
 
 #i mode
 #cut = 0.16 is good
@@ -139,7 +139,7 @@ for qq in range(0,len(start_stop)):
     dates_mjd = dates_mjd_temp[start:stop]
 #experimental rotation
     number_trials = number_mean_median_stack_trials
-    stack_array = np.zeros(dat_raw.shape[0] * dat_raw.shape[1] *number_trials).reshape(dat_raw.shape[0], dat_raw.shape[1], number_trials)
+    stack_array = np.zeros(dat_raw.shape[0] * dat_raw.shape[1] *number_trials*2).reshape(dat_raw.shape[0], dat_raw.shape[1], number_trials,2)
 
 
 for mm in range(0,number_trials):
@@ -157,10 +157,14 @@ for mm in range(0,number_trials):
         #stack_array[:,:,i+(len(fname)*mm)] = np.rot90(dat_raw,np.random.randint(1,5))
         #stack_array[:,:,i+(len(fname)*mm)] = dat_raw
     if operation == "mean":
-        stack_array[:,:,mm] = scipy.stats.trim_mean(per_trial_stack_array[::-1,:].astype(np.float32),cut,axis=2)
+        stack_array[:,:,mm,0] = scipy.stats.trim_mean(per_trial_stack_array[::-1,:].astype(np.float32),cut,axis=2)
     if operation == "median":
-        stack_array[:,:,mm] = median(per_trial_stack_array[::-1,:].astype(np.float32),axis=2)
-
+        stack_array[:,:,mm,0] = median(per_trial_stack_array[::-1,:].astype(np.float32),axis=2)
+    if operation == "both":
+        stack_array[:,:,mm,0] = scipy.stats.trim_mean(per_trial_stack_array[::-1,:].astype(np.float32),cut,axis=2)
+        stack_array[:,:,mm,1] = median(per_trial_stack_array[::-1,:].astype(np.float32),axis=2)
+    if operation == "median average":
+        stack_array[:,:,mm,0] = scipy.stats.trim_mean(per_trial_stack_array[::-1,:].astype(np.float32),cut,axis=2)
 
 
 frame_interval = '_frames_'+fname[0][fname[0].find('00'):].replace('.fits','') + '_to_' + fname[-1][fname[-1].find('00'):].replace('.fits','')
@@ -171,10 +175,19 @@ stacked_name_asteroid = fits_file_name.replace('.fits',frame_interval+'_filter_'
 dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
 if operation == "mean":
-    write_stack_array = np.mean(stack_array,axis=2)
+    write_stack_array = np.mean(stack_array[:,:,:,0],axis=2)
+    pyfits.writeto(stacked_name_asteroid.replace('.fits','_'+operation+'_' +args.number_mean_median_stack_trials[0]+ '.fits'),write_stack_array,overwrite=True,header=dat_head)
 if operation == "median":
-    write_stack_array = np.median(stack_array,axis=2)
-pyfits.writeto(stacked_name_asteroid.replace('.fits','_'+operation+'.fits'),write_stack_array,overwrite=True,header=dat_head)
+    write_stack_array = np.median(stack_array[:,:,:,1],axis=2)
+    pyfits.writeto(stacked_name_asteroid.replace('.fits','_'+operation+'_' +args.number_mean_median_stack_trials[0]+ '.fits'),write_stack_array,overwrite=True,header=dat_head)
+if operation == "both":
+    write_stack_array = np.mean(stack_array[:,:,:,0],axis=2)
+    pyfits.writeto(stacked_name_asteroid.replace('.fits','_mean_' +args.number_mean_median_stack_trials[0]+ '.fits'),write_stack_array,overwrite=True,header=dat_head)
+    write_stack_array = np.median(stack_array[:,:,:,1],axis=2)
+    pyfits.writeto(stacked_name_asteroid.replace('.fits','_median_' +args.number_mean_median_stack_trials[0]+ '.fits'),write_stack_array,overwrite=True,header=dat_head)
+if operation == "median average":
+    write_stack_array = np.median(stack_array[:,:,:,0],axis=2)
+    pyfits.writeto(stacked_name_asteroid.replace('.fits','_median_average_' +args.number_mean_median_stack_trials[0]+ '.fits'),write_stack_array,overwrite=True,header=dat_head)
 
 
 '''
