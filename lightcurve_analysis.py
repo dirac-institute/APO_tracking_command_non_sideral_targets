@@ -756,7 +756,7 @@ plt.savefig('axial_ratio_vs_densit_vs_critical_period.png')
 
 #cohesion
 
-radius_km = .120 #km assuming pv = 0.1
+radius_km = .130 #km assuming pv = 0.1
 period_s = 8.1 * 3600.
 line_width = 2.5
 mult = 1.2
@@ -782,7 +782,7 @@ increment = 1
 increment = 0.25
 levels = np.arange(np.floor(np.min(Z)), np.ceil(np.max(Z))+increment,increment)
 increment = 5
-contour_levels = np.arange(0,55,5)
+contour_levels = np.arange(1,66,5)
 CS = plt.contourf(X, Y, Z, 10, cmap=parula_map, origin=origin, levels = levels)
 CS4 = plt.contour(X, Y, Z, 10, origin=origin,linewidths=2, alphas=0.8, levels = contour_levels)
 manual_locations = [(4.95,2.12),(5.8,3.1),(6.6,3.9),(7.1,4.5), (7.7,4.9), (8.25,5.36), (8.8,5.87), (9.33,6.2), (9.7,6.5), (10.1,6.8)]
@@ -797,8 +797,8 @@ ax1.set(xlabel=r'$b/a$', ylabel=r'$\rho \; \mathrm{(g cm^{-3})}$')
 cb = plt.colorbar(CS)
 #tick_locs = np.array([0,3,6,9,12,15,18,21,24,27,30])
 #tick_labels = np.array([r'$0.0$',r'$3.0$',r'$6.0$',r'$9.0$', r'$12.0$', r'$15.0$', r'$18.0$', r'$21.0$', r'$24.0$',r'$27.0$',r'$30.0$'])
-tick_locs = np.arange(1,56,5)
-tick_labels = np.array([r'$1.0$',r'$6.0$',r'$11.0$',r'$16.0$', r'$21.0$', r'$26.0$', r'$31.0$', r'$36.0$', r'$41.0$',r'$46.0$',r'$51.0$'])
+tick_locs = np.arange(1,66,5)
+tick_labels = np.array([r'$1.0$',r'$6.0$',r'$11.0$',r'$16.0$', r'$21.0$', r'$26.0$', r'$31.0$', r'$36.0$', r'$41.0$',r'$46.0$',r'$51.0$',r'$56.0$',r'$61.0$'])
 cb.locator     = matplotlib.ticker.FixedLocator(tick_locs)
 cb.formatter   = matplotlib.ticker.FixedFormatter(tick_labels)
 cb.update_ticks()
