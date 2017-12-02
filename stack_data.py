@@ -83,10 +83,13 @@ for ff,fname in enumerate(files):
 if mode == 'i':
     #i frames
 
-    cut = 0.38
+    cut = 0.16
 
     #cut = 0.16 is good
     #display reduced_2017U1.0034_frames_0005_to_0034_filter_i_stacked_asteroid_mean.fits 1 zr- zs- z1=2490 z2=2580
+
+    #test
+    #display reduced_2017U1.0034_frames_0005_to_0034_filter_i_stacked_asteroid_median.fits 1 zr- zs- z1=2490 z2=2580
 
     fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS i']['fname'].tolist())
     time_s_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS i']['exptime_s'].tolist())
@@ -115,10 +118,7 @@ if mode == 'i':
 
     filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.open(centered_name_asteroid)[0].header['FILTER'].find('SDSS i')+5:]
 
-
-    #start_stop = np.array([[51,45],[45,41],[41,39],[39,37],[37,35],[35,33],[33,31],[31,29],[29,25],[25,21],[21,15],[15,0]])
-    #start_stop = np.array([[8,0]])
-    start_stop = np.array([[45,31]])
+    start_stop = np.array([[8,0]])
     for qq in range(0,len(start_stop)):
     #for qq in range(0,1):
         stop, start = start_stop[qq]
@@ -139,7 +139,8 @@ if mode == 'i':
             dat_head = datfile[1]
             dat_raw[np.where(dat_raw == np.inf)] = 0.0
             stack_array[:,:,i+(len(fname)*mm)] = scipy.ndimage.interpolation.rotate(dat_raw,np.random.randint(0,359), reshape = False)
-            #stack_array[:,:,i] = dat_raw
+            #stack_array[:,:,i+(len(fname)*mm)] = np.rot90(dat_raw,np.random.randint(1,5))
+            #stack_array[:,:,i+(len(fname)*mm)] = dat_raw
 
 
     frame_interval = '_frames_'+fname[0][fname[0].find('00'):].replace('.fits','') + '_to_' + fname[-1][fname[-1].find('00'):].replace('.fits','')
