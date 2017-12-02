@@ -146,6 +146,7 @@ for mm in range(0,number_trials):
     print ("trial stage",mm)
     per_trial_stack_array = np.zeros(dat_raw.shape[0] * dat_raw.shape[1]* len(fname)).reshape(dat_raw.shape[0], dat_raw.shape[1], len(fname))
     for i in range(0, len(fname)):
+        print ("file number",i)
         fits_file_name = center_directory+fname[i]
         centered_name_asteroid = fits_file_name.replace('.fits','_centered_asteroid.fits')
         datfile = pyfits.getdata(centered_name_asteroid, header=True)
@@ -155,10 +156,10 @@ for mm in range(0,number_trials):
         per_trial_stack_array[:,:,i] = scipy.ndimage.interpolation.rotate(dat_raw,np.random.randint(0,359), reshape = False)
         #stack_array[:,:,i+(len(fname)*mm)] = np.rot90(dat_raw,np.random.randint(1,5))
         #stack_array[:,:,i+(len(fname)*mm)] = dat_raw
-    if mode == "mean":
-        stack_array[:,:,i] = scipy.stats.trim_mean(per_trial_stack_array[::-1,:].astype(np.float32),cut,axis=2)
-    if mode == "median":
-        stack_array[:,:,i] = median(per_trial_stack_array[::-1,:].astype(np.float32),axis=2)
+    if operation == "mean":
+        stack_array[:,:,mm] = scipy.stats.trim_mean(per_trial_stack_array[::-1,:].astype(np.float32),cut,axis=2)
+    if operation == "median":
+        stack_array[:,:,mm] = median(per_trial_stack_array[::-1,:].astype(np.float32),axis=2)
 
 
 
@@ -169,9 +170,9 @@ fits_file_name = output_directory + fname[i]
 stacked_name_asteroid = fits_file_name.replace('.fits',frame_interval+'_filter_' + filter_name + '_stacked_asteroid.fits')
 dat_head['EXPTIME'] = time_s.sum()
 dat_head['DATE-OBS'] = np.mean(dates_mjd)
-if mode == "mean":
+if operation == "mean":
     write_stack_array = np.mean(stack_array,axis=2)
-if mode == "median":
+if operation == "median":
     write_stack_array = np.median(stack_array,axis=2)
 pyfits.writeto(stacked_name_asteroid.replace('.fits','_'+operation+'.fits'),write_stack_array,overwrite=True,header=dat_head)
 
