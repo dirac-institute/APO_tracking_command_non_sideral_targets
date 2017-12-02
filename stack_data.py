@@ -139,7 +139,7 @@ for qq in range(0,len(start_stop)):
     dates_mjd = dates_mjd_temp[start:stop]
 #experimental rotation
     number_trials = number_mean_median_stack_trials
-    stack_array = np.zeros(dat_raw.shape[0] * dat_raw.shape[1]* len(number_trials)).reshape(dat_raw.shape[0], dat_raw.shape[1], number_trials)
+    stack_array = np.zeros(dat_raw.shape[0] * dat_raw.shape[1] *number_trials).reshape(dat_raw.shape[0], dat_raw.shape[1], number_trials)
 
 
 for mm in range(0,number_trials):
