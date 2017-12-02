@@ -132,7 +132,7 @@ stack_array = np.zeros(dat_raw.shape)
 
 filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.open(centered_name_asteroid)[0].header['FILTER'].find('SDSS ' + mode)+5:]
 
-for qq in range(0,len(start_stop)):
+for qq in range(0,1):
 #for qq in range(0,1):
     fname = fname_temp[start:stop]
     time_s = time_s_temp[start:stop]
