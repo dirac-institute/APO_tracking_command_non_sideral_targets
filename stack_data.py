@@ -19,7 +19,16 @@ import scipy.ndimage
 '''
 sample execution: 
 
+#i
 ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -od reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/stacked_frames/ -sf object_stars_positions -cd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/centered_frames/ -sf object_stars_positions -m i -nt 4 -op median_average -cut 0.16 -stst 8 0
+
+#g
+ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -od reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/stacked_frames/ -sf object_stars_positions -cd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/centered_frames/ -sf object_stars_positions -m g -nt 4 -op median_average -cut 0.16 -stst 26 7
+
+#r
+
+
+
 
 file info:
 
@@ -98,6 +107,9 @@ for ff,fname in enumerate(files):
 #display stack-g-15frames-45min-cl2.fits 2 zr- zs- z1=0.01 z2=0.
 #my g frames
 #display reduced_2017U1.0037_frames_0019_to_0037_filter_g_stacked_asteroid_median.fits 1 zr- zs- z1=2400 z2=2550
+
+#test
+#display reduced_2017U1.0037_frames_0027_to_0037_filter_g_stacked_asteroid_median_average_4.fits 1 zr- zs- z1=2400 z2=2550
 
 #r frames
 #cut = 0.4 works
