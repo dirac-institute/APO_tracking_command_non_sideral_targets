@@ -19,7 +19,7 @@ import scipy.ndimage
 '''
 sample execution: 
 
-ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -od reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/stacked_frames/ -sf object_stars_positions -cd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/centered_frames/ -sf object_stars_positions -m i -nt 4 -op median_average -cut 0.16
+ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -od reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/stacked_frames/ -sf object_stars_positions -cd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/centered_frames/ -sf object_stars_positions -m i -nt 4 -op median_average -cut 0.16 -stst 8 0
 
 file info:
 
@@ -37,6 +37,7 @@ parser.add_argument("-m", "--mode", help="g, r or i.", nargs='*')
 parser.add_argument("-nt", "--number_mean_median_stack_trials", help="g, r or i.", nargs='*')
 parser.add_argument("-op", "--operation", help="mean or median",nargs='*')
 parser.add_argument("-cut", "--cut", help="robust average cut",nargs='*')
+parser.add_argument("-stst", "--start_stop", help="start and stopping point of indices, stop goes first, eg 8 0",nargs='*')
 
 #parser.add_argument("-af","--argument_file", type=open, action=LoadFromFile)
 args = parser.parse_args()
@@ -50,6 +51,7 @@ mode = args.mode[0]
 number_mean_median_stack_trials = int(args.number_mean_median_stack_trials[0])
 operation = args.operation[0]
 cut = float(args.cut[0])
+stop, start = int(args.start_stop[0]), int(args.start_stop[1])
 
 files = np.loadtxt(stack_file,usecols=(0,),dtype='string')
 image_data_frame = pd.DataFrame(files,columns=['fname'])
@@ -130,10 +132,8 @@ stack_array = np.zeros(dat_raw.shape)
 
 filter_name = pyfits.open(centered_name_asteroid)[0].header['FILTER'][pyfits.open(centered_name_asteroid)[0].header['FILTER'].find('SDSS ' + mode)+5:]
 
-start_stop = np.array([[8,0]])
 for qq in range(0,len(start_stop)):
 #for qq in range(0,1):
-    stop, start = start_stop[qq]
     fname = fname_temp[start:stop]
     time_s = time_s_temp[start:stop]
     dates_mjd = dates_mjd_temp[start:stop]
