@@ -98,25 +98,23 @@ for ff,fname in enumerate(files):
 
 #i mode
 #cut = 0.16 is good
-#display reduced_2017U1.0034_frames_0005_to_0034_filter_i_stacked_asteroid_mean.fits 1 zr- zs- z1=2490 z2=2580
-#test
 #display reduced_2017U1.0034_frames_0005_to_0034_filter_i_stacked_asteroid_median_average_45.fits 1 zr- zs- z1=2490 z2=2580
+#display reduced_2017U1.0034_frames_0005_to_0034_filter_i_stacked_asteroid_median_average_45_ring.fits 1 zr- zs- z1=2490 z2=2580
 
 #g frames
 #Yan's is best version  display
 #display stack-g-15frames-45min-cl2.fits 2 zr- zs- z1=0.01 z2=0.
 #my g frames
-#display reduced_2017U1.0037_frames_0019_to_0037_filter_g_stacked_asteroid_median.fits 1 zr- zs- z1=2400 z2=2550
+#display reduced_2017U1.0037_frames_0019_to_0037_filter_g_stacked_asteroid_median_average_45.fits 1 zr- zs- z1=2400 z2=2550
 
-#test
-#display reduced_2017U1.0037_frames_0019_to_0037_filter_g_stacked_asteroid_median_average_4.fits 1 zr- zs- z1=2400 z2=2550
+#display reduced_2017U1.0037_frames_0019_to_0037_filter_g_stacked_asteroid_median_average_45_ring.fits 1 zr- zs- z1=2400 z2=2550
+
 
 #r frames
 #cut = 0.4 works
-#display reduced_2017U1.0067_frames_0054_to_0067_filter_r_stacked_asteroid_mean.fits 1 zr- zs- z1=1700 z2=1800
+#display reduced_2017U1.0067_frames_0054_to_0067_filter_r_stacked_asteroid_median_average_45.fits 1 zr- zs- z1=1700 z2=1800
 
-#test
-#display reduced_2017U1.0067_frames_0054_to_0067_filter_r_stacked_asteroid_mean.fits 1 zr- zs- z1=1700 z2=1800
+#display reduced_2017U1.0067_frames_0054_to_0067_filter_r_stacked_asteroid_median_average_45_ring.fits 1 zr- zs- z1=1700 z2=1800
 
 
 fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS ' + mode]['fname'].tolist())
