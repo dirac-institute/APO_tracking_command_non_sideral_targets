@@ -19,7 +19,7 @@ import scipy.ndimage
 '''
 sample execution: 
 
-ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -od reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/stacked_frames/ -sf object_stars_positions -cd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/centered_frames/ -sf object_stars_positions -m i -nt 4 -op median average -cut 0.16
+ipython -i -- stack_data.py -dd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/ -od reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/stacked_frames/ -sf object_stars_positions -cd /Users/bolin/NEO/Follow_up/APO_observing/reduced_data/AK17U010/2017_10_29/rawdata/reduced/data/centered_frames/ -sf object_stars_positions -m i -nt 4 -op median_average -cut 0.16
 
 file info:
 
@@ -159,11 +159,11 @@ for mm in range(0,number_trials):
     if operation == "mean":
         stack_array[:,:,mm,0] = scipy.stats.trim_mean(per_trial_stack_array[::-1,:].astype(np.float32),cut,axis=2)
     if operation == "median":
-        stack_array[:,:,mm,0] = median(per_trial_stack_array[::-1,:].astype(np.float32),axis=2)
+        stack_array[:,:,mm,0] = np.median(per_trial_stack_array[::-1,:].astype(np.float32),axis=2)
     if operation == "both":
         stack_array[:,:,mm,0] = scipy.stats.trim_mean(per_trial_stack_array[::-1,:].astype(np.float32),cut,axis=2)
-        stack_array[:,:,mm,1] = median(per_trial_stack_array[::-1,:].astype(np.float32),axis=2)
-    if operation == "median average":
+        stack_array[:,:,mm,1] = np.median(per_trial_stack_array[::-1,:].astype(np.float32),axis=2)
+    if operation == "median_average":
         stack_array[:,:,mm,0] = scipy.stats.trim_mean(per_trial_stack_array[::-1,:].astype(np.float32),cut,axis=2)
 
 
@@ -185,7 +185,7 @@ if operation == "both":
     pyfits.writeto(stacked_name_asteroid.replace('.fits','_mean_' +args.number_mean_median_stack_trials[0]+ '.fits'),write_stack_array,overwrite=True,header=dat_head)
     write_stack_array = np.median(stack_array[:,:,:,1],axis=2)
     pyfits.writeto(stacked_name_asteroid.replace('.fits','_median_' +args.number_mean_median_stack_trials[0]+ '.fits'),write_stack_array,overwrite=True,header=dat_head)
-if operation == "median average":
+if operation == "median_average":
     write_stack_array = np.median(stack_array[:,:,:,0],axis=2)
     pyfits.writeto(stacked_name_asteroid.replace('.fits','_median_average_' +args.number_mean_median_stack_trials[0]+ '.fits'),write_stack_array,overwrite=True,header=dat_head)
 
