@@ -99,15 +99,20 @@ for ff,fname in enumerate(files):
 #i mode
 #cut = 0.16 is good
 #display reduced_2017U1.0034_frames_0005_to_0034_filter_i_stacked_asteroid_median_average_45.fits 1 zr- zs- z1=2490 z2=2580
-#display reduced_2017U1.0034_frames_0005_to_0034_filter_i_stacked_asteroid_median_average_45_ring.fits 1 zr- zs- z1=2490 z2=2580
+#display reduced_2017U1.0034_frames_0005_to_0034_filter_i_stacked_asteroid_median_average_45_ring3.fits 1 zr- zs- z1=2400 z2=2550
+#display reduced_2017U1.0034_frames_0005_to_0034_filter_i_stacked_asteroid_median_average_45_ring4.fits 1 zr- zs- z1=2400 z2=2550
+#display reduced_2017U1.0034_frames_0005_to_0034_filter_i_stacked_asteroid_median_average_45_ring5.fits 1 zr- zs- z1=2400 z2=2550
+
 
 #g frames
 #Yan's is best version  display
 #display stack-g-15frames-45min-cl2.fits 2 zr- zs- z1=0.01 z2=0.
 #my g frames
 #display reduced_2017U1.0037_frames_0019_to_0037_filter_g_stacked_asteroid_median_average_45.fits 1 zr- zs- z1=2400 z2=2550
+#display reduced_2017U1.0037_frames_0019_to_0037_filter_g_stacked_asteroid_median_average_45_ring2.fits 1 zr- zs- z1=2400 z2=2550
+#display reduced_2017U1.0037_frames_0019_to_0037_filter_g_stacked_asteroid_median_average_45_ring3.fits 1 zr- zs- z1=2400 z2=2550
+#display reduced_2017U1.0037_frames_0019_to_0037_filter_g_stacked_asteroid_median_average_45_ring4.fits 1 zr- zs- z1=2400 z2=2550
 
-#display reduced_2017U1.0037_frames_0019_to_0037_filter_g_stacked_asteroid_median_average_45_ring.fits 1 zr- zs- z1=2400 z2=2550
 
 
 #r frames
