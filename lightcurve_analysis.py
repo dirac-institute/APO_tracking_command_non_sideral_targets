@@ -817,3 +817,11 @@ combined_string = np.loadtxt('combined_unordered',dtype='string')
 combined_string_sort = combined_string[np.argsort(date)]
 for i in range(0,len(combined_string_sort)):
     print(str(float(combined_string_sort[i,0]) - light_time_correction_2017_10_30), combined_string_sort[i,1], combined_string_sort[i,2], combined_string_sort[i,3])
+
+
+#de-phasing Drahus data
+
+#(phase + some_large_integer)/period
+#drahus' data were taken on 58053.0 and 58054.0
+#get phased data and add some_large_integer and divide sum by period until you get the sum to align with the observation dates taken from CDAC.
+

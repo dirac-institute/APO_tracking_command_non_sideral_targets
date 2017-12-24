@@ -118,9 +118,9 @@ for ff,fname in enumerate(files):
 #r frames
 #cut = 0.4 works
 #display reduced_2017U1.0067_frames_0054_to_0067_filter_r_stacked_asteroid_median_average_45.fits 1 zr- zs- z1=1700 z2=1800
-
-#display reduced_2017U1.0067_frames_0054_to_0067_filter_r_stacked_asteroid_median_average_45_ring.fits 1 zr- zs- z1=1700 z2=1800
-
+#display reduced_2017U1.0067_frames_0054_to_0067_filter_r_stacked_asteroid_median_average_45_ring2.fits 1 zr- zs- z1=1700 z2=1800
+#display reduced_2017U1.0067_frames_0054_to_0067_filter_r_stacked_asteroid_median_average_45_ring3.fits 1 zr- zs- z1=1700 z2=1800
+#display reduced_2017U1.0067_frames_0054_to_0067_filter_r_stacked_asteroid_median_average_45_ring4.fits 1 zr- zs- z1=1700 z2=1800
 
 fname_temp =  np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS ' + mode]['fname'].tolist())
 time_s_temp = np.asarray(image_data_frame.ix[image_data_frame['filter']=='SDSS ' + mode]['exptime_s'].tolist())

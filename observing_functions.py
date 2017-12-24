@@ -175,8 +175,8 @@ def cohesive_strength_asteroid_pascals(period_s,radius_km, density_g_cm_3):#liss
     return strength_dynes_cm_2/10.
 
 def cohesive_strength_asteroid_axial_ratio_density_pascals(period_s,radius_km, density_g_cm_3,b_to_a_ratio):#lisse et al 1999.
-    volume_km_3 = sphere_volume(radius_km)
-    a_km, b_km = sphere_volume_to_triaxial_a_b_prolate_dimensions(volume_km_3,b_to_a_ratio)
+    area = sphere_area(radius_km)
+    a_km, b_km = sphere_area_to_triaxial_a_b_prolate_dimensions(area,b_to_a_ratio)
     strength_Pa = cohesive_strength_asteroid_pascals(period_s,b_km, density_g_cm_3)
     return strength_Pa
 
@@ -662,6 +662,15 @@ def planck_function_lambda(wavelength_meters, temp_kelvin):
 
 def relative_tracking_rate_for_streak_length_arcsec_p_minute(streak_length_arcsec,exposure_time_s):
     return (streak_length_arcsec / (exposure_time_s/minutes_to_seconds))
+
+def sphere_area_to_triaxial_a_b_prolate_dimensions(area,b_to_a_ratio): #or a prolate spheroid
+    a = (((area)/(4*np.pi * b_to_a_ratio))**.5)
+    b = a*b_to_a_ratio
+    return a,b
+
+def sphere_area(radius):
+    area = 4 * np.pi * radius**2
+    return area
 
 def sphere_volume(radius):
     volume = (4/3.) * np.pi * radius**3
