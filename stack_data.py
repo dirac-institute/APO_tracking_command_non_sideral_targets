@@ -47,8 +47,6 @@ parser.add_argument("-nt", "--number_mean_median_stack_trials", help="g, r or i.
 parser.add_argument("-op", "--operation", help="mean or median",nargs='*')
 parser.add_argument("-cut", "--cut", help="robust average cut",nargs='*')
 parser.add_argument("-stst", "--start_stop", help="start and stopping point of indices, stop goes first, eg 8 0",nargs='*')
-
-#parser.add_argument("-af","--argument_file", type=open, action=LoadFromFile)
 args = parser.parse_args()
 
 data_directory = args.data_directory[0]
