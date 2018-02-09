@@ -1,0 +1,73 @@
+#Bryce Bolin
+
+import numpy as np
+import scipy
+import glob
+import os
+import re
+import sys
+import warnings
+import pandas as pd
+import astropy.io.fits as pyfits
+import pyslalib.slalib as sla
+import argparse
+sys.path.insert(0, '/Users/bolin/NEO/Follow_up/CFHT_observing/scripts/')
+from observing_functions import *
+import glob
+import scipy.ndimage
+
+#astropy photometry stuff
+from astropy.io import fits
+from astropy.time import Time
+from astropy.utils.console import ProgressBar
+from astropy.modeling import models, fitting
+#from photutils.morphology import centroid_com
+from photutils import centroid_com, centroid_1dg, centroid_2dg
+from photutils import CircularAperture, CircularAnnulus, aperture_photometry
+
+
+'''
+reads in a list of x,y positions to access a list of reduced ccd image fits files, cuts out a square of size specified by the user around the x, y coords, perform centroiding and then aperture photometry using median background subtraction, then spits out the instrumental magnitudes with the uncertainties
+
+example execution:
+
+ipython -i -- do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_X_Y_positions -apc 6 15 20 -shl 20 -ofn 2018_AV2_APO_2018_01_20
+
+'''
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-dd", "--data_directory", help="directory for the storage of data.", nargs='*')
+parser.add_argument("-fl", "--file_list", help="list of files to reduce", nargs='*')
+parser.add_argument("-cl", "--center_list", help="list of target positions in x,y coordiantes, two columns", nargs='*')
+parser.add_argument("-apc", "--aperture_components", help="aperture components in units of pixes: aperture_radius sky_inner_radius sky_outer_radius, e.g., 6 15 20", nargs='*')
+parser.add_argument("-shl", "--square_half_length", help="half the length of the square centered on the center position of the psf. This is used for the centroid step. Must be large enough to accomodate the sky rings in the perture photometry step.", nargs='*')
+parser.add_argument("-ofn", "--output_filename", help="name of the pyc filename for output of the photometry measurements", nargs='*')
+args = parser.parse_args()
+
+data_directory = args.data_directory[0]
+file_list = args.file_list[0]
+center_list = args.center_list[0]
+aperture_radius_pixels, inner_sky_ring_pixels, outer_sky_ring_pixels = string_seperated_to_array_spaces(args.aperture_components,'int')
+square_half_length_pixels =  int(args.square_half_length[0])
+output_filename = args.output_filename[0]
+
+files = np.loadtxt(file_list,dtype='string')
+
+#output array all strings to contain filename mjd exptime filter mag mag_unc
+number_of_entries_per_row = 6
+max_char_size = 20
+output_array = np.chararray((len(files),number_of_entries_per_row),itemsize=max_char_size)
+output_array[:] = "aaaaaaaaaaaaaaaaaaaa"
+
+#for i in range(0,len(files)):
+for i in range(0,1):
+    fits_file_name = data_directory+files[i]
+    exp_time = pyfits.open(fits_file_name)[0].header['EXPTIME']
+    filter = pyfits.open(fits_file_name)[0].header['FILTER']
+    date_mjd = cal_date_fits_format_to_mjd(pyfits.open(fits_file_name)[0].header['DATE-OBS'])
+    datfile = pyfits.getdata(centered_name_asteroid, header=True)
+    dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
+    dat_head = datfile[1]
+
+#print out filename mjd exptime filter mag mag_unc
+
