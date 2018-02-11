@@ -1,10 +1,15 @@
+import sys
+#special numpy
+sys.path.insert(1, '/usr/local/Cellar/numpy/1.14.0/lib/python2.7/site-packages')
+import numpy as np
+
 from matplotlib.ticker import FuncFormatter
 import pylab as plt
 import matplotlib
 matplotlib.use('Agg') # Must be before importing matplotlib.pyplot or pylab!
 import string
 import os
-import numpy as np
+#import numpy as np
 import random
 from decimal import *
 import warnings
@@ -752,3 +757,60 @@ def total_track_length(streak_length_arcsec, exposure_time_s, readout_time_s, nu
 def visir_exp_time_s(SNR,flux_Jy):
     return (SNR/(visir_constant * flux_Jy))**2
 
+
+def zscale_samples(samples, contrast=0.25):
+    npix = len(samples)
+    samples.sort()
+    zmin = samples[0]
+    zmax = samples[-1]
+    # For a zero-indexed array
+    center_pixel = int((npix - 1) // 2)
+    if npix % 2 == 1:
+        median = samples[center_pixel]
+    else:
+        median = 0.5 * (samples[center_pixel] + samples[center_pixel + 1])
+
+    #
+    # Fit a line to the sorted array of samples
+    minpix = max(MIN_NPIXELS, int(npix * MAX_REJECT))
+    ngrow = max(1, int(npix * 0.01))
+    ngoodpix, zstart, zslope = zsc_fit_line(samples, npix, KREJ, ngrow,
+                                            MAX_ITERATIONS)
+    #print "slope=%f intercept=%f" % (zslope, zstart)
+
+    if ngoodpix < minpix:
+        z1 = zmin
+        z2 = zmax
+    else:
+        if contrast > 0:
+            zslope = zslope / contrast
+        z1 = max(zmin, median - (center_pixel - 1) * zslope)
+        z2 = min(zmax, median + (npix - center_pixel) * zslope)
+    return z1, z2
+
+def zsc_sample(image, maxpix, bpmask=None, zmask=None):
+
+    # Figure out which pixels to use for the zscale algorithm
+    # Returns the 1-d array samples
+    # Don't worry about the bad pixel mask or zmask for the moment
+    # Sample in a square grid, and return the first maxpix in the sample
+    nc = image.shape[0]
+    nl = image.shape[1]
+    stride = max(1.0, math.sqrt((nc - 1) * (nl - 1) / float(maxpix)))
+    stride = int(stride)
+    samples = image[::stride, ::stride].flatten()
+    # remove NaN and Inf
+    samples = samples[numpy.isfinite(samples)]
+    return samples[:maxpix]
+
+def zscale(image, nsamples=1000, contrast=0.25):
+    """Implement IRAF zscale algorithm
+    nsamples=1000 and contrast=0.25 are the IRAF display task defaults
+    image is a 2-d numpy array
+    returns (z1, z2)
+    """
+
+    # Sample the image
+    samples = zsc_sample(image, nsamples)
+
+    return zscale_samples(samples, contrast=contrast)

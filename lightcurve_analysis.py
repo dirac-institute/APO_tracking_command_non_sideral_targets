@@ -19,8 +19,8 @@ import argparse
 #import functions from /Users/bolin/Families/scripts/family_functions.py
 sys.path.insert(0, '/Users/bolin/Families/scripts/')
 from family_functions import *
-sys.path.insert(0, '/Users/bolin/NEO/Follow_up/CFHT_observing/scripts/')
-from observing_functions import *
+sys.path.insert(0, '/Users/bolin/NEO/Follow_up/APO_observing/')
+from apo_observing_functions import *
 import warnings
 import glob
 from matplotlib.ticker import FuncFormatter

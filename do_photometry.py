@@ -1,23 +1,18 @@
 #Bryce Bolin
 
-import numpy as np
-import scipy
-import glob
-import os
-import re
 import sys
-import warnings
-import pandas as pd
-import astropy.io.fits as pyfits
-import pyslalib.slalib as sla
+#special numpy
+sys.path.insert(1, '/usr/local/Cellar/numpy/1.14.0/lib/python2.7/site-packages')
+import numpy as np
+sys.path.append('/Users/bolin/anaconda3/envs/py27/lib/python2.7/site-packages')
 import argparse
-sys.path.insert(0, '/Users/bolin/NEO/Follow_up/CFHT_observing/scripts/')
-from observing_functions import *
-import glob
-import scipy.ndimage
+sys.path.insert(0, '/Users/bolin/NEO/Follow_up/APO_observing/')
+from apo_observing_functions import *
+import zscale as z
 
 #astropy photometry stuff
 from astropy.io import fits
+import astropy.io.fits as pyfits
 from astropy.time import Time
 from astropy.utils.console import ProgressBar
 from astropy.modeling import models, fitting
@@ -26,12 +21,15 @@ from photutils import centroid_com, centroid_1dg, centroid_2dg
 from photutils import CircularAperture, CircularAnnulus, aperture_photometry
 
 
+
+
+
 '''
 reads in a list of x,y positions to access a list of reduced ccd image fits files, cuts out a square of size specified by the user around the x, y coords, perform centroiding and then aperture photometry using median background subtraction, then spits out the instrumental magnitudes with the uncertainties
 
 example execution:
 
-ipython -i -- do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_X_Y_positions -apc 6 15 20 -shl 20 -ofn 2018_AV2_APO_2018_01_20
+ipython -i -- do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_X_Y_positions -apc 9 15 20 -shl 20 -ofn 2018_AV2_APO_2018_01_20
 
 '''
 
@@ -46,12 +44,19 @@ args = parser.parse_args()
 
 data_directory = args.data_directory[0]
 file_list = args.file_list[0]
-center_list = args.center_list[0]
-aperture_radius_pixels, inner_sky_ring_pixels, outer_sky_ring_pixels = string_seperated_to_array_spaces(args.aperture_components,'int')
+center_file = args.center_list[0]
+aperture_radius_pixels, inner_sky_ring_pixels, outer_sky_ring_pixels = string_seperated_to_array_spaces(args.aperture_components,'float')
 square_half_length_pixels =  int(args.square_half_length[0])
 output_filename = args.output_filename[0]
 
 files = np.loadtxt(file_list,dtype='string')
+center_list_X_Y = np.loadtxt(center_file,dtype='int')
+center_X, Center_Y = center_list_X_Y[:,0], center_list_X_Y[:,1]
+
+#to properly orient data, rotate by 270 degrees and flip vertical
+#np.rot90(datfile[0][::-1,:],k=3), then flip x and y coords from list.
+true_x_coords, true_y_coords = Center_Y, center_X
+
 
 #output array all strings to contain filename mjd exptime filter mag mag_unc
 number_of_entries_per_row = 6
@@ -60,14 +65,43 @@ output_array = np.chararray((len(files),number_of_entries_per_row),itemsize=max_
 output_array[:] = "aaaaaaaaaaaaaaaaaaaa"
 
 #for i in range(0,len(files)):
-for i in range(0,1):
+for i in range(14,15):
     fits_file_name = data_directory+files[i]
     exp_time = pyfits.open(fits_file_name)[0].header['EXPTIME']
     filter = pyfits.open(fits_file_name)[0].header['FILTER']
     date_mjd = cal_date_fits_format_to_mjd(pyfits.open(fits_file_name)[0].header['DATE-OBS'])
-    datfile = pyfits.getdata(centered_name_asteroid, header=True)
-    dat_raw = datfile[0]#[::-1,:] #must flip data then flip back
+    datfile = pyfits.getdata(fits_file_name, header=True)
+    #to properly orient data, rotate by 270 degrees and flip vertical
+    #np.rot90(datfile[0][::-1,:],k=3), then flip x and y coords from list.
+    dat_raw = np.rot90(datfile[0][::-1,:],k=3)
     dat_head = datfile[1]
+
+    #centroid stamp
+    image_stamp = dat_raw[true_y_coords[i]-square_half_length_pixels:true_y_coords[i]+square_half_length_pixels,true_x_coords[i]-square_half_length_pixels:true_x_coords[i]+square_half_length_pixels]
+
+    #x_stamp_centroid, y_stamp_centroid = centroid_com(image_stamp)
+    #x_stamp_centroid, y_stamp_centroid = centroid_1dg(image_stamp)
+    x_stamp_centroid, y_stamp_centroid = centroid_2dg(image_stamp)
+    x_centroid = y_stamp_centroid + true_x_coords[i] - square_half_length_pixels #swap the x and y
+    y_centroid = x_stamp_centroid + true_y_coords[i] - square_half_length_pixels
+
+
+
+'''
+#view of entire image
+vmin,vmax = z.zscale(dat_raw)
+plt.ion()
+plt.figure()
+plt.imshow(dat_raw,vmin=vmin,vmax=vmax,cmap='gray')
+
+#stamp view of centroid of source
+i=0
+vmin,vmax = z.zscale(dat_raw)
+plt.ion()
+plt.figure()
+plt.imshow(dat_raw[true_y_coords[i]-square_half_length_pixels:true_y_coords[i]+square_half_length_pixels,true_x_coords[i]-square_half_length_pixels:true_x_coords[i]+square_half_length_pixels],vmin=vmin,vmax=vmax,cmap='gray')
+
+'''
 
 #print out filename mjd exptime filter mag mag_unc
 

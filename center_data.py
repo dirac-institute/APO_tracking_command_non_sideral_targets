@@ -10,8 +10,8 @@ import pandas as pd
 import astropy.io.fits as pyfits
 import pyslalib.slalib as sla
 import argparse
-sys.path.insert(0, '/Users/bolin/NEO/Follow_up/CFHT_observing/scripts/')
-from observing_functions import *
+sys.path.insert(0, '/Users/bolin/NEO/Follow_up/APO_observing/')
+from apo_observing_functions import *
 import glob
 
 '''
