@@ -29,7 +29,7 @@ reads in a list of x,y positions to access a list of reduced ccd image fits file
 
 example execution:
 
-ipython -i -- do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_X_Y_positions -apc 9 15 20 -shl 20 -ofn 2018_AV2_APO_2018_01_20
+ipython -i -- do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_X_Y_positions -apc 9 15 20 -shl 20 -cm com -ofn 2018_AV2_APO_2018_01_20
 
 '''
 
@@ -39,6 +39,7 @@ parser.add_argument("-fl", "--file_list", help="list of files to reduce", nargs=
 parser.add_argument("-cl", "--center_list", help="list of target positions in x,y coordiantes, two columns", nargs='*')
 parser.add_argument("-apc", "--aperture_components", help="aperture components in units of pixes: aperture_radius sky_inner_radius sky_outer_radius, e.g., 6 15 20", nargs='*')
 parser.add_argument("-shl", "--square_half_length", help="half the length of the square centered on the center position of the psf. This is used for the centroid step. Must be large enough to accomodate the sky rings in the perture photometry step.", nargs='*')
+parser.add_argument("-cm", "--centroid_mode", help="set to 1d, 2d gaussian fitting or center of mass for centroiding, e.g., 1d, 2d, com", nargs='*')
 parser.add_argument("-ofn", "--output_filename", help="name of the pyc filename for output of the photometry measurements", nargs='*')
 args = parser.parse_args()
 
@@ -48,6 +49,7 @@ center_file = args.center_list[0]
 aperture_radius_pixels, inner_sky_ring_pixels, outer_sky_ring_pixels = string_seperated_to_array_spaces(args.aperture_components,'float')
 square_half_length_pixels =  int(args.square_half_length[0])
 output_filename = args.output_filename[0]
+centroid_mode = args.centroid_mode[0]
 
 files = np.loadtxt(file_list,dtype='string')
 center_list_X_Y = np.loadtxt(center_file,dtype='int')
@@ -79,9 +81,13 @@ for i in range(14,15):
     #centroid stamp
     image_stamp = dat_raw[true_y_coords[i]-square_half_length_pixels:true_y_coords[i]+square_half_length_pixels,true_x_coords[i]-square_half_length_pixels:true_x_coords[i]+square_half_length_pixels]
 
-    #x_stamp_centroid, y_stamp_centroid = centroid_com(image_stamp)
-    #x_stamp_centroid, y_stamp_centroid = centroid_1dg(image_stamp)
-    x_stamp_centroid, y_stamp_centroid = centroid_2dg(image_stamp)
+    if centroid_mode == "1d":
+        x_stamp_centroid, y_stamp_centroid = centroid_1dg(image_stamp)
+    if centroid_mode == "2d":
+        x_stamp_centroid, y_stamp_centroid = centroid_2dg(image_stamp)
+    if centroid_mode == "com":
+        x_stamp_centroid, y_stamp_centroid = centroid_com(image_stamp)
+
     x_centroid = y_stamp_centroid + true_x_coords[i] - square_half_length_pixels #swap the x and y
     y_centroid = x_stamp_centroid + true_y_coords[i] - square_half_length_pixels
 
