@@ -29,7 +29,7 @@ reads in a list of x,y positions to access a list of reduced ccd image fits file
 
 example execution:
 
-ipython -i -- do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_X_Y_positions -apc 9 15 20 -shl 20 -cm com -ofn 2018_AV2_APO_2018_01_20
+ipython -i -- do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_X_Y_positions -apc 9 15 20 -shl 10 -cm com -ofn 2018_AV2_APO_2018_01_20
 
 '''
 
@@ -60,17 +60,19 @@ center_X, Center_Y = center_list_X_Y[:,0], center_list_X_Y[:,1]
 true_x_coords, true_y_coords = Center_Y, center_X
 
 
-#output array all strings to contain filename mjd exptime filter mag mag_unc
-number_of_entries_per_row = 6
+#output array all strings to contain filename mjd exptime filter mag mag_unc airmass
+number_of_entries_per_row = 7
 max_char_size = 20
-output_array = np.chararray((len(files),number_of_entries_per_row),itemsize=max_char_size)
+output_array_filename_mjd_exptime_filter_mag_mag_unc_airmass = np.chararray((len(files),number_of_entries_per_row),itemsize=max_char_size)
 output_array[:] = "aaaaaaaaaaaaaaaaaaaa"
 
+print "#filename_0 mjd_1 exptime_s_2 filter_3 mag_4 mag_unc_5 airmass_6
 #for i in range(0,len(files)):
 for i in range(14,15):
     fits_file_name = data_directory+files[i]
-    exp_time = pyfits.open(fits_file_name)[0].header['EXPTIME']
+    exp_time_s = pyfits.open(fits_file_name)[0].header['EXPTIME']
     filter = pyfits.open(fits_file_name)[0].header['FILTER']
+    airmass = pyfits.open(fits_file_name)[0].header['AIRMASS']
     date_mjd = cal_date_fits_format_to_mjd(pyfits.open(fits_file_name)[0].header['DATE-OBS'])
     datfile = pyfits.getdata(fits_file_name, header=True)
     #to properly orient data, rotate by 270 degrees and flip vertical
@@ -88,10 +90,34 @@ for i in range(14,15):
     if centroid_mode == "com":
         x_stamp_centroid, y_stamp_centroid = centroid_com(image_stamp)
 
-    x_centroid = y_stamp_centroid + true_x_coords[i] - square_half_length_pixels #swap the x and y
-    y_centroid = x_stamp_centroid + true_y_coords[i] - square_half_length_pixels
+    #x_centroid, y_centroid true location
+    #x_centroid, y_centroid, swap the x and y
+    x_centroid = int(y_stamp_centroid + true_x_coords[i] - square_half_length_pixels)
+    y_centroid = int(x_stamp_centroid + true_y_coords[i] - square_half_length_pixels)
+
+    target_apertures = CircularAperture((x_centroid, y_centroid), aperture_radius_pixels)
+    background_annuli = CircularAnnulus((x_centroid, y_centroid), r_in=inner_sky_ring_pixels, r_out= outer_sky_ring_pixels)
+    flux_in_annuli = aperture_photometry(dat_raw,
+                                         background_annuli)['aperture_sum'].data
+    background = flux_in_annuli/background_annuli.area()
+    flux = aperture_photometry(dat_raw,
+                               target_apertures)['aperture_sum'].data
+    background_subtracted_flux = (flux - background *
+                                  target_apertures.area())
+    error_flux = np.sqrt(flux)
+
+    snr  = background_subtracted_flux / error_flux
+
+    mag = magnitude_calc_no_background(background_subtracted_flux, exp_time_s)
+
+    mag_unc = 1./snr
 
 
+    print files[i], str(date_mjd), str(exp_time), filter, str(mag), str(mag_unc), str(airmass)
+    output_array_filename_mjd_exptime_filter_mag_mag_unc_airmass[i] = files[i], str(date_mjd), str(exp_time), filter, str(mag), str(mag_unc), str(airmass)
+
+
+output_array_filename_mjd_exptime_filter_mag_mag_unc_airmass.dump(output_filename + ".pyc")
 
 '''
 #view of entire image
@@ -99,13 +125,15 @@ vmin,vmax = z.zscale(dat_raw)
 plt.ion()
 plt.figure()
 plt.imshow(dat_raw,vmin=vmin,vmax=vmax,cmap='gray')
+plt.scatter(x=[x_centroid], y=[y_centroid], c='r', s=40)
 
 #stamp view of centroid of source
 i=0
 vmin,vmax = z.zscale(dat_raw)
 plt.ion()
 plt.figure()
-plt.imshow(dat_raw[true_y_coords[i]-square_half_length_pixels:true_y_coords[i]+square_half_length_pixels,true_x_coords[i]-square_half_length_pixels:true_x_coords[i]+square_half_length_pixels],vmin=vmin,vmax=vmax,cmap='gray')
+plt.imshow(dat_raw[y_centroid-square_half_length_pixels:y_centroid+square_half_length_pixels,x_centroid-square_half_length_pixels:x_centroid+square_half_length_pixels],vmin=vmin,vmax=vmax,cmap='gray')
+plt.scatter(x=[x_stamp_centroid], y=[y_stamp_centroid], c='r', s=40)
 
 '''
 

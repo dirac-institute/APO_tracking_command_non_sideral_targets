@@ -242,6 +242,12 @@ def magnitude_calc(zero_point_magnitude, flux_circle_counts, aperture_radius_pix
     M = zero_point_magnitude - (2.5*np.log10(flux_counts)) - (2.5 * np.log10(exp_time_s))
     return M
 
+def magnitude_calc_no_background(background_subtracted_flux, exp_time_s):
+    zero_point_magnitude=0.0
+    #flux is flux_circle - sky_value* area
+    M = zero_point_magnitude - (2.5*np.log10(background_subtracted_flux)) - (2.5 * np.log10(exp_time_s))
+    return M
+
 def magnitude_loss_filter_mean_S_C_taxonomy_ugrizyw_lsst(filter_string):
     '''
     V_minus_u = -1.7705
