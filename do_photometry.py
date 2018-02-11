@@ -29,7 +29,11 @@ reads in a list of x,y positions to access a list of reduced ccd image fits file
 
 example execution:
 
-ipython -i -- do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_X_Y_positions -apc 9 15 20 -shl 10 -cm com -ofn 2018_AV2_APO_2018_01_20
+#moving source
+ipython -i -- do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_X_Y_positions -apc 9 15 20 -shl 10 -cm com -ofn 2018_AV2_APO_2018_01_20 -corm 0
+
+#standar star
+ipython -i -- do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/standard_X_Y_positions -apc 8 15 20 -shl 30 -cm com -ofn standard_APO_2018_01_20 -corm 1
 
 '''
 
@@ -41,6 +45,7 @@ parser.add_argument("-apc", "--aperture_components", help="aperture components i
 parser.add_argument("-shl", "--square_half_length", help="half the length of the square centered on the center position of the psf. This is used for the centroid step. Must be large enough to accomodate the sky rings in the perture photometry step.", nargs='*')
 parser.add_argument("-cm", "--centroid_mode", help="set to 1d, 2d gaussian fitting or center of mass for centroiding, e.g., 1d, 2d, com", nargs='*')
 parser.add_argument("-ofn", "--output_filename", help="name of the pyc filename for output of the photometry measurements", nargs='*')
+parser.add_argument("-corm", "--correction_mode", help="search for the max value in the image stamps and use as the new position for the centroid", nargs='*')
 args = parser.parse_args()
 
 data_directory = args.data_directory[0]
@@ -50,25 +55,28 @@ aperture_radius_pixels, inner_sky_ring_pixels, outer_sky_ring_pixels = string_se
 square_half_length_pixels =  int(args.square_half_length[0])
 output_filename = args.output_filename[0]
 centroid_mode = args.centroid_mode[0]
+correction_mode = int(args.correction_mode[0])
 
 files = np.loadtxt(file_list,dtype='string')
-center_list_X_Y = np.loadtxt(center_file,dtype='int')
+center_list_X_Y = np.loadtxt(center_file,dtype='float')
 center_X, Center_Y = center_list_X_Y[:,0], center_list_X_Y[:,1]
 
 #to properly orient data, rotate by 270 degrees and flip vertical
 #np.rot90(datfile[0][::-1,:],k=3), then flip x and y coords from list.
-true_x_coords, true_y_coords = Center_Y, center_X
+true_x_coords, true_y_coords = Center_Y.astype('int'), center_X.astype('int')
 
 
 #output array all strings to contain filename mjd exptime filter mag mag_unc airmass
 number_of_entries_per_row = 7
 max_char_size = 20
 output_array_filename_mjd_exptime_filter_mag_mag_unc_airmass = np.chararray((len(files),number_of_entries_per_row),itemsize=max_char_size)
-output_array[:] = "aaaaaaaaaaaaaaaaaaaa"
+output_array_filename_mjd_exptime_filter_mag_mag_unc_airmass[:] = "aaaaaaaaaaaaaaaaaaaa"
 
-print "#filename_0 mjd_1 exptime_s_2 filter_3 mag_4 mag_unc_5 airmass_6
+print "#filename_0 mjd_1 exptime_s_2 filter_3 mag_4 mag_unc_5 airmass_6"
 #for i in range(0,len(files)):
-for i in range(14,15):
+#for i in range(17,18):
+#for i in range(14,15):
+#for i in range(191,192):
     fits_file_name = data_directory+files[i]
     exp_time_s = pyfits.open(fits_file_name)[0].header['EXPTIME']
     filter = pyfits.open(fits_file_name)[0].header['FILTER']
@@ -82,6 +90,15 @@ for i in range(14,15):
 
     #centroid stamp
     image_stamp = dat_raw[true_y_coords[i]-square_half_length_pixels:true_y_coords[i]+square_half_length_pixels,true_x_coords[i]-square_half_length_pixels:true_x_coords[i]+square_half_length_pixels]
+
+    if correction_mode == 1:
+        stamp_corner_origin_x, stamp_corner_origin_y = true_x_coords[i] - square_half_length_pixels, true_y_coords[i] - square_half_length_pixels
+        correction_x, correction_y = np.where(image_stamp==np.max(image_stamp))[1][0], np.where(image_stamp==np.max(image_stamp))[0][0]
+        #make new true_cords
+        true_x_coords[i], true_y_coords[i] = stamp_corner_origin_x + correction_x, stamp_corner_origin_y + correction_y
+        #make new stamp
+        image_stamp = dat_raw[true_y_coords[i]-square_half_length_pixels:true_y_coords[i]+square_half_length_pixels,true_x_coords[i]-square_half_length_pixels:true_x_coords[i]+square_half_length_pixels]
+
 
     if centroid_mode == "1d":
         x_stamp_centroid, y_stamp_centroid = centroid_1dg(image_stamp)
@@ -102,19 +119,18 @@ for i in range(14,15):
     background = flux_in_annuli/background_annuli.area()
     flux = aperture_photometry(dat_raw,
                                target_apertures)['aperture_sum'].data
-    background_subtracted_flux = (flux - background *
-                                  target_apertures.area())
-    error_flux = np.sqrt(flux)
+    background_subtracted_flux = (flux - (background * target_apertures.area()))
+    error_flux = np.sqrt(flux[0])
 
-    snr  = background_subtracted_flux / error_flux
+    snr  = background_subtracted_flux[0] / np.sqrt(background_subtracted_flux[0] + (background[0] * target_apertures.area()*1) )
 
-    mag = magnitude_calc_no_background(background_subtracted_flux, exp_time_s)
+    mag = magnitude_calc_no_background(background_subtracted_flux[0], exp_time_s)
 
-    mag_unc = 1./snr
+    mag_unc = 1.0857/snr
 
 
-    print files[i], str(date_mjd), str(exp_time), filter, str(mag), str(mag_unc), str(airmass)
-    output_array_filename_mjd_exptime_filter_mag_mag_unc_airmass[i] = files[i], str(date_mjd), str(exp_time), filter, str(mag), str(mag_unc), str(airmass)
+    print files[i], str(date_mjd), str(exp_time_s), filter, mag, mag_unc, str(airmass)
+    output_array_filename_mjd_exptime_filter_mag_mag_unc_airmass[i] = files[i], str(date_mjd), str(exp_time_s), filter, str(mag), str(mag_unc), str(airmass)
 
 
 output_array_filename_mjd_exptime_filter_mag_mag_unc_airmass.dump(output_filename + ".pyc")
@@ -127,6 +143,7 @@ plt.figure()
 plt.imshow(dat_raw,vmin=vmin,vmax=vmax,cmap='gray')
 plt.scatter(x=[x_centroid], y=[y_centroid], c='r', s=40)
 
+
 #stamp view of centroid of source
 i=0
 vmin,vmax = z.zscale(dat_raw)
@@ -134,6 +151,17 @@ plt.ion()
 plt.figure()
 plt.imshow(dat_raw[y_centroid-square_half_length_pixels:y_centroid+square_half_length_pixels,x_centroid-square_half_length_pixels:x_centroid+square_half_length_pixels],vmin=vmin,vmax=vmax,cmap='gray')
 plt.scatter(x=[x_stamp_centroid], y=[y_stamp_centroid], c='r', s=40)
+
+
+#centoid correction check stamp
+#see where max is
+#stamp view of centroid of source
+vmin,vmax = z.zscale(dat_raw)
+plt.ion()
+plt.figure()
+plt.imshow(image_stamp,vmin=vmin,vmax=vmax,cmap='gray')
+plt.scatter(x=[x_stamp_centroid], y=[y_stamp_centroid], c='r', s=40)
+plt.scatter(x=[np.where(image_stamp==np.max(image_stamp))[1][0]], y=[np.where(image_stamp==np.max(image_stamp))[0][0]], c='b', s=40)
 
 '''
 
