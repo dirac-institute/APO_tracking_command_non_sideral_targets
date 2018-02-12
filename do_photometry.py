@@ -30,10 +30,16 @@ reads in a list of x,y positions to access a list of reduced ccd image fits file
 example execution:
 
 #moving source
-ipython -i -- do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_X_Y_positions -apc 9 15 20 -shl 10 -cm com -ofn 2018_AV2_APO_2018_01_20 -corm 0
+ipython -i -- do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_X_Y_positions -apc 5 15 20 -shl 10 -cm com -ofn 2018_AV2_APO_2018_01_20 -corm 1
+
+#print out 
+python do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_X_Y_positions -apc 5 15 20 -shl 10 -cm com -ofn 2018_AV2_APO_2018_01_20 -corm 1 | awk '{print $'6', $'7', $'8'}'
 
 #standar star
-ipython -i -- do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/standard_X_Y_positions -apc 8 15 20 -shl 30 -cm com -ofn standard_APO_2018_01_20 -corm 1
+ipython -i -- do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/standard_X_Y_positions -apc 5 15 20 -shl 30 -cm com -ofn standard_APO_2018_01_20 -corm 1
+
+#print out
+python do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/standard_X_Y_positions -apc 5 20 -shl 30 -cm com -ofn standard_APO_2018_01_20 -corm 1 | awk '{print $'6', $'7', $'8'}'
 
 '''
 
@@ -73,7 +79,7 @@ output_array_filename_mjd_exptime_filter_mag_mag_unc_airmass = np.chararray((len
 output_array_filename_mjd_exptime_filter_mag_mag_unc_airmass[:] = "aaaaaaaaaaaaaaaaaaaa"
 
 print "#filename_0 mjd_1 exptime_s_2 filter_3 mag_4 mag_unc_5 airmass_6"
-#for i in range(0,len(files)):
+for i in range(0,len(files)):
 #for i in range(17,18):
 #for i in range(14,15):
 #for i in range(191,192):
