@@ -39,7 +39,7 @@ python do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1U
 ipython -i -- do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/standard_X_Y_positions -apc 5 15 20 -shl 30 -cm com -ofn standard_APO_2018_01_20 -corm 1
 
 #print out
-python do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/standard_X_Y_positions -apc 5 20 -shl 30 -cm com -ofn standard_APO_2018_01_20 -corm 1 | awk '{print $'6', $'7', $'8'}'
+python do_photometry.py -dd /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/ -fl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/2018_AV2_filenames -cl /Users/bolin/NEO/Follow_up/APO_observing/rawdata/Q1UW07/UT180120/ARCTIC_2018_01_20_UTC/reduced/data/standard_X_Y_positions -apc 5 15 20 -shl 30 -cm com -ofn standard_APO_2018_01_20 -corm 1 | awk '{print $'6', $'7', $'8'}'
 
 '''
 

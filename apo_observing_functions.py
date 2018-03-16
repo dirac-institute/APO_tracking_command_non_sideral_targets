@@ -210,6 +210,12 @@ def error_propagation_weighted_sum(a,sigma_u,b,sigma_v,correlation_coefficient):
     #returns sqrt(sigma_x^2)
     return np.sqrt( (a * sigma_u)**2 + (b * sigma_v)**2 + (2 * a * b * sigma_u * sigma_v * correlation_coefficient))
 
+def exposure_time_compare(limit_mag_V, SNR_at_limit_mag_V, limit_mag_exposure_time,V_mag, color_mag, SNR_needed):
+    actual_SNR = snr_compare(limit_mag_V, V_mag, color_mag)*SNR_at_limit_mag_V
+    SNR_ratio = actual_snr / SNR_needed
+    ratio_of_time = SNR_ratio**2
+    return limit_mag_exposure_time / ratio_of_time
+
 def flux_mJy(central_wavelength_microns, central_wavelength_transmission, bond_albedo, r_au, Delta_au, emissivity, radius_m):
     solar_flux_watts_p_m_sq = solar_flux_arbitrary_solar_distance(r_au)
     sub_solar_temperature_k = temperature_sub_solar_kelvin(bond_albedo, solar_flux_watts_p_m_sq,eta)
@@ -673,6 +679,13 @@ def planck_function_lambda(wavelength_meters, temp_kelvin):
 
 def relative_tracking_rate_for_streak_length_arcsec_p_minute(streak_length_arcsec,exposure_time_s):
     return (streak_length_arcsec / (exposure_time_s/minutes_to_seconds))
+
+def snr_compare(limit_mag, V_mag, color_mag):
+    times_more_snr = np.sqrt(10**((limit_mag-(V_mag+color_mag))/2.5))
+    return times_more_snr
+
+def snr_dis(bandpass_mag, time_mins):
+    return 2300*10**(-0.2*bandpass_mag)*np.sqrt(time_mins*60)
 
 def sphere_area_to_triaxial_a_b_prolate_dimensions(area,b_to_a_ratio): #or a prolate spheroid
     a = (((area)/(4*np.pi * b_to_a_ratio))**.5)
