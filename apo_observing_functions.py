@@ -248,7 +248,6 @@ def get_rates_cos_dec(rate, pa, dec_deg, dec_min, dec_sec): #rate is in "/min, p
     DEC = (rate * (1000./60.)) * np.cos(np.radians(pa))
     return RA, DEC #mili arcsec per sec
 
-
 def hours_minutes_seconds_to_degrees(hours, minutes, seconds):
     degrees = np.degrees(sla.sla_ctf2r(hours, minutes, seconds)[0])
     return degrees
