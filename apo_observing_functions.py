@@ -211,8 +211,9 @@ def error_propagation_weighted_sum(a,sigma_u,b,sigma_v,correlation_coefficient):
     return np.sqrt( (a * sigma_u)**2 + (b * sigma_v)**2 + (2 * a * b * sigma_u * sigma_v * correlation_coefficient))
 
 def exposure_time_compare(limit_mag_V, SNR_at_limit_mag_V, limit_mag_exposure_time,V_mag, color_mag, SNR_needed):
+    #the time units you input are the time units you get in the output
     actual_SNR = snr_compare(limit_mag_V, V_mag, color_mag)*SNR_at_limit_mag_V
-    SNR_ratio = actual_snr / SNR_needed
+    SNR_ratio = actual_SNR / SNR_needed
     ratio_of_time = SNR_ratio**2
     return limit_mag_exposure_time / ratio_of_time
 
@@ -229,10 +230,24 @@ def flux_mJy(central_wavelength_microns, central_wavelength_transmission, bond_a
     #radius_test = np.sqrt(flux_central_wavelength_mJy_test/(central_wavelength_transmission * radiance_central_wavelength_watts * watts_m_square_per_micron_to_mJy * central_wavelength_microns**2 * (1.0/(Delta_au*au_to_meters))**2))
     return flux_central_wavelength_mJy
 
-def get_rates_no_cos_dec(rate, pa_deg): #rate is in "/min, pa is in degs USE FOR UH 88" when cos dec is turned on
-    RA = rate * np.sin(np.radians(pa_deg))
-    DEC = rate  * np.cos(np.radians(pa_deg))
+def get_rates(rate, pa, dec_deg, dec_min, dec_sec): #rate is in "/min, pa is in degs
+    #print (np.sign(dec_deg) * (dec_min/60.))
+    RA = (rate * (1000./60.) * np.sin(np.radians(pa)))/np.cos(np.radians(dec_deg + ((np.sign(dec_deg) * dec_min)/60.) + ((np.sign(dec_deg) * dec_sec)/3600.)))
+    DEC = (rate * (1000./60.)) * np.cos(np.radians(pa))
     return RA, DEC #mili arcsec per sec
+
+def get_rates_no_cos_dec(rate, pa_deg): #rate is in "/min, pa is in degs USE FOR UH 88" when cos dec is turned on
+    #print (np.sign(dec_deg) * (dec_min/60.))
+    RA = (rate * (1000./60.) * np.sin(np.radians(pa_deg)))
+    DEC = (rate * (1000./60.)) * np.cos(np.radians(pa_deg))
+    return RA, DEC #mili arcsec per sec
+
+def get_rates_cos_dec(rate, pa, dec_deg, dec_min, dec_sec): #rate is in "/min, pa is in degs
+    #print (np.sign(dec_deg) * (dec_min/60.))
+    RA = (rate * (1000./60.) * np.sin(np.radians(pa)))*np.cos(np.radians(dec_deg + ((np.sign(dec_deg) * dec_min)/60.) + ((np.sign(dec_deg) * dec_sec)/3600.)))
+    DEC = (rate * (1000./60.)) * np.cos(np.radians(pa))
+    return RA, DEC #mili arcsec per sec
+
 
 def hours_minutes_seconds_to_degrees(hours, minutes, seconds):
     degrees = np.degrees(sla.sla_ctf2r(hours, minutes, seconds)[0])
