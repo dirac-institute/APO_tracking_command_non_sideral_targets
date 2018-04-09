@@ -131,6 +131,31 @@ def cal_date_fits_format_to_mjd(date_fits_header_string):
 
     return date_mjd + fraction_day
 
+def compute_oorb_astroidcentric_helio_and_toppo_vectors_with_JD(oorb_location, in_orbit_file_des, start_date_mjd, end_date_mjd, time_step_days, orbit_file_name):
+    id_8 = id_generator()
+    oorb_command_prop = oorb_location + " --task=propagation --orb-in=" + in_orbit_file_des
+    oorb_command_prop_complete = oorb_command_prop + " " + "--epoch-mjd-utc=" + str(start_date_mjd) + " " + "> " + "in_orb" + id_8 + ".des"
+    os.system(oorb_command_prop_complete)
+    duration = end_date_mjd - start_date_mjd
+    oorb_command_ephem = oorb_location + " --task=ephemeris --code=500 --orb-in=in_orb" + id_8 + ".des " + "--timespan=" + str(duration) + " " + "--step=" + str(time_step_days)+ " " + "--epoch-mjd-utc=" + str(start_date_mjd) + " > ephem_" + id_8
+    os.system(oorb_command_ephem)
+    load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z = np.loadtxt("ephem_" + id_8, usecols=(28,29,30,34,35,36,2,3,9))
+    obs_x, obs_y, obs_z = load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z[:,3], load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z[:,4], load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z[:,5]
+    hel_x, hel_y, hel_z = load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z[:,0], load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z[:,1], load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z[:,2]
+    toppo_x, toppo_y, toppo_z = hel_x - obs_x, hel_y - obs_y, hel_z - obs_z
+    astro_toppo_x, astro_toppo_y, astro_toppo_z = -1.0 * toppo_x, -1.0 * toppo_y, -1.0 * toppo_z
+    astro_hel_x, astro_hel_y, astro_hel_z = -1.0 * hel_x, -1.0 * hel_y, -1.0 * hel_z
+    JD = load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z[:,6] + 2400000.5
+    delta_au = load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z[:,7]
+    #mags
+    m = load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z[:,8]
+    #light_time_correction
+    delta_m = delta_au * au_to_meters
+    light_time_travel_days = (delta_m/3e8) / (24*3600.)
+    JD_light_time_corrected = JD - light_time_travel_days
+    os.system('rm *' + id_8 + '*')
+    return np.vstack((JD_light_time_corrected, m, astro_hel_x, astro_hel_y, astro_hel_z, astro_toppo_x, astro_toppo_y, astro_toppo_z)).T
+
 def convert_deg_to_hms_RA(deg):
     decimal_m, h = np.modf(deg/hours_to_deg )
     decimal_s, m = np.modf(np.abs(decimal_m) * hours_to_minutes)
@@ -693,6 +718,42 @@ def planck_function_lambda(wavelength_meters, temp_kelvin):
 
 def relative_tracking_rate_for_streak_length_arcsec_p_minute(streak_length_arcsec,exposure_time_s):
     return (streak_length_arcsec / (exposure_time_s/minutes_to_seconds))
+
+def run_lightcurve_code(JD_helxyz_obs_xyz_array, asteroid_name, shape_model_directory, lightcurve_code, start_time_mjd, end_time_mjd):
+    id_generator_lc = id_generator()
+    result_file_name = asteroid_name + '_lc_' + str(int(start_time_mjd)) +'_to_' + str(int(end_time_mjd))  + '.txt'
+
+    if len(JD_helxyz_obs_xyz_array)< 1001:
+        lc_file_name = 'lc'+ id_generator_lc +'.txt'
+        lc_file_name_tmp = 'lc'+ id_generator_lc +'.txttmp'
+        np.savetxt(lc_file_name,JD_helxyz_obs_xyz_array)
+        os.system('echo 1' + ' > ' + lc_file_name_tmp)
+        os.system('echo ' + str(len(JD_helxyz_obs_xyz_array)) + ' 0 >> '+ lc_file_name_tmp)
+        os.system('cat ' + lc_file_name + ' >> ' + lc_file_name_tmp)
+    if len(JD_helxyz_obs_xyz_array)> 1001: #thousand data point limit per lightcurve
+        fraction_left, times_around = np.modf(len(JD_helxyz_obs_xyz_array)/1000.)
+        lc_file_name = 'lc'+ id_generator_lc +'.txt'
+        lc_file_name_tmp = 'lc'+ id_generator_lc +'.txttmp'
+        lc_file_name_array_temp = 'lc'+ id_generator_lc +'.txttmparray'
+        os.system('echo ' + str(int(times_around)+1) + ' > ' + lc_file_name_tmp)
+        for i in range(0, int(times_around)):
+            np.savetxt(lc_file_name_array_temp,JD_helxyz_obs_xyz_array[int((i)*1000):int((i+1)*1000)])
+            os.system('echo ' + str(len(JD_helxyz_obs_xyz_array[int((i)*1000):int((i+1)*1000)])) + ' 0 >> '+ lc_file_name_tmp)
+            os.system('cat ' + lc_file_name_array_temp + ' >> ' +  lc_file_name_tmp)
+        #remainder
+        if fraction_left > 0.0:
+            np.savetxt(lc_file_name_array_temp,JD_helxyz_obs_xyz_array[int((i+1)*1000):])
+            os.system('echo ' + str(len(JD_helxyz_obs_xyz_array[int((i+1)*1000):])) + ' 0 >> '+ lc_file_name_tmp)
+            os.system('cat ' + lc_file_name_array_temp + ' >> ' +  lc_file_name_tmp)
+    shape_mode_asteroid_directory = shape_model_directory + '/' + asteroid_name + '/'
+
+    lcgenerator_command = 'cat ' + lc_file_name_tmp + ' | ' + lightcurve_code + ' -v ' + shape_mode_asteroid_directory +  '*.spin.txt ' + shape_mode_asteroid_directory + '*.shape.txt ' + result_file_name
+    os.system(lcgenerator_command)
+    intensities = np.loadtxt(result_file_name)
+    (JD_helxyz_obs_xyz_array[:,0], intensities)
+    JD_intensity = np.vstack((JD_helxyz_obs_xyz_array[:,0], intensities)).T
+    np.savetxt(result_file_name ,JD_intensity)
+    os.system('rm lc'+ id_generator_lc + '*')
 
 def snr_compare(limit_mag, V_mag, color_mag):
     times_more_snr = np.sqrt(10**((limit_mag-(V_mag+color_mag))/2.5))
