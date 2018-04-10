@@ -24,7 +24,7 @@ make out put to have timesteps
 dRA has cos dec multiplied
 dRA*cosD
 
-ipython -i -- make_synthetic_lightcurve.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 306 -stetss 44113.0 44114 0.002
+ipython -i -- apo_observing_functions.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 306 -stetss 44113.0 44114 0.002
 
 '''
 

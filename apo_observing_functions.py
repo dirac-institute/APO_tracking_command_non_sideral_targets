@@ -210,6 +210,41 @@ def cohesive_strength_asteroid_axial_ratio_density_pascals(period_s,radius_km, d
     strength_Pa = cohesive_strength_asteroid_pascals(period_s,b_km, density_g_cm_3)
     return strength_Pa
 
+def convert_MPC_packed_date_to_year_month_date(packed_date):#see http://www.minorplanetcenter.net/iau/info/PackedDes.html
+    """
+    1999 RB252
+    The pairs of numbers are converted to letters
+    the letter sequence is 0...9A...Za...z
+    and you just split the units as
+    19 9 9 R B 25 2
+    convert each numeric block to the corresponding letter
+    and then move the third last to the endo
+    19->J
+    9->9
+    9->9
+    R->R
+    B->B
+    25->P
+    2->2
+    create the sequence with the third last at the end
+    J 9 9 R P 2 B
+    """
+    space = " "
+    num_characters = len(packed_date)
+    mpc_century = {'J': '19', 'K': '20'};
+    mpc_decade_year = {'0':'0','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9'};
+    mpc_monthly_cycle_alphabet = {'0':'','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9',
+                                  'A':'10','B':'11','C':'12','D':'13','E':'14','F':'15','G':'16','H':'17','I':'18','J':'19',
+                                  'K':'20','L':'21','M':'22','N':'23','O':'24','P':'25','Q':'26','R':'27','S':'28','T':'29',
+                                  'U':'30','V':'31','W':'32','X':'33','Y':'34','Z':'35','a':'36','b':'37','c':'38','d':'39',
+                                  'e':'40','f':'41','g':'42','h':'43','i':'44','j':'45','k':'46','l':'47','m':'48','n':'49',
+                                  'o':'50','p':'51','q':'52','r':'53','s':'54','t':'55','u':'56','v':'57','w':'58','x':'59',
+                                  'y':'60','z':'61'};
+    year = mpc_century[packed_date[0]] + mpc_decade_year[packed_date[1]] + mpc_decade_year[packed_date[2]]
+    month = mpc_monthly_cycle_alphabet[packed_date[3]]
+    date = mpc_monthly_cycle_alphabet[packed_date[4]]
+    return year, month, date
+
 def critical_period_axial_ratio_s_prolate(axial_ratio, density_g_cm_3):#Jewit et al. 2017
     density_kg_m_3 = density_g_cm_3 * 1000.
     P_crit = np.sqrt(((3*np.pi)/(6.67e-11* density_kg_m_3)))*axial_ratio
@@ -272,6 +307,34 @@ def get_rates_cos_dec(rate, pa, dec_deg, dec_min, dec_sec): #rate is in "/min, p
     RA = (rate * (1000./60.) * np.sin(np.radians(pa)))*np.cos(np.radians(dec_deg + ((np.sign(dec_deg) * dec_min)/60.) + ((np.sign(dec_deg) * dec_sec)/3600.)))
     DEC = (rate * (1000./60.)) * np.cos(np.radians(pa))
     return RA, DEC #mili arcsec per sec
+
+def grep_asteroid_from_MPCORBDAT_to_KEP_DES_format(asteroid_numbered_name, mpc_orb_dat_location):
+
+    '''
+    grep_asteroid_from_MPCORBDAT_to_KEP_DES_format('808','/Users/bolin/Thermal/asteroid_lists/MPCORB.DAT')
+    :param asteroid_numbered_name:
+    :param mpc_orb_dat_location: =  /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT
+    :return:
+    '''
+
+    id_8 = id_generator()
+    des_suffix = '1 6 -1 OpenOrb'
+    kep_string = 'KEP'
+    awk_command = '''awk '{print $'1', $'11', $'9', $'8', $'7', $'6', $'5', $'2', $'4'}' '''
+    space = " "
+    asteroid_name_paren = '(' + asteroid_numbered_name + ')'
+    grep_command_asteroid = '''grep "''' + asteroid_name_paren + '''"''' + " " + mpc_orb_dat_location + " > temp_grep_" + id_8
+    os.system(grep_command_asteroid)
+    os.system(awk_command + ' < ' + 'temp_grep_'+ id_8 + ' > temp_awk_' + id_8)
+    #number_a_au_e_i_deg_Omega_deg_omega_deg_M_deg_H_epoch_YMD
+    awk_output = np.loadtxt('temp_awk_' + id_8, dtype='string')
+    year, month, day = convert_MPC_packed_date_to_year_month_date(awk_output[8])
+    times = [year + '-'+ month + '-' + day]
+    t = Time(times, scale='utc')
+    mjd = t.mjd[0]
+    des_out = awk_output[0] + " KEP " + awk_output[1] + space + awk_output[2]  + space + awk_output[3] + space + awk_output[4] + space + awk_output[5] + space + awk_output[6] + space + awk_output[7] + space + str(mjd) + space + des_suffix
+    os.system('rm *' + id_8)
+    return des_out
 
 def hours_minutes_seconds_to_degrees(hours, minutes, seconds):
     degrees = np.degrees(sla.sla_ctf2r(hours, minutes, seconds)[0])
