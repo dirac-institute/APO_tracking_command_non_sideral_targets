@@ -30,6 +30,8 @@ import pyslalib.slalib as sla
 import subprocess
 import astropy.io.fits as pyfits
 import itertools
+import argparse
+from astropy.time import Time
 
 
 sed_paretheses =  'awk -F "[()]" \'{ for (i=2; i<NF; i+=2) print $i }\''
@@ -131,7 +133,7 @@ def cal_date_fits_format_to_mjd(date_fits_header_string):
 
     return date_mjd + fraction_day
 
-def compute_oorb_astroidcentric_helio_and_toppo_vectors_with_JD(oorb_location, in_orbit_file_des, start_date_mjd, end_date_mjd, time_step_days, orbit_file_name):
+def compute_oorb_sky_coords(oorb_location, in_orbit_file_des, start_date_mjd, end_date_mjd, time_step_days, orbit_file_name):
     id_8 = id_generator()
     oorb_command_prop = oorb_location + " --task=propagation --orb-in=" + in_orbit_file_des
     oorb_command_prop_complete = oorb_command_prop + " " + "--epoch-mjd-utc=" + str(start_date_mjd) + " " + "> " + "in_orb" + id_8 + ".des"
@@ -139,22 +141,10 @@ def compute_oorb_astroidcentric_helio_and_toppo_vectors_with_JD(oorb_location, i
     duration = end_date_mjd - start_date_mjd
     oorb_command_ephem = oorb_location + " --task=ephemeris --code=500 --orb-in=in_orb" + id_8 + ".des " + "--timespan=" + str(duration) + " " + "--step=" + str(time_step_days)+ " " + "--epoch-mjd-utc=" + str(start_date_mjd) + " > ephem_" + id_8
     os.system(oorb_command_ephem)
-    load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z = np.loadtxt("ephem_" + id_8, usecols=(28,29,30,34,35,36,2,3,9))
-    obs_x, obs_y, obs_z = load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z[:,3], load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z[:,4], load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z[:,5]
-    hel_x, hel_y, hel_z = load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z[:,0], load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z[:,1], load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z[:,2]
-    toppo_x, toppo_y, toppo_z = hel_x - obs_x, hel_y - obs_y, hel_z - obs_z
-    astro_toppo_x, astro_toppo_y, astro_toppo_z = -1.0 * toppo_x, -1.0 * toppo_y, -1.0 * toppo_z
-    astro_hel_x, astro_hel_y, astro_hel_z = -1.0 * hel_x, -1.0 * hel_y, -1.0 * hel_z
-    JD = load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z[:,6] + 2400000.5
-    delta_au = load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z[:,7]
-    #mags
-    m = load_orbit_helio_x_helio_y_helio_z_obs_x_obs_y_obs_z[:,8]
-    #light_time_correction
-    delta_m = delta_au * au_to_meters
-    light_time_travel_days = (delta_m/3e8) / (24*3600.)
-    JD_light_time_corrected = JD - light_time_travel_days
+    load_MJD_RA_dec_RAdt_decdt = np.loadtxt("ephem_" + id_8, usecols=(2,4,5,7,8))
+    MJD, RA_deg, dec_deg, dRA_dt_cos_dec_dpd, ddec_dt_dpd = load_MJD_RA_dec_RAdt_decdt[:,0], load_MJD_RA_dec_RAdt_decdt[:,1], load_MJD_RA_dec_RAdt_decdt[:,2], load_MJD_RA_dec_RAdt_decdt[:,3], load_MJD_RA_dec_RAdt_decdt[:,4]
     os.system('rm *' + id_8 + '*')
-    return np.vstack((JD_light_time_corrected, m, astro_hel_x, astro_hel_y, astro_hel_z, astro_toppo_x, astro_toppo_y, astro_toppo_z)).T
+    return np.vstack((MJD, RA_deg, dec_deg, dRA_dt_cos_dec_dpd, ddec_dt_dpd)).T
 
 def convert_deg_to_hms_RA(deg):
     decimal_m, h = np.modf(deg/hours_to_deg )
@@ -339,6 +329,9 @@ def grep_asteroid_from_MPCORBDAT_to_KEP_DES_format(asteroid_numbered_name, mpc_o
 def hours_minutes_seconds_to_degrees(hours, minutes, seconds):
     degrees = np.degrees(sla.sla_ctf2r(hours, minutes, seconds)[0])
     return degrees
+
+def id_generator(size=8, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 def lightcurve_amplitude_to_axial_ratio(light_curve_amplitude_mags):
     axial_ratio = 10**(0.4 * light_curve_amplitude_mags)
