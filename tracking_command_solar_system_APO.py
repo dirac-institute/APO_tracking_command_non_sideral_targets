@@ -7,7 +7,13 @@ from apo_observing_functions import *
 '''
 mjd for 2018 04 10
 58218.0
-python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 2792 -stetss 58219.0 58220.0 0.002 -rot -67.5 
+python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 4231 -stetss 58219.0 58220.0 0.002 -rot -67.5 > 4231
+python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 2322 -stetss 58219.0 58220.0 0.002 -rot -67.5 > 2322
+python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 933 -stetss 58219.0 58220.0 0.002 -rot -67.5 > 933
+python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 1700 -stetss 58219.0 58220.0 0.002 -rot -67.5 > 1700
+python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 2776 -stetss 58219.0 58220.0 0.002 -rot -67.5 > 2776
+python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 2536 -stetss 58219.0 58220.0 0.002 -rot -67.5 > 2536
+python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 2792 -stetss 58219.0 58220.0 0.002 -rot -67.5 > 2792
 '''
 
 parser = argparse.ArgumentParser()
@@ -29,9 +35,10 @@ id_generator_orb = id_generator()
 orbit_file_name = '''orbit_''' + id_generator_orb + '''.des'''
 echo_orbit_line_to_des = '''echo "''' + orbit_line + '''"''' + ''' > ''' + orbit_file_name
 os.system(echo_orbit_line_to_des)
-#os.system('rm *' + id_generator_orb + '*')
 
 MJD_RA_deg_dec_deg_dRA_dt_cos_dec_deg_per_day_ddec_dt_deg_per_day = compute_oorb_sky_coords(oorb_location,orbit_file_name, start_time_mjd, end_time_mjd, step_size_days, orbit_file_name)
+os.system('rm *' + id_generator_orb + '*')
+
 
 MJD = MJD_RA_deg_dec_deg_dRA_dt_cos_dec_deg_per_day_ddec_dt_deg_per_day[:,0]
 RA_deg = MJD_RA_deg_dec_deg_dRA_dt_cos_dec_deg_per_day_ddec_dt_deg_per_day[:,1]
