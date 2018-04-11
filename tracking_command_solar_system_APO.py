@@ -14,13 +14,13 @@ Needs hour angle calculation
 
 mjd for 2018 04 10
 58218.0
-python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 4231 -stetss 58219.0 58220.0 0.002 -rot -67.5 > 4231_positions
-python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 2322 -stetss 58219.0 58220.0 0.002 -rot -67.5 > 2322_positions
-python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 933 -stetss 58219.0 58220.0 0.002 -rot -67.5 > 933_positions
-python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 1700 -stetss 58219.0 58220.0 0.002 -rot -67.5 > 1700_positions
-python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 2776 -stetss 58219.0 58220.0 0.002 -rot -67.5 > 2776_positions
-python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 2536 -stetss 58219.0 58220.0 0.002 -rot -67.5 > 2536_positions
-python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 2792 -stetss 58219.0 58220.0 0.002 -rot -67.5 > 2792_positions
+python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 4231 -stetss 58219.0 58220.0 0.002 > 4231_positions
+python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 2322 -stetss 58219.0 58220.0 0.002 > 2322_positions
+python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 933 -stetss 58219.0 58220.0 0.002 > 933_positions
+python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 1700 -stetss 58219.0 58220.0 0.002 > 1700_positions
+python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 2776 -stetss 58219.0 58220.0 0.002 > 2776_positions
+python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 2536 -stetss 58219.0 58220.0 0.002 > 2536_positions
+python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 2792 -stetss 58219.0 58220.0 0.002 > 2792_positions
 '''
 
 parser = argparse.ArgumentParser()
@@ -55,4 +55,4 @@ t = Time(MJD, format='mjd', scale='utc')
 time_stamp = t.iso
 
 for i in range(0, len(MJD)):
-    print ' %5s %2s %5s %7.5f, %7.5f, %7.8f, %7.8f %7s %7s '%(time_stamp[i],'tcc','track',RA_deg[i], dec_deg[i], dRA_dt_cos_dec_deg_sec[i], ddec_dt_deg_per_deg_sec[i], ' /rottype=horizon /rotang=90.0')
+    print ' %5s %2s %5s %7.5f, %7.5f, %7.8f, %7.8f %7s '%(time_stamp[i],'tcc','track',RA_deg[i], dec_deg[i], dRA_dt_cos_dec_deg_sec[i], ddec_dt_deg_per_deg_sec[i], '/rottype=horizon /rotang=90.0')
