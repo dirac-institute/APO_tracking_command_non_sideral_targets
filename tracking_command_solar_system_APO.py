@@ -28,14 +28,12 @@ parser.add_argument("-mpcorbf", "--mpc_orb_file", help="location of lightcurve s
 parser.add_argument("-ooloc", "--oorb_location", help="location of oorb, e.g., /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb", nargs='*')
 parser.add_argument("-an", "--asteroid_name", help="numbered name of asteriod", nargs='*')
 parser.add_argument("-stetss", "--start_time_end_time_step_size", help="start_time,end_time in MJD and step size in days 57303 57335 0.0025", nargs='*')
-parser.add_argument("-rot", "--rotation_deg", help="rotation of the slit, should be 90-parallactic angle", nargs='*')
 args = parser.parse_args()
 
 mpc_orb_file = str(args.mpc_orb_file[0])
 oorb_location = str(args.oorb_location[0])
 asteroid_name = str(args.asteroid_name[0])
 start_time_mjd, end_time_mjd, step_size_days = string_seperated_to_array_spaces(args.start_time_end_time_step_size,'float')
-rot_angle_str = str(args.rotation_deg[0])
 
 orbit_line =  grep_asteroid_from_MPCORBDAT_to_KEP_DES_format(asteroid_name,mpc_orb_file)
 id_generator_orb = id_generator()
@@ -57,4 +55,4 @@ t = Time(MJD, format='mjd', scale='utc')
 time_stamp = t.iso
 
 for i in range(0, len(MJD)):
-    print ' %5s %2s %5s %7.5f, %7.5f, %7.8f, %7.8f %7s %7s '%(time_stamp[i],'tcc','track',RA_deg[i], dec_deg[i], dRA_dt_cos_dec_deg_sec[i], ddec_dt_deg_per_deg_sec[i], 'Fk5=2000.0', '/Rottype=Object /Rotangle='+rot_angle_str)
+    print ' %5s %2s %5s %7.5f, %7.5f, %7.8f, %7.8f %7s %7s '%(time_stamp[i],'tcc','track',RA_deg[i], dec_deg[i], dRA_dt_cos_dec_deg_sec[i], ddec_dt_deg_per_deg_sec[i], ' /rottype=horizon /rotang=90.0')
