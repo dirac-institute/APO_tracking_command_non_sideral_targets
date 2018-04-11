@@ -7,8 +7,7 @@ from apo_observing_functions import *
 '''
 mjd for 2018 04 10
 58218.0
-ipython -i -- tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 306 -stetss 44113.0 44114 0.002 -rot -67.5
-
+python tracking_command_solar_system_APO.py -mpcorbf /Users/bolin/Thermal/asteroid_lists/MPCORB.DAT -ooloc /Users/bolin/NEO/OpenOrb/oorb-master/main/oorb -an 2792 -stetss 58219.0 58220.0 0.002 -rot -67.5 
 '''
 
 parser = argparse.ArgumentParser()
@@ -45,5 +44,3 @@ time_stamp = t.iso
 
 for i in range(0, len(MJD)):
     print ' %5s %2s %5s %7.5f, %7.5f, %7.8f, %7.8f %7s %7s '%(time_stamp[i],'tcc','track',RA_deg[i], dec_deg[i], dRA_dt_cos_dec_deg_sec[i], ddec_dt_deg_per_deg_sec[i], 'Fk5=2000.0', '/Rottype=Object /Rotation='+rot_angle_str)
-
-
